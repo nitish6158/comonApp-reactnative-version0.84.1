@@ -1,0 +1,6 @@
+<resources>
+  <string name="app_name">ComOn</string>
+  <string name="expo_splash_screen_resize_mode" translatable="false">cover</string>
+  <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
+  <string moduleConfig="true" name="CodePushDeploymentKey">0007b8ad-65f7-4352-9bcb-c4874f34a6c4</string>
+</resources>

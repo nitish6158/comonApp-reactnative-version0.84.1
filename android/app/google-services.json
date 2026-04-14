@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "13504575413",
+    "project_id": "analog-sum-332609",
+    "storage_bucket": "analog-sum-332609.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:13504575413:android:f313c8dad95e2db6880bfc",
+        "android_client_info": {
+          "package_name": "io.comon.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "13504575413-t0s9qf90cg4or4mk2urqgnqvgp0mjqd6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvU50wv5i__UKBruDoB8xMLQmg_G9ME78"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "13504575413-t0s9qf90cg4or4mk2urqgnqvgp0mjqd6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "13504575413-pbqkvsdu586tq4po64rmchj210o83e2d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.comon.comonapp",
+                "app_store_id": "1624464685"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

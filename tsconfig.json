@@ -1,0 +1,31 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "jsx": "react",
+    "experimentalDecorators": true,
+    "strict": true,
+    "baseUrl": ".",
+    "types": ["jest"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@Assets/*": ["./assets/*"],
+      "@Images/*": ["./assets/images/*"],
+      "@Fonts/*": ["./assets/fonts/*"],
+      "@Animations/*": ["./assets/lottie/*"],
+      "@Atoms/*": ["./src/Atoms/*"],
+      "@Constants/*": ["./src/Constants/*"],
+      "@Components/*": ["./src/Components/*"],
+      "@Context/*": ["./src/Context/*"],
+      "@Containers/*": ["./src/Containers/*"],
+      "@Service/*": ["./src/graphql/*"],
+      "@Hooks/*": ["./src/hooks/*"],
+      "@Models/*": ["./src/models/*"],
+      "@Navigation/*": ["./src/navigation/*"],
+      "@Notification/*": ["./src/notification/*"],
+      "@Store/*": ["./src/redux/*"],
+      "@Util/*": ["./src/utils/*"],
+      "@Types/*": ["./types/*"],
+      "@LocalDB/*": ["./src/local_DB/*"]
+    }
+  }
+}

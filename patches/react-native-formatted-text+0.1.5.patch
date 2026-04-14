@@ -1,0 +1,61 @@
+diff --git a/node_modules/react-native-formatted-text/src/FormattedText/FormattedLinkMatchType.js b/node_modules/react-native-formatted-text/src/FormattedText/FormattedLinkMatchType.js
+index 9aa481e..3859905 100644
+--- a/node_modules/react-native-formatted-text/src/FormattedText/FormattedLinkMatchType.js
++++ b/node_modules/react-native-formatted-text/src/FormattedText/FormattedLinkMatchType.js
+@@ -1,4 +1,4 @@
+-const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
++const urlRegex = /^((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/gi
+ const emailRegex = /\S+@\S+\.\S+/g;
+ const hashRegex = /#\S+/g;
+ 
+diff --git a/node_modules/react-native-formatted-text/src/FormattedText/FormattedText.js b/node_modules/react-native-formatted-text/src/FormattedText/FormattedText.js
+index 1264ee3..8fda08c 100644
+--- a/node_modules/react-native-formatted-text/src/FormattedText/FormattedText.js
++++ b/node_modules/react-native-formatted-text/src/FormattedText/FormattedText.js
+@@ -94,7 +94,6 @@ const FormattedText = ({
+   );
+ 
+   if (ranges.length === 0) {
+-    console.warn("no format found");
+     return <Text {...props}>{children}</Text>;
+   }
+ 
+@@ -132,7 +131,32 @@ const FormattedText = ({
+       );
+     }
+ 
+-    const sub = children.substring(format.start, format.end);
++    let sub = children.substring(format.start, format.end);
++  const boldReg = /\*(.*?)\*/g;
++  const italicReg = /_([^_]+)_/g;
++  const linethroughreg = /~(.*?)~/g;
++  const monospacereg = /```(.*?)```/g;
++  const mentionreg = /@(.*?)@/g;
++  if(boldReg.test(sub))
++  {
++    sub = sub.replace(boldReg,'$1');
++  }
++  if(italicReg.test(sub))
++  {
++    sub = sub.replace(italicReg,'$1');
++  }
++  if(linethroughreg.test(sub))
++  {
++    sub = sub.replace(linethroughreg,'$1');
++  }
++  if(monospacereg.test(sub))
++  {
++    sub = sub.replace(monospacereg,'$1');
++  }
++  if(mentionreg.test(sub))
++  {
++    sub = sub.replace(mentionreg,'@$1');
++  }
+     result.push(
+       <Text
+         style={format.style || FormattedStyles.default}
+@@ -169,3 +193,4 @@ const FormattedStyles = StyleSheet.create({
+ });
+ 
+ export default FormattedText;
++

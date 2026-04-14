@@ -1,0 +1,19 @@
+diff --git a/node_modules/react-native-signature-canvas/index.js b/node_modules/react-native-signature-canvas/index.js
+index 7f9f0e8..593725a 100644
+--- a/node_modules/react-native-signature-canvas/index.js
++++ b/node_modules/react-native-signature-canvas/index.js
+@@ -16,9 +16,11 @@ import { WebView } from "react-native-webview";
+ 
+ const styles = StyleSheet.create({
+   webBg: {
+-    width: "100%",
+-    backgroundColor: "transparent",
+-    flex: 1,
++    width: 350,
++    height:380,
++    backgroundColor: "rgba(51,51,51,.5)",
++    alignSelf:'center'
++    
+   },
+   loadingOverlayContainer: {
+     position: "absolute",

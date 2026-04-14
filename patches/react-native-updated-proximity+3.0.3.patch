@@ -1,0 +1,42 @@
+diff --git a/node_modules/react-native-updated-proximity/android/build.gradle b/node_modules/react-native-updated-proximity/android/build.gradle
+index 74c96e6..a07fc02 100644
+--- a/node_modules/react-native-updated-proximity/android/build.gradle
++++ b/node_modules/react-native-updated-proximity/android/build.gradle
+@@ -1,28 +1,25 @@
+-buildscript {
+-    repositories {
+-        jcenter()
+-    }
+ 
+-    dependencies {
+-        classpath "com.android.tools.build:gradle:1.3.1"
+-    }
+-}
+-
+ apply plugin: 'com.android.library'
+ 
+ android {
++    namespace "com.RNProximity"
+     compileSdkVersion rootProject.ext.compileSdkVersion
+-    buildToolsVersion rootProject.ext.buildToolsVersion
+ 
+-    lintOptions {
++    compileOptions {
++        sourceCompatibility JavaVersion.VERSION_11
++        targetCompatibility JavaVersion.VERSION_11
++    }
++
++    lint {
+         abortOnError false
+     }
+ }
+ 
+ repositories {
++    google()
+     mavenCentral()
+ }
+ 
+ dependencies {
+-    implementation 'com.facebook.react:react-native:+'
++    implementation 'com.facebook.react:react-android'
+ }
