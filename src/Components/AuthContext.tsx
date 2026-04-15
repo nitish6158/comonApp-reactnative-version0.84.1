@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SessionKeys } from "@/utils/session";
 
 export const AuthContext = createContext({
   tokenLogin: null as string | null,
@@ -24,7 +25,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Load session once, on app start
   useEffect(() => {
     (async () => {
-      const saved = await AsyncStorage.getItem("session_token");
+      const saved =
+        (await AsyncStorage.getItem("session_token")) ||
+        (await AsyncStorage.getItem(SessionKeys.TOKEN));
+
+      if (saved) {
+        await AsyncStorage.setItem("session_token", saved);
+      }
+
       setTokenState(saved);
       setLoading(false);
     })();

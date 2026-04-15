@@ -250,17 +250,17 @@ const styles = StyleSheet.create({
   VideoContainer: {
     backgroundColor: Colors.light.gray,
     borderRadius: 5,
-    height: 260,
+    height: 245,
     marginBottom: 5,
     overflow: "hidden",
-    width: 200,
+    width: 185,
   },
   imageContainer: {
     backgroundColor: Colors.light.gray,
-    borderRadius: 15,
-    height: 269,
+    borderRadius: 12,
+    height: 245,
     overflow: "hidden",
-    width: 200,
+    width: 185,
   },
   overlay: {
     alignItems: "center",

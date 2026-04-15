@@ -2,11 +2,27 @@ import PhoneInputComponent, { PhoneInputProps as PhoneInputComponentProps } from
 import React, { LegacyRef, forwardRef, useEffect, useState } from "react";
 
 import Text from "../Text";
-import { View } from "react-native";
+import { Image, Platform, Text as RNText, View } from "react-native";
 import styles from "./PhoneInputStyles";
 import { usePhoneContext } from "@Hooks/usePhoneContext";
 
 export type PhoneInputRef = PhoneInputComponent;
+
+const dropDown =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAi0lEQVRYR+3WuQ6AIBRE0eHL1T83FBqU5S1szdiY2NyTKcCAzU/Y3AcBXIALcIF0gRPAsehgugDEXnYQrUC88RIgfpuJ+MRrgFmILN4CjEYU4xJgFKIa1wB6Ec24FuBFiHELwIpQxa0ALUId9wAkhCnuBdQQ5ngP4I9wxXsBDyJ9m+8y/g9wAS7ABW4giBshQZji3AAAAABJRU5ErkJggg==";
+
+const getFlagEmoji = (countryCode?: string) => {
+  const code = countryCode?.toUpperCase();
+
+  if (!code || !/^[A-Z]{2}$/.test(code)) {
+    return "🇮🇳";
+  }
+
+  return code
+    .split("")
+    .map((char) => String.fromCodePoint(127397 + char.charCodeAt(0)))
+    .join("");
+};
 
 interface PhoneInputProps extends PhoneInputComponentProps {
   required?: boolean;
@@ -36,6 +52,7 @@ export const PhoneInput = forwardRef(
   ) => {
     const [isSubmited, setIsSubmited] = useState(false);
     const [text, setText] = useState<string>();
+    const [selectedCountryCode, setSelectedCountryCode] = useState(defaultCountryCode || "IN");
     const { phone, setCode } = usePhoneContext();
 
     const handleChangeText = (text: string) => {
@@ -51,20 +68,44 @@ export const PhoneInput = forwardRef(
       }
     }, [defaultValue, defaultCountryCode]);
 
+    useEffect(() => {
+      if (typeof defaultCountryCode === "string" && /^[A-Z]{2}$/.test(defaultCountryCode)) {
+        setSelectedCountryCode(defaultCountryCode);
+      }
+    }, [defaultCountryCode]);
+
     const handleSubmit = () => {
       setIsSubmited(true);
     };
 
     const isError = isSubmited && required && !text;
+    const countryCode =
+      typeof selectedCountryCode === "string" && /^[A-Z]{2}$/.test(selectedCountryCode)
+        ? selectedCountryCode
+        : "IN";
+    const renderIosFlagAccessory =
+      Platform.OS === "ios" ? (
+        <View style={styles.countryPickerAccessory}>
+          <RNText allowFontScaling={false} style={styles.flagEmoji}>
+            {getFlagEmoji(countryCode)}
+          </RNText>
+          <Image source={{ uri: dropDown }} resizeMode="contain" style={styles.dropDownImage} />
+        </View>
+      ) : undefined;
 
     return (
       <View style={styles.container}>
         <PhoneInputComponent
           ref={ref}
           defaultValue={skipDefaultValue ? undefined : defaultValue ? defaultValue : phone?.number}
-          defaultCode={defaultCountryCode}
+          defaultCode={countryCode as any}
           layout="first"
+          flagButtonStyle={styles.flagButtonStyle}
+          countryPickerButtonStyle={styles.countryPickerButtonStyle}
           textContainerStyle={styles.textContainerStyle}
+          textInputStyle={styles.textInputStyle}
+          codeTextStyle={styles.codeTextStyle}
+          renderDropdownImage={renderIosFlagAccessory}
           textInputProps={{
             onEndEditing: handleSubmit,
           }}
@@ -72,7 +113,9 @@ export const PhoneInput = forwardRef(
           onChangeText={handleChangeText}
           {...props}
           onChangeCountry={(code) => {
+            setSelectedCountryCode(code.cca2);
             setCode(code.cca2);
+            props.onChangeCountry?.(code);
           }}
           disabled={disabled ? true : false}
           disableCountryCode={disableCountryCode}

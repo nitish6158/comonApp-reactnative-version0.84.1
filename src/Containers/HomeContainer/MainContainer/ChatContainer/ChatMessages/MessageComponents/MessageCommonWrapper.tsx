@@ -193,10 +193,10 @@ export default function MessageCommonWrapper({
 const styles = StyleSheet.create({
   imageContainer: {
     backgroundColor: Colors.light.gray,
-    borderRadius: 15,
-    height: 269,
+    borderRadius: 12,
+    height: 245,
     overflow: "hidden",
-    width: 200,
+    width: 185,
   },
   recevierTime: {
     color: "rgba(51,51,51,.8)",

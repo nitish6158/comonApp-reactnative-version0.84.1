@@ -4,6 +4,23 @@ const path = require("path");
 const root = process.cwd();
 const pkgRoot = path.join(root, "node_modules", "react-native-calendars", "src");
 
+function ensureFile(relativeSourcePath, relativeTargetPath) {
+  const sourcePath = path.join(pkgRoot, relativeSourcePath);
+  const targetPath = path.join(pkgRoot, relativeTargetPath);
+
+  if (!fs.existsSync(sourcePath)) {
+    console.warn(`[calendar-patch] Skipping missing asset source: ${relativeSourcePath}`);
+    return;
+  }
+
+  if (fs.existsSync(targetPath)) {
+    return;
+  }
+
+  fs.copyFileSync(sourcePath, targetPath);
+  console.log(`[calendar-patch] Added ${relativeTargetPath}`);
+}
+
 function patchFile(relativePath, replacements) {
   const filePath = path.join(pkgRoot, relativePath);
   if (!fs.existsSync(filePath)) {
@@ -30,6 +47,9 @@ function patchFile(relativePath, replacements) {
     console.log(`[calendar-patch] Patched ${relativePath}`);
   }
 }
+
+ensureFile("calendar/img/previous@2x.ios.png", "calendar/img/previous@2x.png");
+ensureFile("calendar/img/next@2x.ios.png", "calendar/img/next@2x.png");
 
 patchFile("infinite-list/index.js", [
   {

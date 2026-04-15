@@ -39,6 +39,7 @@ export const setSession = async ({
 }) => {
   try {
     await AsyncStorage.setItem(SessionKeys.TOKEN, token);
+    await AsyncStorage.setItem("session_token", token);
     await AsyncStorage.setItem(SessionKeys.REFRESH, refresh);
     await AsyncStorage.setItem(SessionKeys.EXPIRE_AT, expireAt.toString());
     await AsyncStorage.setItem(SessionKeys.MODE, mode);
@@ -102,8 +103,11 @@ export const removeSession = async () => {
   console.log("Removing session");
   // Auth Session
   await AsyncStorage.removeItem(SessionKeys.TOKEN);
+  await AsyncStorage.removeItem("session_token");
   await AsyncStorage.removeItem(SessionKeys.REFRESH);
   await AsyncStorage.removeItem(SessionKeys.EXPIRE_AT);
+  await AsyncStorage.removeItem(SessionKeys.MODE);
+  await AsyncStorage.removeItem("COM_ON_LOGIN_DEVICE");
 };
 
 type CurrentOrganizationDataType = {

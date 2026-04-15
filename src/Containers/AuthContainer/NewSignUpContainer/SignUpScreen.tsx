@@ -21,7 +21,7 @@ import ToastMessage from "@Util/ToastMesage";
 import { TooltipInfo } from "@/Components/TooltIpInfo";
 import { asyncStorageKeys } from "@/Constants/asyncStorageKeys";
 import { mainStyles } from "../../../styles/main";
-import messaging from "@react-native-firebase/messaging";
+import { getFirebaseMessagingToken } from "@/utils/firebaseMessaging";
 import moment from "moment-timezone";
 import { navigate } from "@Navigation/utility";
 import { strongPasswordRegExp, universalEmail } from "@Util/regExp";
@@ -318,7 +318,7 @@ export const SignUpScreen = ({
     const deviceToken = await AsyncStorage.getItem(
       asyncStorageKeys.deviceToken,
     );
-    const fcmToken = await messaging().getToken();
+    const fcmToken = await getFirebaseMessagingToken().catch(() => "");
     const uniqueId = await DeviceInfo.getUniqueId();
     const payload = {
       phone: phoneNumber?.formattedNumber!,

@@ -14,9 +14,8 @@ if (!Array.prototype.findLastIndex) {
  */
 import "react-native/Libraries/Renderer/shims/ReactNative";
 
-if (__DEV__) {
-  import("./ReactotronConfig").then(() => console.log("Reactotron Configured"));
-}
+// Reactotron is intentionally not auto-started here because it can interfere
+// with Metro DevTools device registration while testing login on iOS.
 import messaging from "@react-native-firebase/messaging";
 import { getApps, initializeApp } from "@react-native-firebase/app";
 import { atom, useAtom, useSetAtom } from "jotai";

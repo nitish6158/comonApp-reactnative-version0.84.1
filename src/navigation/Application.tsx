@@ -66,6 +66,7 @@ import { setLanguageList } from "@/redux/Reducer/LanguageReducer";
 import { socketConnect } from "@/utils/socket/SocketConnection";
 import { ChatProvider } from "@/Context/ChatProvider";
 import { AuthContext, AuthProvider } from "@/Components/AuthContext";
+`import { ensureRemoteMessagesRegistered } from "@/utils/firebaseMessaging";
 
 // const { useQuery, useRealm } = RealmContext;
 
@@ -155,8 +156,13 @@ export default function Application() {
 
   // Firebase only gives FCM-token and APN-token if App notification permission is granted by the user.
   // This function asks the user to grant notification permission so that push notifications can be sent.
-  function AskForNotificationPermission() {
-    messaging().requestPermission();
+  async function AskForNotificationPermission() {
+    try {
+      await messaging().requestPermission();
+      await ensureRemoteMessagesRegistered();
+    } catch (error) {
+      console.log("Error requesting notification permission", error);
+    }
   }
 
   // const errorCallback = (_session, error) => {

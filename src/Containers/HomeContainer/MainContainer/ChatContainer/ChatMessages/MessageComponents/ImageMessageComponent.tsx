@@ -117,11 +117,11 @@ function ImageComponent({ message }: { message: Conversation }) {
 const styles = StyleSheet.create({
   imageContainer: {
     backgroundColor: Colors.light.gray,
-    borderRadius: 15,
-    height: 269,
+    borderRadius: 12,
+    height: 245,
     marginBottom: 5,
     overflow: "hidden",
-    width: 200,
+    width: 185,
   },
   recevierTime: {
     color: Colors.light.black,

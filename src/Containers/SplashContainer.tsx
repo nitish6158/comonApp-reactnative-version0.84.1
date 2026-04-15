@@ -340,6 +340,7 @@ import { asyncStorageKeys } from "@/Constants/asyncStorageKeys";
 
 import { currentUserIdAtom } from "../Atoms/RealmloginManager";
 import messaging from "@react-native-firebase/messaging";
+import { getFirebaseMessagingToken } from "@/utils/firebaseMessaging";
 import { navigateAndSimpleReset } from "../navigation/utility";
 import { useAtom, useSetAtom } from "jotai";
 import * as Progress from "react-native-progress";
@@ -417,20 +418,32 @@ async function getOrCreateStoredDevice() {
     return JSON.parse(storedDevice);
   }
 
-  const fcmToken = await messaging().getToken().catch(() => null);
-  const uniqueId = await DeviceInfo.getUniqueId().catch(() => null);
+  const asyncStoredDevice = await AsyncStorage.getItem("COM_ON_LOGIN_DEVICE");
 
-  if (!uniqueId) {
+  if (asyncStoredDevice) {
+    storage.set(keys.device, asyncStoredDevice);
+    return JSON.parse(asyncStoredDevice);
+  }
+
+  const fcmToken = await getFirebaseMessagingToken().catch(() => null);
+  const uniqueId = await DeviceInfo.getUniqueId().catch(() => null);
+  const deviceToken = await AsyncStorage.getItem(asyncStorageKeys.deviceToken);
+
+  const loginDeviceToken =
+    Platform.OS === "ios" ? deviceToken || uniqueId || fcmToken : uniqueId;
+
+  if (!loginDeviceToken) {
     return null;
   }
 
   const fallbackDevice = {
-    token: Platform.OS === "ios" ? fcmToken : uniqueId,
+    token: loginDeviceToken,
     fcmToken: fcmToken,
-    type: Platform.OS === "ios" ? "iOS" : "ANDROID",
+    type: Platform.OS === "ios" ? PlateformType.IOs : PlateformType.Android,
   };
 
   storage.set(keys.device, JSON.stringify(fallbackDevice));
+  await AsyncStorage.setItem("COM_ON_LOGIN_DEVICE", JSON.stringify(fallbackDevice));
   return fallbackDevice;
 }
 
@@ -487,6 +500,7 @@ export default function SplashContainer() {
     storage.set(keys.token, JSON.stringify(refreshSession));
 
     setSession(refreshSession);
+    setTokenLogin(refreshSession.token);
     console.log("subscribe", `${refreshSession.mode}_user_id_${user?._id}`);
     messaging().subscribeToTopic(`${refreshSession.mode}_user_id_${user?._id}`);
     // dispatch(connectToSocket(refreshSession.token));

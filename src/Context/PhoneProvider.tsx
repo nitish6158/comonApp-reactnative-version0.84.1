@@ -34,7 +34,7 @@ export const PhoneProvider = ({ children }: PhoneProviderProps) => {
     formattedNumber: "",
     number: "",
   });
-  const [code, setCode] = useState<string>("DE");
+  const [code, setCode] = useState<string>("IN");
 
   useEffect(() => {
     getStorage(DefaultStorageKeys.PHONE_NUMBER).then((number) => {
@@ -85,7 +85,7 @@ export const PhoneProvider = ({ children }: PhoneProviderProps) => {
         code,
         setCode: (tr) => {
           const normalized = (tr || "").replace(/^\+/, "").trim().toUpperCase();
-          setCode(/^[A-Z]{2}$/.test(normalized) ? normalized : "DE");
+          setCode(/^[A-Z]{2}$/.test(normalized) ? normalized : "IN");
         },
       }}
     >

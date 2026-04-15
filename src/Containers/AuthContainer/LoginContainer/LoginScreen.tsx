@@ -38,7 +38,7 @@ import { loginScreenStyles } from "./LoginScreenStyles";
 import { mainStyles } from "../../../styles/main";
 import messaging from "@react-native-firebase/messaging";
 import moment from "moment-timezone";
-import { setSession } from "@Util/session";
+import { removeSession, SessionKeys, setSession } from "@Util/session";
 import { useAtom, useSetAtom } from "jotai";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -59,10 +59,12 @@ import { usePhoneContext } from "@/hooks";
 import { navigateAndSimpleReset } from "@/navigation/utility";
 import { AuthContext } from "@/Components/AuthContext";
 import {
+  PlateformType,
   useRequestEmailConfirmQuery,
   useRequestEmailConfirmLazyQuery,
 } from "@Service/generated/auth.generated";
 import EmailConfirmationModal from "../NewSignUpContainer/EmailConfirmationModal";
+import { getFirebaseMessagingToken } from "@/utils/firebaseMessaging";
 
 type payloadType = {
   phone: string;
@@ -71,9 +73,9 @@ type payloadType = {
   buildId: string;
   OSVersion: string;
   device: {
-    token: string | null;
+    token: string;
     fcmToken: string;
-    type: string;
+    type: PlateformType;
   };
 };
 
@@ -127,7 +129,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
       extraScrollHeight={20}
       style={{ flex: 1, backgroundColor: "white" }}
     >
-      <Layout>
+      <Layout withPadding>
         <View style={mainStyles.center}>
           <Image
             source={Logo}
@@ -317,21 +319,37 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
       const deviceToken = await AsyncStorage.getItem(
         asyncStorageKeys.deviceToken,
       );
-      const apnToken = await messaging().getAPNSToken();
-      const fcmToken = await messaging().getToken();
+      const fcmToken = await getFirebaseMessagingToken().catch(() => "");
       const uniqueId = await DeviceInfo.getUniqueId();
+      const loginDeviceToken =
+        Platform.OS === "ios" ? deviceToken || uniqueId || fcmToken : uniqueId;
       const tokenCheck = Platform.select({
-        ios: deviceToken,
+        ios: loginDeviceToken,
         android: fcmToken,
       });
 
-      if (!tokenCheck) return ToastMessage(t("deviceConfigIssue"));
+      if (!tokenCheck) {
+        ToastMessage(t("deviceConfigIssue"));
+        setLoader(false);
+        return;
+      }
+
+      const platformType =
+        Platform.OS === "ios" ? PlateformType.IOs : PlateformType.Android;
       storage.set(
         keys.device,
         JSON.stringify({
-          token: Platform.OS === "ios" ? deviceToken : uniqueId,
+          token: loginDeviceToken,
           fcmToken: fcmToken,
-          type: Platform.OS === "ios" ? "iOS" : "ANDROID",
+          type: platformType,
+        }),
+      );
+      await AsyncStorage.setItem(
+        "COM_ON_LOGIN_DEVICE",
+        JSON.stringify({
+          token: loginDeviceToken,
+          fcmToken: fcmToken,
+          type: platformType,
         }),
       );
 
@@ -348,9 +366,9 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
         //   type: Platform.OS === "ios" ? "iOS" : "ANDROID",
         // },
         device: {
-          token: Platform.OS === "ios" ? deviceToken : uniqueId,
+          token: loginDeviceToken,
           fcmToken: fcmToken,
-          type: Platform.OS === "ios" ? "iOS" : "ANDROID",
+          type: platformType,
         },
       };
 
@@ -368,25 +386,28 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
   }
 
   async function logoutDevices(token: string) {
-    if (token) {
-      setSession({
-        token: token,
-        refresh: null,
-        mode: null,
-      }).then((res) => {
-        logoutDevicesRequest()
-          .then((response) => {
-            ToastMessage(
-              `${response.data?.logoutDevices?.message}. ${t(
-                "label.now-try-to-login-again",
-              )}`,
-            );
-            // console.log(response.data?.logoutDevices?.message);
-          })
-          .catch((err) => {
-            console.log("Error in logout devices request", err);
-          });
-      });
+    if (!token) {
+      ToastMessage("Something went wrong");
+      return;
+    }
+
+    setLoader(true);
+    try {
+      await AsyncStorage.setItem(SessionKeys.TOKEN, token);
+      const response = await logoutDevicesRequest();
+
+      ToastMessage(
+        `${response.data?.logoutDevices?.message ?? ""}. ${t(
+          "label.now-try-to-login-again",
+        )}`,
+      );
+    } catch (err) {
+      console.log("Error in logout devices request", err);
+      ToastMessage("Something went wrong");
+    } finally {
+      await removeSession();
+      await AsyncStorage.removeItem(SessionKeys.MODE);
+      setLoader(false);
     }
   }
 

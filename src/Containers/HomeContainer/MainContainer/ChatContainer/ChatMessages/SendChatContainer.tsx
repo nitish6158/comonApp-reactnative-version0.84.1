@@ -2,11 +2,11 @@ import {
   Dimensions,
   Image,
   Keyboard,
-  NativeSyntheticEvent,
   Platform,
   Pressable,
   StyleSheet,
-  TextInputSelectionChangeEventData,
+  Text as RNText,
+  TextInput,
   View,
 } from "react-native";
 import { FetchDraft, StoreDraft } from "@Util/draftMessageHandler";
@@ -19,14 +19,15 @@ import {
   selectedMessageAtom,
 } from "@Atoms/ChatMessageEvents";
 import {
-  MentionInput,
   replaceTriggerValues,
+  useMentions,
 } from "react-native-controlled-mentions";
 import React, {
   Dispatch,
   SetStateAction,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -196,12 +197,32 @@ function ChatInputBox() {
   const [display, setDisplay] = useAtom(singleRoom);
   const { roomId: contextRoomId, setConversation } = useContext(ChatContext);
   const activeRoomId = display?.roomId || contextRoomId;
-  const senderId = MyProfile?._id ?? currentUser?._id ?? "";
+  const senderId =
+    display?.currentUserUtility?.user_id ?? MyProfile?._id ?? currentUser?._id ?? "";
   const [messageValue, setMessageValue] = useState("");
   const messageValueRef = useRef("");
   const [selection, setSelection] = useState({ start: 0, end: 0 });
   const [suggestions, setSuggestions] = useState([]);
   const [isComposerFocused, setIsComposerFocused] = useState(false);
+  const triggersConfig = useMemo(
+    () => ({
+      mention: {
+        trigger: "@",
+        isInsertSpaceAfterMention: true,
+        textStyle: {
+          fontWeight: "bold" as const,
+          color: Colors.light.PrimaryColor,
+        },
+      },
+    }),
+    []
+  );
+  const { triggers, textInputProps } = useMentions({
+    value: messageValue,
+    onChange: handleMessageChange,
+    triggersConfig,
+    onSelectionChange: setSelection,
+  });
 
   const [audioRecordVisible, setAudioRecordVisible] = useAtom(
     IsAudioRecordingVisibleAtom
@@ -559,18 +580,6 @@ function ChatInputBox() {
     mentionRef.current?.focus();
   };
 
-  const handleSelectionChange = (
-    event: NativeSyntheticEvent<TextInputSelectionChangeEventData>
-  ) => {
-    const nextSelection = event?.nativeEvent?.selection;
-
-    if (!nextSelection) {
-      return;
-    }
-
-    setSelection(nextSelection);
-  };
-
   return (
     <View style={styles.innerContainer}>
       <Pressable
@@ -593,7 +602,6 @@ function ChatInputBox() {
           color={Colors.light.PrimaryColor}
           style={{
             transform: [{ rotate: attachmentVisible ? "45deg" : "0deg" }],
-            marginBottom: 5,
           }}
         />
       </Pressable>
@@ -605,27 +613,55 @@ function ChatInputBox() {
           marginLeft: 5,
           marginRight: 5,
           // justifyContent: "flex-end",
-          alignItems: "flex-end",
+          alignItems: "center",
+          minHeight: 54,
         }}
       >
         <View
           style={{
-            // width: screenWidth - (!isEmpty(messageValue) ? 170 : 115),
-            flexGrow: 1,
+            alignSelf: "flex-end",
+            flex: 1,
+            minWidth: 0,
+            backgroundColor: Colors.light.LightBlue,
+            borderColor: "rgba(51,51,51,.06)",
+            borderRadius: 22,
+            borderWidth: StyleSheet.hairlineWidth,
+            justifyContent: "center",
             maxWidth:
               display.roomType !== "self"
                 ? screenWidth - (!isEmpty(messageValue) ? 170 : 115)
                 : screenWidth - 115,
+            height: 50,
+            minHeight: 50,
             maxHeight: 200,
             // marginLeft: 10,
             zIndex: 9999,
           }}
         >
-          <MentionInput
+          {triggers.mention?.keyword != null &&
+            renderSuggestions({
+              keyword: triggers.mention.keyword,
+              onSuggestionPress: triggers.mention.onSelect,
+            })}
+          {isEmpty(messageValue) && (
+            <RNText
+              pointerEvents="none"
+              style={{
+                color: Colors.light.PhoneNoColor,
+                fontSize: 16,
+                left: 24,
+                position: "absolute",
+                top: Platform.OS === "ios" ? 15 : 14,
+                zIndex: 2,
+              }}
+            >
+              Your message
+            </RNText>
+          )}
+          <TextInput
             ref={mentionRef}
+            {...textInputProps}
             maxLength={4096}
-            value={messageValue}
-            onChange={handleMessageChange}
             onFocus={() => {
               setIsComposerFocused(true);
               setChatMode("text");
@@ -637,30 +673,23 @@ function ChatInputBox() {
                 setIsComposerFocused(false);
               }, 150);
             }}
-            onSelectionChange={handleSelectionChange}
             autoFocus={false}
-            placeholder={t("chat-screen.your-message")}
+            multiline
+            placeholder=""
+            placeholderTextColor={Colors.light.PhoneNoColor}
             selection={selection}
             style={{
-              minHeight: 48,
-              paddingHorizontal: 10,
-              borderRadius: 20,
-              backgroundColor: Colors.light.LightBlue,
-              paddingTop: 13,
-              paddingBottom: 10,
+              color: Colors.light.black,
+              fontSize: 16,
+              height: 50,
+              lineHeight: 20,
+              paddingLeft: 24,
+              paddingRight: 18,
+              paddingTop: Platform.OS === "ios" ? 14 : 8,
+              paddingBottom: Platform.OS === "ios" ? 12 : 8,
+              textAlignVertical: "center",
               zIndex: 1,
             }}
-            partTypes={[
-              {
-                trigger: "@", // Should be a single character like '@' or '#'
-                renderSuggestions,
-                isInsertSpaceAfterMention: true,
-                textStyle: {
-                  fontWeight: "bold",
-                  color: Colors.light.PrimaryColor,
-                }, // The mention style in the input
-              },
-            ]}
           />
           {isComposerFocused && hasActiveSelection && (
             <View style={styles.formatToolbar}>

@@ -22,6 +22,7 @@ import { asyncStorageKeys } from "@/Constants/asyncStorageKeys";
 import { currentUserIdAtom } from "@Atoms/RealmloginManager";
 import dayjs from "dayjs";
 import messaging from "@react-native-firebase/messaging";
+import { getFirebaseMessagingToken } from "@/utils/firebaseMessaging";
 import proximity from "react-native-updated-proximity";
 import { returnCallRequestAtom } from "@Atoms/callEventManagerAtom";
 import { stopAllPlayers } from "@Util/player.utils";
@@ -384,7 +385,7 @@ function IOSCallManagerContainer() {
   useEffect(() => {
     if (MyProfileRef.current?.device) {
       RNVoipPushKit.getPushKitDeviceToken(async (res: { deviceToken: string }) => {
-        const fcmToken = await messaging().getToken();
+        const fcmToken = await getFirebaseMessagingToken().catch(() => "");
         if (!res.deviceToken && !fcmToken) return;
         if (MyProfileRef.current?.device?.fcmToken !== fcmToken || MyProfileRef.current.device.token !== res.deviceToken) {
           const uniqueId = await DeviceInfo.getUniqueId();

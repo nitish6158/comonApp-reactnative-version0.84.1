@@ -17,10 +17,35 @@ const PhoneInputStyle = StyleSheet.create({
     flex: 1,
     width: "100%",
     height: $size_md,
-    borderRadius: 10,
+  },
+  codeTextStyle: {
+    color: Colors.light.black,
+    fontSize: 14,
+    fontWeight: "500",
+    marginRight: 8,
+  },
+  countryPickerAccessory: {
+    alignItems: "center",
+    flexDirection: "row",
+    left: 10,
+    position: "absolute",
+    zIndex: 10,
+  },
+  countryPickerButtonStyle: {
+    minWidth: 72,
+    width: 72,
+  },
+  dropDownImage: {
+    height: 12,
+    marginLeft: 3,
+    width: 10,
   },
   error: {
     color: Colors.light.error,
+  },
+  flagEmoji: {
+    fontSize: 18,
+    lineHeight: 22,
   },
   errorContainer: {
     marginTop: 6,
@@ -28,8 +53,17 @@ const PhoneInputStyle = StyleSheet.create({
   textContainerStyle: {
     backgroundColor: Colors.transparent,
     minHeight: 32,
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     paddingVertical: 0,
+  },
+  textInputStyle: {
+    color: Colors.light.black,
+    fontSize: 14,
+    paddingVertical: 0,
+  },
+  flagButtonStyle: {
+    minWidth: 72,
+    width: 72,
   },
 });
 

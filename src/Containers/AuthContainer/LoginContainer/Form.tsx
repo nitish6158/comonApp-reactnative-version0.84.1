@@ -34,7 +34,10 @@ export const Form = ({ onSubmit, loading }: FormProps) => {
   const [errors, setErrors] = useState<
     { phone?: string; password?: string } | undefined
   >();
-  const [values, setValues] = useState({ password: undefined });
+  const [values, setValues] = useState<{
+    phone?: string;
+    password?: string;
+  }>({});
 
   const { t } = useTranslation();
   const [secureTextVisibility, setSecureTextVisibility] = useState(true);
@@ -59,6 +62,14 @@ export const Form = ({ onSubmit, loading }: FormProps) => {
   const handleSubmit = () => {
     const phoneNumber =
       phoneInput.current?.getNumberAfterPossiblyEliminatingZero();
+    const enteredPhone = values.phone || phone?.number || "";
+    const submitPhone =
+      phoneNumber?.formattedNumber
+        ? phoneNumber
+        : {
+            number: enteredPhone,
+            formattedNumber: `${phoneCode}${enteredPhone}`.replace(/\s+/g, ""),
+          };
     // const isPhoneValid = phoneInput.current?.isValidNumber(`${phoneNumber?.formattedNumber}`);
     const isPhoneValid = true;
     if (!isPhoneValid || !values.password) {
@@ -69,7 +80,7 @@ export const Form = ({ onSubmit, loading }: FormProps) => {
     } else if (!!values.password) {
       setErrors(undefined);
       onSubmit({
-        phone: phoneNumber!,
+        phone: submitPhone,
         password: values.password!,
       });
     }

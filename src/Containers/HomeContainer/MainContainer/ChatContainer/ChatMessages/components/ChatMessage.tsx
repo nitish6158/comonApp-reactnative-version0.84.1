@@ -312,12 +312,12 @@ const ChatMessage = ({ item, index }) => {
                       : "rgb(245,245,245)",
                 },
                 !item?.type?.includes("LOADING/") && {
-                  paddingHorizontal: 10,
-                  paddingVertical: 7,
+                  paddingHorizontal: 8,
+                  paddingVertical: 6,
                 },
                 item.sender === display.currentUserUtility.user_id && {
-                  paddingHorizontal: 10,
-                  paddingVertical: 7,
+                  paddingHorizontal: 8,
+                  paddingVertical: 6,
                 },
               ]}
             >
