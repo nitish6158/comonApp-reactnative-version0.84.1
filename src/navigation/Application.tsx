@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AudioRecorderPlayer from "react-native-nitro-sound";
 import { AuthNavigator } from "@Navigation/AuthNavigator";
+import NetInfo from "@react-native-community/netinfo";
 
 import {
   ComonSyncStatus,
@@ -59,14 +60,15 @@ import { resetOrganisationState } from "@/redux/Reducer/OrganisationsReducer";
 import { resetContactState } from "@/redux/Reducer/ContactReducer";
 import { resetCallState } from "@/redux/Reducer/CallReducer";
 import { resetChatState, setMyProfile } from "@/redux/Reducer/ChatReducer";
-import { useLogoutLazyQuery } from "@/graphql/generated/auth.generated";
+import { useLogoutLazyQuery, useRefreshSessionLazyQuery } from "@/graphql/generated/auth.generated";
 import { useAppSelector } from "@/redux/Store";
 import { useGetLanguageListQuery } from "@/graphql/generated/user.generated";
 import { setLanguageList } from "@/redux/Reducer/LanguageReducer";
 import { socketConnect } from "@/utils/socket/SocketConnection";
 import { ChatProvider } from "@/Context/ChatProvider";
 import { AuthContext, AuthProvider } from "@/Components/AuthContext";
-`import { ensureRemoteMessagesRegistered } from "@/utils/firebaseMessaging";
+import { ensureRemoteMessagesRegistered } from "@/utils/firebaseMessaging";
+import { PlateformType } from "@/graphql/generated/types";
 
 // const { useQuery, useRealm } = RealmContext;
 
@@ -239,6 +241,7 @@ export default function Application() {
       <CheckAppVersion />
       <AuthProvider>
 
+        <SessionInvalidationGuard />
         <InnerApp />
       </AuthProvider>
       {/* <AppProvider id={REALM_URL}>
@@ -496,4 +499,124 @@ function CheckAppVersion() {
       RBSheetRef.current?.open();
     }
   }
+}
+
+function SessionInvalidationGuard() {
+  const dispatch = useDispatch();
+  const { tokenLogin, setTokenLogin } = React.useContext(AuthContext);
+  const [refreshSession] = useRefreshSessionLazyQuery({
+    fetchPolicy: "network-only",
+  });
+  const checkingRef = useRef(false);
+  const loggedOutRef = useRef(false);
+
+  const forceLogout = React.useCallback(async (reason: string) => {
+    if (loggedOutRef.current) return;
+    loggedOutRef.current = true;
+
+    console.log("Force logout:", reason);
+    setTokenLogin(null);
+
+    const { mode } = await getSession();
+    const id = storage.getString(keys.userId);
+
+    if (mode && id) {
+      messaging()
+        .unsubscribeFromTopic(`${mode}_user_id_${id}`)
+        .catch((error) => console.log("Topic unsubscribe failed:", error));
+    }
+
+    socketConnect.disconnect();
+    await AsyncStorage.removeItem("roomDataCache");
+    await AsyncStorage.removeItem("MyProfile");
+    await removeSession();
+
+    dispatch(resetOrganisationState());
+    dispatch(resetContactState());
+    dispatch(resetCallState());
+    dispatch(resetChatState());
+    storage.clearAll();
+    dispatch(setMyProfile(null));
+  }, [dispatch, setTokenLogin]);
+
+  const checkCurrentDevice = React.useCallback(async () => {
+    if (!tokenLogin || checkingRef.current || loggedOutRef.current) return;
+
+    const network = await NetInfo.fetch();
+    if (!network.isConnected) return;
+
+    const session = await getSession();
+    if (!session?.refresh) return;
+
+    const deviceRaw =
+      storage.getString(keys.device) ||
+      (await AsyncStorage.getItem("COM_ON_LOGIN_DEVICE"));
+
+    if (!deviceRaw) return;
+
+    let device: any;
+    try {
+      device = JSON.parse(deviceRaw);
+    } catch (error) {
+      console.log("Unable to parse stored login device:", error);
+      return;
+    }
+
+    if (!device?.token) return;
+
+    checkingRef.current = true;
+    try {
+      const response = await refreshSession({
+        variables: {
+          input: {
+            refresh: session.refresh,
+            plateform: Platform.OS === "ios" ? PlateformType.IOs : PlateformType.Android,
+            appVersion: VersionCheck.getCurrentVersion(),
+            device: { ...device, webToken: [] },
+          },
+        },
+      });
+
+      const activeDeviceToken = response.data?.refreshSession?.user?.device?.token;
+      if (activeDeviceToken && activeDeviceToken !== device.token) {
+        await forceLogout("same user logged in on another device");
+      }
+    } catch (error) {
+      console.log("Device session check failed:", error);
+    } finally {
+      checkingRef.current = false;
+    }
+  }, [forceLogout, refreshSession, tokenLogin]);
+
+  useEffect(() => {
+    if (!tokenLogin) {
+      loggedOutRef.current = false;
+      return;
+    }
+
+    const socketLogoutHandler = (type: string, data: any) => {
+      const eventType = String(type || data?.type || "").toLowerCase();
+      if (eventType === "logout") {
+        forceLogout("socket logout event");
+      }
+    };
+
+    socketConnect.addMessageHandler(socketLogoutHandler as any);
+    const intervalId = setInterval(checkCurrentDevice, 15000);
+    checkCurrentDevice();
+
+    const appStateSub = AppState.addEventListener("change", (nextState) => {
+      if (nextState === "active") {
+        checkCurrentDevice();
+      }
+    });
+
+    return () => {
+      socketConnect.removeMessageHandler(socketLogoutHandler as any);
+      clearInterval(intervalId);
+      appStateSub.remove();
+    };
+  }, [checkCurrentDevice, forceLogout, tokenLogin]);
+
+  return null;
 }

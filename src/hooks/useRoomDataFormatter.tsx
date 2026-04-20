@@ -7,6 +7,33 @@ import { socketManager } from "@/utils/socket/SocketManager";
 import { ChatMMKV } from "@/redux/backup/mmkv";
 import { ChatContext, storage } from "@/Context/ChatProvider";
 import { useAppSelector } from "@/redux/Store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const getRoomCacheKey = (roomId: string) => `room_${roomId}`;
+const getConversationCacheKey = (roomId: string) => `conversations_${roomId}`;
+
+const readCachedRoom = async (roomId: string) => {
+  const cacheKey = getRoomCacheKey(roomId);
+  return ChatMMKV.getString(cacheKey) || (await AsyncStorage.getItem(cacheKey));
+};
+
+const saveCachedRoom = (roomId: string, roomData: any) => {
+  const cacheKey = getRoomCacheKey(roomId);
+  const serializedRoom = JSON.stringify(roomData);
+  ChatMMKV.set(cacheKey, serializedRoom);
+  AsyncStorage.setItem(cacheKey, serializedRoom).catch((error) => {
+    console.warn("Unable to save room data in AsyncStorage:", error);
+  });
+};
+
+const saveCachedMessages = (roomId: string, messages: any[]) => {
+  const cacheKey = getConversationCacheKey(roomId);
+  const serializedMessages = JSON.stringify(messages.slice(0, 100));
+  storage.set(cacheKey, serializedMessages);
+  AsyncStorage.setItem(cacheKey, serializedMessages).catch((error) => {
+    console.warn("Unable to save room messages in AsyncStorage:", error);
+  });
+};
 
 const useRoomDataFormatter = (RoomId: string) => {
   const [display, setDisplay] = useAtom(singleRoom);
@@ -45,7 +72,7 @@ const useRoomDataFormatter = (RoomId: string) => {
     try {
       const currentRoomId = roomIdRef.current;
 
-      const cachedRoomData = ChatMMKV.getString(`room_${currentRoomId}`);
+      const cachedRoomData = await readCachedRoom(currentRoomId);
 
       if (cachedRoomData) {
         try {
@@ -66,17 +93,14 @@ const useRoomDataFormatter = (RoomId: string) => {
             setDisplay(hydratedRoomData);
             // console.log("data.messages.length", data.messages.length)
             setConversation(data.messages);
-            ChatMMKV.set(`room_${currentRoomId}`, JSON.stringify(hydratedRoomData));
-            storage.set(
-              `conversations_${roomIdRef.current}`,
-              JSON.stringify(data.messages.slice(0, 100))
-            );
+            saveCachedRoom(currentRoomId, hydratedRoomData);
+            saveCachedMessages(roomIdRef.current, data.messages);
             console.log(`Updated cache for room_${currentRoomId}`);
           } else {
             console.log(
               `Received data for old room ${currentRoomId}, current room is ${roomIdRef.current}`
             );
-            ChatMMKV.set(`room_${currentRoomId}`, JSON.stringify(hydratedRoomData));
+            saveCachedRoom(currentRoomId, hydratedRoomData);
           }
         }
       });

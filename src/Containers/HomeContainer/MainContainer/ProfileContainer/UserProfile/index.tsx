@@ -101,45 +101,42 @@ export default function Menu({ navigation }: UserProfileScreenProps) {
       const { mode } = await getSession();
       logoutRequest({ variables: { input: {} } })
         .then(async (res) => {
-          if (res.data?.logout) {
-            // user?.logOut();
+          // user?.logOut();
+          setLoader(false);
+          await setTokenLogin(null);
+          await removeSession();
+          navigateAndSimpleReset("Auth", {});
 
-            await messaging()
-              .unsubscribeFromTopic(`${mode}_user_id_${MyProfile?._id}`)
-              .then(() => {
-                console.log(
-                  "topic unSubscribe success",
-                  `${mode}_user_id_${MyProfile?._id}`,
-                );
-              });
+          await messaging()
+            .unsubscribeFromTopic(`${mode}_user_id_${MyProfile?._id}`)
+            .then(() => {
+              console.log(
+                "topic unSubscribe success",
+                `${mode}_user_id_${MyProfile?._id}`,
+              );
+            });
 
-            await AsyncStorage.removeItem("roomDataCache");
+          await AsyncStorage.removeItem("roomDataCache");
 
-            await AsyncStorage.removeItem("me");
+          await AsyncStorage.removeItem("me");
 
-            removeCurrentOrganization();
-            Dispatch(resetContactState());
-            Dispatch(resetCallState());
-            Dispatch(resetChatState());
+          removeCurrentOrganization();
+          Dispatch(resetContactState());
+          Dispatch(resetCallState());
+          Dispatch(resetChatState());
 
-            sessionStatus(false);
-            comonSyncStatus(false);
-            socketConnect.disconnect();
-            Dispatch(resetOrganisationState());
-            await removeSession();
-            Dispatch(setMyProfile(null));
-            storage.clearAll();
-            await setTokenLogin(null);
-            setLoader(false);
-            navigateAndSimpleReset("Auth", {});
-          } else {
-            setLoader(false);
-            console.log("logout failed");
-          }
+          sessionStatus(false);
+          comonSyncStatus(false);
+          socketConnect.disconnect();
+          Dispatch(resetOrganisationState());
+          Dispatch(setMyProfile(null));
+          storage.clearAll();
         })
         .catch((error) => {
           console.log(error);
           setLoader(false);
+          setTokenLogin(null);
+          removeSession();
           navigateAndSimpleReset("Auth", {});
         });
 

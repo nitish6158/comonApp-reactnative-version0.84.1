@@ -1,8 +1,22 @@
-import Reactotron from "reactotron-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
- 
+import { Platform } from "react-native";
+import Reactotron from "reactotron-react-native";
+
+const host = Platform.OS === "android" ? "10.0.2.2" : "localhost";
+
 Reactotron.setAsyncStorageHandler(AsyncStorage)
-  .configure() // controls connection & communication settings
-  .useReactNative() // add all built-in react native plugins
-  .connect(); // let's connect!
- 
+  .configure({
+    name: "commonapp",
+    host,
+  })
+  .useReactNative({
+    asyncStorage: false,
+    networking: {
+      ignoreUrls: /symbolicate|logs/,
+    },
+  })
+  .connect();
+
+Reactotron.clear?.();
+
+export default Reactotron;

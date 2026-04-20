@@ -421,6 +421,16 @@ class SocketConnection {
 
     });
 
+    this.socket.on("logout", (data: any) => {
+      this.messageHandlers.forEach((handler) => {
+        try {
+          handler("logout", data);
+        } catch (error) {
+          console.error("Error in message handler for type logout:", error);
+        }
+      });
+    });
+
     this.socket.on("disconnect", (reason) => {
       console.log(`Socket disconnected: ${reason}`);
       // Only attempt reconnect for certain disconnect reasons

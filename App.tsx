@@ -20,6 +20,7 @@ import store, { persistor } from "@/redux/Store";
 import Application from "@/navigation/Application";
 import { NavigationContainer } from "@react-navigation/native";
 import { navigationRef } from "@/navigation/utility";
+import { RootSiblingParent } from "react-native-root-siblings";
 import RNVoipCall from "react-native-voips-calls";
 import linking from "@/navigation/LinkingConfiguration";
 import { currentUserIdAtom } from "@Atoms/RealmloginManager";
@@ -118,11 +119,13 @@ function DataLoaderContainer() {
   return (
     <ApolloProvider client={client}>
       <PhoneProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <NavigationContainer linking={linking} ref={navigationRef}>
-            <Application />
-          </NavigationContainer>
-        </GestureHandlerRootView>
+        <RootSiblingParent>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <NavigationContainer linking={linking} ref={navigationRef}>
+              <Application />
+            </NavigationContainer>
+          </GestureHandlerRootView>
+        </RootSiblingParent>
       </PhoneProvider>
     </ApolloProvider>
   );

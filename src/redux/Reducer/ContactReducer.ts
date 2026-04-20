@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import _ from "lodash";
 import { ContactDetailsDto } from "@Service/generated/types";
 import { createStorage } from "@/utils/mmkvStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type serverContactType = ContactDetailsDto;
 
@@ -80,14 +81,14 @@ export const contactStorage = createStorage();
 export const contactPersister = {
   setItem: (key: string, value: string) => {
     contactStorage.set(key, value);
-    return Promise.resolve(true);
+    return AsyncStorage.setItem(`contact_${key}`, value).then(() => true);
   },
-  getItem: (key: string) => {
+  getItem: async (key: string) => {
     const value = contactStorage.getString(key);
-    return Promise.resolve(value);
+    return value ?? (await AsyncStorage.getItem(`contact_${key}`));
   },
   removeItem: (key: string) => {
     contactStorage.delete(key);
-    return Promise.resolve();
+    return AsyncStorage.removeItem(`contact_${key}`);
   },
 };

@@ -3,6 +3,7 @@ import { FavoriteChatList, FolderDataList, ProfileData, RoomData } from "../Mode
 import { user } from "@/schemas/schema";
 import { createStorage } from "@/utils/mmkvStorage";
 import { User } from "@/graphql/generated/types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface ChatState {
   MyProfile: User | null
@@ -71,14 +72,14 @@ export const chatStorage = createStorage()
 export const chatPersister = {
   setItem: (key:string, value:string) => {
     chatStorage.set(key, value);
-    return Promise.resolve(true);
+    return AsyncStorage.setItem(`chat_${key}`, value).then(() => true);
   },
-  getItem: (key:string) => {
+  getItem: async (key:string) => {
     const value = chatStorage.getString(key);
-    return Promise.resolve(value);
+    return value ?? (await AsyncStorage.getItem(`chat_${key}`));
   },
   removeItem: (key:string) => {
     chatStorage.delete(key);
-    return Promise.resolve();
+    return AsyncStorage.removeItem(`chat_${key}`);
   },
 };

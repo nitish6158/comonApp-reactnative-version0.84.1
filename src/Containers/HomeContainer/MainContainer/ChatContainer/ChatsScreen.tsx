@@ -39,7 +39,7 @@ import { useTranslation } from "react-i18next";
 import EmptyRoomList from "./ChatFolderContainer/EmptyFolderList";
 import { socketConnect } from "@/utils/socket/SocketConnection";
 import { single } from "rxjs";
-import { initialDisplayState, singleRoom } from "@/Atoms";
+import { defaultgroupPermission, initialDisplayState, singleRoom } from "@/Atoms";
 import { ChatContext } from "@/Context/ChatProvider";
 import { useFocusEffect } from "@react-navigation/core";
 import { socketManager } from "@/utils/socket/SocketManager";
@@ -131,7 +131,7 @@ export default function ChatsScreen({ navigation }: any) {
   const [filteredRooms, setFilteredRooms] = useState<RoomData[]>([]);
   const { formateLastMessage } = useRoomLastMessage();
   const { setRoomId, setConversation } = useContext(ChatContext);
-  const [refreshing, setRefreshing] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [networkOffline, setNetworkOffline] = useState<boolean>(false);
   const [activeContacts, setActiveContacts] = useState<any[]>([]);
 
@@ -230,15 +230,17 @@ export default function ChatsScreen({ navigation }: any) {
       }
     }
     setRefreshing(false);
-  }, [currentTab, AllRooms, MyProfile?.folders]);
+  }, [currentTab, AllRooms, MyProfile?._id, MyProfile?.folders]);
 
   function getRoomDisplayName(room: RoomData) {
     if (room.type !== "individual") return room.display.UserName;
+    if (!MyProfile?._id) return room.display.UserName;
 
-    const otherUser = room.participants?.find((p) => p.user_id !== MyProfile?._id);
+    const otherUser = room.participants?.find((p) => getParticipantId(p) !== MyProfile?._id);
     if (!otherUser) return room.display.UserName;
 
-    const found = contacts.find((c) => c.userId?._id === otherUser.user_id);
+    const otherUserId = getParticipantId(otherUser);
+    const found = contacts.find((c) => c.userId?._id === otherUserId);
     if (found) {
       const fullName = `${found.firstName ?? ""} ${found.lastName ?? ""}`.trim();
       if (fullName) return fullName;
@@ -324,6 +326,7 @@ export default function ChatsScreen({ navigation }: any) {
         showsVerticalScrollIndicator={false}
         refreshing={refreshing}
         onRefresh={() => {
+          setRefreshing(true);
           socketManager.chatRoom.fetchAndUpdateRooms((data) => {
             if (data.rooms) {
               setAllRooms(data.rooms);
@@ -359,6 +362,31 @@ export default function ChatsScreen({ navigation }: any) {
                 showAlert
                 chatclear={item?.last_msg[0]?.message?.clear}
                 onPressContinaer={() => {
+                  const currentUserUtility =
+                    item.participants?.find((participant) => getParticipantId(participant) === MyProfile?._id) ??
+                    ({} as RoomParticipantData);
+                  const participantsNotLeft =
+                    item.participants?.filter((participant) => participant.left_at === 0) ?? [];
+
+                  setdisplay({
+                    ...initialDisplayState,
+                    roomId: item._id,
+                    roomType: item.type,
+                    roomName: roomDisplayName,
+                    roomImage: item.display.UserImage,
+                    roomDescription: item.bio?.status ?? "",
+                    roomStatus: item.display?.userStatus ? "online" : "offline",
+                    roomLastSeen: Number(item.display?.lastSeen) || 0,
+                    participants: item.participants ?? [],
+                    participantsNotLeft,
+                    roomPermission: defaultgroupPermission,
+                    isCurrentRoomMuted: myUserIdExist(item?.mutedBy, MyProfile?._id ?? ""),
+                    currentUserUtility,
+                    log: item.log,
+                    cacheTime: Date.now(),
+                    ringtone: item.ringtone ?? [],
+                    receipts: item.receipts ?? [],
+                  });
                   setLimit(20);
                   socketConnect.emit("removeDisappearedChats", { roomId: item?._id });
                   setRoomId(item?._id);

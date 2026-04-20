@@ -25,6 +25,7 @@ import _ from "lodash";
 import { produce } from "immer";
 import { storage as userStore } from '../redux/backup/mmkv'
 import { keys } from "@/redux/backup/keys";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // import { socketConnect } from "@/utils/socket/SocketConnection";
 
 // Main storage for chat messages
@@ -36,6 +37,43 @@ export const storage = createStorage({
 export const searchStorage = createStorage({
   id: "searchmessages",
 });
+
+const getConversationCacheKey = (roomId: string) => `conversations_${roomId}`;
+
+const readCachedConversation = async (roomId: string) => {
+  const cacheKey = getConversationCacheKey(roomId);
+  try {
+    return storage.getString(cacheKey) || (await AsyncStorage.getItem(cacheKey));
+  } catch (error) {
+    console.warn("Unable to read cached conversation:", error);
+    return null;
+  }
+};
+
+const saveCachedConversation = (roomId: string, chats: conversations[]) => {
+  const cacheKey = getConversationCacheKey(roomId);
+  const serializedChats = JSON.stringify(chats);
+  try {
+    storage.set(cacheKey, serializedChats);
+  } catch (error) {
+    console.warn("Unable to save conversation in MMKV:", error);
+  }
+  AsyncStorage.setItem(cacheKey, serializedChats).catch((error) => {
+    console.warn("Unable to save conversation in AsyncStorage:", error);
+  });
+};
+
+const deleteCachedConversation = (roomId: string) => {
+  const cacheKey = getConversationCacheKey(roomId);
+  try {
+    storage.delete(cacheKey);
+  } catch (error) {
+    console.warn("Unable to delete conversation from MMKV:", error);
+  }
+  AsyncStorage.removeItem(cacheKey).catch((error) => {
+    console.warn("Unable to delete conversation from AsyncStorage:", error);
+  });
+};
 
 type UpdateMessageType =
   | "favorite"
@@ -138,19 +176,27 @@ export const ChatProvider = ({
   const searchRequestRef = useRef<any>(null);
   useEffect(() => {
     if (!display?.roomId) return;
+    let isActive = true;
     // Adding Offline Messages here
-    const offline_messages = storage.getString(
-      `conversations_${display?.roomId}`
-    );
-    if (offline_messages) {
-      const parsedChatList = offline_messages
-        ? JSON.parse(offline_messages)
-        : [];
-      if (parsedChatList.length > 0) {
-        setConversation([...parsedChatList]);
+    readCachedConversation(display.roomId).then((offlineMessages) => {
+      if (!isActive || !offlineMessages) {
+        return;
       }
-    }
+
+      try {
+        const parsedChatList = JSON.parse(offlineMessages);
+        if (Array.isArray(parsedChatList) && parsedChatList.length > 0) {
+          setConversation([...parsedChatList]);
+          conversationRef.current = parsedChatList;
+        }
+      } catch (error) {
+        console.warn("Unable to parse cached conversation:", error);
+      }
+    });
     // Added Offline Messages above
+    return () => {
+      isActive = false;
+    };
   }, [display?.roomId, roomId]);
 
   useEffect(() => {
@@ -187,9 +233,9 @@ export const ChatProvider = ({
               [...data.chats, ...conversationRef.current],
               "_id"
             );
-            storage.set(
-              `conversations_${roomIdRef.current}`,
-              JSON.stringify(chats.slice(0, messagesPerPage))
+            saveCachedConversation(
+              roomIdRef.current,
+              chats.slice(0, messagesPerPage)
             );
             setConversation(chats);
             conversationRef.current = chats;
@@ -220,10 +266,7 @@ export const ChatProvider = ({
   useEffect(() => {
     conversationRef.current = conversation;
     if (roomId && !isInSearchMode && conversation.length > 0) {
-      storage.set(
-        `conversations_${roomIdRef.current}`,
-        JSON.stringify(conversation.slice(0, 100))
-      );
+      saveCachedConversation(roomIdRef.current, conversation.slice(0, 100));
     }
   }, [conversation, roomId, isInSearchMode]);
 
@@ -471,7 +514,7 @@ export const ChatProvider = ({
 
         setConversation([]);
         conversationRef.current = [];
-        storage.delete(`conversations_${roomIdRef.current}`);
+        deleteCachedConversation(roomIdRef.current);
       },
       clearAllChat: (data: any) => {
         const clearedRoomId = data?.msg?.roomId || data?.roomId;
@@ -479,7 +522,7 @@ export const ChatProvider = ({
 
         setConversation([]);
         conversationRef.current = [];
-        storage.delete(`conversations_${roomIdRef.current}`);
+        deleteCachedConversation(roomIdRef.current);
       },
     };
 
@@ -616,9 +659,9 @@ export const ChatProvider = ({
       });
 
       if (hasChanged) {
-        storage.set(
-          `conversations_${roomIdRef.current}`,
-          JSON.stringify(updatedConversation.slice(0, messagesPerPage))
+        saveCachedConversation(
+          roomIdRef.current,
+          updatedConversation.slice(0, messagesPerPage)
         );
         conversationRef.current = updatedConversation;
         setConversation(updatedConversation);
