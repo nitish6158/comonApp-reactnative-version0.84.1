@@ -610,6 +610,7 @@ export default function SplashContainer() {
 
   function iosPushKit() {
     if (IsIos) {
+      RNVoipPushKit.requestPermissions();
       RNVoipPushKit.getPushKitDeviceToken(async (res) => {
         if (res.platform === "ios") {
           const deviceToken = await AsyncStorage.getItem(asyncStorageKeys.deviceToken);

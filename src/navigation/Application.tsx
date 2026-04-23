@@ -29,6 +29,7 @@ import { asyncStorageKeys } from "@/Constants/asyncStorageKeys";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import messaging from "@react-native-firebase/messaging";
+import notifee from "@notifee/react-native";
 
 import InitialCallingContainer from "../Containers/InitialCallingContainer";
 import { atom, useSetAtom } from "jotai";
@@ -134,6 +135,11 @@ export default function Application() {
 
   // On every app open, this function will get the iOS device token and update AsyncStorage with the device token, so that it can be used throughout the app.
   function IOSDeviceToken() {
+    if (Platform.OS !== "ios") {
+      return;
+    }
+
+    RNVoipPushKit.requestPermissions();
     RNVoipPushKit.getPushKitDeviceToken(async (res) => {
       if (res.platform === "ios") {
         const deviceToken = await AsyncStorage.getItem(
@@ -161,6 +167,7 @@ export default function Application() {
   async function AskForNotificationPermission() {
     try {
       await messaging().requestPermission();
+      await notifee.requestPermission();
       await ensureRemoteMessagesRegistered();
     } catch (error) {
       console.log("Error requesting notification permission", error);

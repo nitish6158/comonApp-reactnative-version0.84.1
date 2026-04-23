@@ -67,26 +67,24 @@ function getFallbackStore(storeId: string) {
 }
 
 function warnFallback(error: unknown, storeId: string) {
-  if (!__DEV__ || warnedStoreIds.has(storeId)) {
+  if (warnedStoreIds.has(storeId)) {
     return;
   }
 
   warnedStoreIds.add(storeId);
   const message = error instanceof Error ? error.message : String(error);
-  console.warn(
-    `[MMKV] Falling back to in-memory storage for "${storeId}" in debug mode. ` +
-      `Use an on-device debugger and disable remote JS debugging/React Native Debugger if you need real MMKV data.\n${message}`
-  );
+  const prefix = __DEV__
+    ? `[MMKV] Falling back to in-memory storage for "${storeId}" in debug mode. ` +
+      `Use an on-device debugger and disable remote JS debugging/React Native Debugger if you need real MMKV data.`
+    : `[MMKV] Falling back to in-memory storage for "${storeId}" in release mode.`;
+
+  console.warn(`${prefix}\n${message}`);
 }
 
 export function createStorage(configuration?: StorageConfig): NativeMMKV {
   try {
     return new MMKV(configuration as MMKVConfiguration | undefined);
   } catch (error) {
-    if (!__DEV__) {
-      throw error;
-    }
-
     const storeId = getStoreId(configuration);
     warnFallback(error, storeId);
     return getFallbackStore(storeId);

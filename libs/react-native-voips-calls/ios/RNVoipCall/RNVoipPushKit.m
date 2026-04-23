@@ -28,6 +28,10 @@ static NSString *RCTCurrentAppBackgroundState()
     return states[@(RCTSharedApplication().applicationState)] ? : @"unknown";
 }
 
+@interface RNVoipPushKit ()
+@property (nonatomic, strong) PKPushRegistry *voipRegistry;
+@end
+
 
 @implementation RNVoipPushKit
 
@@ -111,11 +115,11 @@ static NSMutableDictionary<NSString *, RNVoipPushNotificationCompletion> *comple
     dispatch_queue_t mainQueue = dispatch_get_main_queue();
     dispatch_async(mainQueue, ^{
       // Create a push registry object
-      PKPushRegistry * voipRegistry = [[PKPushRegistry alloc] initWithQueue: mainQueue];
+      self.voipRegistry = [[PKPushRegistry alloc] initWithQueue: mainQueue];
       // Set the registry's delegate to AppDelegate
-      voipRegistry.delegate = (RNVoipPushKit *)RCTSharedApplication().delegate;
+      self.voipRegistry.delegate = (id<PKPushRegistryDelegate>)RCTSharedApplication().delegate;
       // Set the push type to VoIP
-      voipRegistry.desiredPushTypes = [NSSet setWithObject:PKPushTypeVoIP];
+      self.voipRegistry.desiredPushTypes = [NSSet setWithObject:PKPushTypeVoIP];
     });
 }
 
