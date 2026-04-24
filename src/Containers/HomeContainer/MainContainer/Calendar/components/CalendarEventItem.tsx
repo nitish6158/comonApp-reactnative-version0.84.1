@@ -31,7 +31,7 @@ export default function CalendarEventItem({
 
   const getLocale = async () => {
     const loc = await getStorage("LANGUAGE");
-    console.log("language=", loc);
+
 
     if (loc) {
       return loc;

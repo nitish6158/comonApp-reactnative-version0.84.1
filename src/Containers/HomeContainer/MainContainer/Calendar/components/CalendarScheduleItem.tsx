@@ -60,7 +60,7 @@ export default function CalendarScheduleItem({
 
   const getLocale = async () => {
     const loc = await getStorage("LANGUAGE");
-    console.log("language=", loc);
+
 
     if (loc) {
       return loc;

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -83,47 +83,9 @@ export default function CalendarView() {
   const { t } = useTranslation();
   const setCalendarReminder = useSetAtom(calendarGlobalReminder);
   const [updateTime] = useUpdateDragDropMutation();
-  const CalendarModes = useCallback(() => {
-    switch (calendarMode) {
-      case 1:
-        return (
-          <ExpandableCalendar
-            markingType={"multi-dot"}
-            markedDates={calenderDots}
-            initialPosition={ExpandableCalendar.positions.OPEN}
-            firstDay={1}
-            disablePan={true}
-            hideKnob
-            onDayPress={(date) => {
-              setSelectedDate(date.dateString);
-            }}
-          />
-        );
-      case 2:
-        return (
-          <WeekCalendar
-            firstDay={1}
-            onDayPress={(date) => {
-              setSelectedDate(date.dateString);
-            }}
-          />
-        );
-      case 3:
-        return (
-          <ExpandableCalendar
-            initialPosition={ExpandableCalendar.positions.CLOSED}
-            firstDay={1}
-            disablePan={true}
-            hideKnob
-            onDayPress={(date) => {
-              setSelectedDate(date.dateString);
-            }}
-          />
-        );
-      default:
-        return <></>;
-    }
-  }, [calendarMode, calenderDots]);
+  const agendaListRef = useRef<any>(null);
+  const monthlyScrollRef = useRef<ScrollView | null>(null);
+  const monthlySectionPositionsRef = useRef<Record<string, number>>({});
 
   const MultiDateEvent = useMemo(() => {
     if (calendarMode == 1) {
@@ -148,6 +110,102 @@ export default function CalendarView() {
       return {};
     }
   }, [calendarMode, selectedDate, reminderData, allCalendarData]);
+
+  const scrollToSelectedDate = useCallback(
+    (dateToScroll: string) => {
+      if (calendarMode === 1) {
+        const monthlyOffset = monthlySectionPositionsRef.current[dateToScroll];
+        if (monthlyOffset !== undefined) {
+          monthlyScrollRef.current?.scrollTo({
+            y: Math.max(0, monthlyOffset - 8),
+            animated: true,
+          });
+        }
+        return;
+      }
+
+      if (calendarMode !== 2) {
+        return;
+      }
+
+      const sectionIndex = MultiDateEvent.findIndex(
+        (section: { title: string }) => section.title === dateToScroll
+      );
+
+      if (sectionIndex < 0 || !agendaListRef.current?.scrollToLocation) {
+        return;
+      }
+
+      agendaListRef.current?.scrollToLocation({
+        animated: true,
+        sectionIndex,
+        itemIndex: 0,
+        viewPosition: 0,
+      });
+    },
+    [calendarMode, MultiDateEvent]
+  );
+
+  const onCalendarDayPress = useCallback(
+    (dateString: string) => {
+      setSelectedDate(dateString);
+      scrollToSelectedDate(dateString);
+    },
+    [scrollToSelectedDate, setSelectedDate]
+  );
+  const CalendarModes = useCallback(() => {
+    switch (calendarMode) {
+      case 1:
+        return (
+          <ExpandableCalendar
+            markingType={"multi-dot"}
+            markedDates={calenderDots}
+            initialPosition={ExpandableCalendar.positions.OPEN}
+            firstDay={1}
+            disablePan={true}
+            hideKnob
+            onDayPress={(date) => {
+              onCalendarDayPress(date.dateString);
+            }}
+          />
+        );
+      case 2:
+        return (
+          <WeekCalendar
+            firstDay={1}
+            onDayPress={(date) => {
+              onCalendarDayPress(date.dateString);
+            }}
+          />
+        );
+      case 3:
+        return (
+          <ExpandableCalendar
+            initialPosition={ExpandableCalendar.positions.CLOSED}
+            firstDay={1}
+            disablePan={true}
+            hideKnob
+            onDayPress={(date) => {
+              onCalendarDayPress(date.dateString);
+            }}
+          />
+        );
+      default:
+        return <></>;
+    }
+  }, [calendarMode, calenderDots, onCalendarDayPress]);
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      scrollToSelectedDate(selectedDate);
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [loading, scrollToSelectedDate, selectedDate]);
 
   return (
     <View style={styles.container}>
@@ -179,7 +237,126 @@ export default function CalendarView() {
                 </View>
               ) : (
                 <>
+                  {calendarMode == 1 ? (
+                    <ScrollView
+                      ref={monthlyScrollRef}
+                      showsVerticalScrollIndicator={false}
+                      contentContainerStyle={styles.monthlyScrollContent}
+                    >
+                      {MultiDateEvent.length > 0 ? (
+                        <>
+                          {MultiDateEvent.map((section, sectionIndex) => (
+                            <View
+                              key={section.title}
+                              onLayout={(event) => {
+                                monthlySectionPositionsRef.current[
+                                  section.title
+                                ] = event.nativeEvent.layout.y;
+                              }}
+                              style={styles.monthlySection}
+                            >
+                              <Text style={styles.sectionTitle}>
+                                {dayjs(section.title).format("DD MMMM YYYY")}
+                              </Text>
+
+                              {section.data.map((item, index) => {
+                                const data = JSON.parse(item.extraData) as reminder;
+
+                                return (
+                                  <View
+                                    key={`${section.title}-${item.id ?? index}`}
+                                    style={{ marginTop: 5 }}
+                                  >
+                                    {data.type === "SCHEDULE" && (
+                                      <CalendarScheduleItem
+                                        event={data}
+                                        eventStyle={[
+                                          {
+                                            width: "100%",
+                                            backgroundColor: item.color,
+                                            paddingHorizontal: 20,
+                                            paddingVertical: 20,
+                                          },
+                                        ]}
+                                        onEventPressed={() => {
+                                          setCalendarReminder(data);
+                                        }}
+                                        showTime={true}
+                                      />
+                                    )}
+
+                                    {(data.type === "REMINDER" ||
+                                      data.type === "APPOINTMENT" ||
+                                      data.type === "CALLREMINDER") && (
+                                      <CalendarEventItem
+                                        event={data}
+                                        eventStyle={[
+                                          {
+                                            width: "100%",
+                                            backgroundColor: item.color,
+                                            paddingHorizontal: 20,
+                                            paddingVertical: 20,
+                                          },
+                                        ]}
+                                        onEventPressed={() => {
+                                          setCalendarReminder(data);
+                                        }}
+                                        showTime={true}
+                                      />
+                                    )}
+
+                                    {data.type === "Record_Reminder" && (
+                                      <RecordEventItem
+                                        event={data}
+                                        eventStyle={[
+                                          {
+                                            width: "100%",
+                                            backgroundColor: item.color,
+                                            paddingHorizontal: 20,
+                                            paddingVertical: 20,
+                                          },
+                                        ]}
+                                        onEventPressed={() => {
+                                          setCalendarReminder(data);
+                                        }}
+                                        showTime={true}
+                                      />
+                                    )}
+
+                                    {data.type == "TASK" && (
+                                      <CalendarTaskItem
+                                        event={{ ...data, ct: section.title }}
+                                        eventStyle={[
+                                          {
+                                            width: "100%",
+                                            backgroundColor: item.color,
+                                            paddingHorizontal: 20,
+                                            paddingVertical: 20,
+                                          },
+                                        ]}
+                                        onEventPressed={() => {
+                                          // setCalendarReminder(data);
+                                        }}
+                                        showTime={true}
+                                      />
+                                    )}
+                                  </View>
+                                );
+                              })}
+                            </View>
+                          ))}
+
+                          <View style={{ marginBottom: 350 }} />
+                        </>
+                      ) : (
+                        <View style={styles.emptyState}>
+                          <Text>{t("no_event_found")}</Text>
+                        </View>
+                      )}
+                    </ScrollView>
+                  ) : (
                   <AgendaList
+                    ref={agendaListRef}
                     sections={MultiDateEvent}
                     renderItem={({ item, index, section }) => {
                       const data = JSON.parse(item.extraData) as reminder;
@@ -288,7 +465,11 @@ export default function CalendarView() {
                     }}
                     render
                     avoidDateUpdates={true}
+                    initialNumToRender={20}
+                    maxToRenderPerBatch={20}
+                    windowSize={9}
                   />
+                  )}
                 </>
               )}
             </>
@@ -476,8 +657,8 @@ export default function CalendarView() {
     let data = [];
     const from = dayjs(selectedDate).startOf("month").format("YYYY-MM-DD");
     const daysInMonth = dayjs(selectedDate).daysInMonth();
-    for (let i = 1; i < daysInMonth + 1; i++) {
-      let a = dayjs(from).set("dates", i).format("YYYY-MM-DD");
+    for (let i = 0; i < daysInMonth; i++) {
+      let a = dayjs(from).add(i, "day").format("YYYY-MM-DD");
       let dat = reminderData[a] ?? [];
       let task = allCalendarData[a] ?? [];
       let list = _.uniqBy([...dat, ...task], (n) => n.id);
@@ -509,5 +690,24 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: "dashed",
     padding: 3,
+  },
+  monthlyScrollContent: {
+    paddingBottom: 16,
+  },
+  monthlySection: {
+    paddingHorizontal: 12,
+    paddingTop: 10,
+  },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: Colors.light.black,
+    marginBottom: 6,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 400,
   },
 });
