@@ -192,7 +192,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - NitroModules (0.35.4):
+  - NitroModules (0.35.5):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -215,7 +215,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - NitroSound (0.2.12):
+  - NitroSound (0.2.14):
     - hermes-engine
     - NitroModules
     - RCTRequired
@@ -1714,7 +1714,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - react-native-compressor (1.16.0):
+  - react-native-compressor (1.16.2):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -3608,7 +3608,7 @@ SPEC CHECKSUMS:
   FirebaseSessions: dba7635960740ad77cc2f3387d90ff22a7942f82
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
-  hermes-engine: 22955866c88207162e614dbd54f18dde2a07b7f5
+  hermes-engine: 463543baec77065200c65e6db41d3d6d3cfca0a3
   libavif: 84bbb62fb232c3018d6f1bab79beea87e35de7b7
   libdav1d: 23581a4d8ec811ff171ed5e2e05cd27bad64c39f
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
@@ -3617,8 +3617,8 @@ SPEC CHECKSUMS:
   MMKVCore: 3d16ce9f7d411e135020915fde98a056859a1efa
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   NitroMmkv: 7a7572934538ba6748e05dffc6ee8b06caad91cc
-  NitroModules: f45159491c5a0e7161685a301b1c6c11440b3ab1
-  NitroSound: 06b442e5cbc17eb0da666028bd6877fb3a573462
+  NitroModules: 4623499842af916a6cb462950b024a47eef7d6ea
+  NitroSound: 9315c6ecf64a8c92362d954c5bbe5c9b549f5c49
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
   RCTCallDetection: e45a95a7b70d97ec554079f055c7d5620ec1a976
@@ -3630,7 +3630,7 @@ SPEC CHECKSUMS:
   React: 1ba7d364ade7d883a1ec055bfc3606f35fdee17b
   React-callinvoker: bc2a26f8d84fb01f003fc6de6c9337b64715f95b
   React-Core: 7840d3a80b43a95c5e80ef75146bd70925ebab0f
-  React-Core-prebuilt: 3bec8d049bcd1f91ce82a62cb3b7a8c46503d45e
+  React-Core-prebuilt: 9532e504fdc8e899f2f25dd15228369cc5320a4e
   React-CoreModules: 2eb010400b63b89e53a324ffb3c112e4c7c3ce42
   React-cxxreact: a558e92199d26f145afa9e62c4233cf8e7950efe
   React-debug: 755200a6e7f5e6e0a40ff8d215493d43cce285fc
@@ -3663,7 +3663,7 @@ SPEC CHECKSUMS:
   react-native-blur: 1b00ef07fe0efdc0c40b37139a5268ccad73c72d
   react-native-branch: a4913fbefeb50b8081f3cf8869ab281308e67a94
   react-native-cameraroll: bd1a177463acbba89365d09e81057294eba1e2f6
-  react-native-compressor: dca167f2e6e48e5e9efa165e30ee0ae4c6445de8
+  react-native-compressor: f6e517eb11fdc6d99b06cfe4c6ca6044ede49cf4
   react-native-contact-pick: 116dd9ec36483bba2cd28321ae1100d6a67d842a
   react-native-contacts: 5e4dd65fc98efcf029b83dacb5bc80a66b99c89d
   react-native-create-thumbnail: c15cedc37f3822777d44e6035be041f7961341ea
@@ -3714,7 +3714,7 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: e96e93b493d8d86eeaee3e590ba0be53f6abe46f
   ReactCodegen: 797de5178718324c6eba3327b07f9a423fbd5787
   ReactCommon: 07572bf9e687c8a52fbe4a3641e9e3a1a477c78e
-  ReactNativeDependencies: aab554d7e21eadf1c77fc7365b5286186ff88dd8
+  ReactNativeDependencies: 0ba45c49f13b2748cc7bb73bd537b24f52ffb079
   ReactNativeUiLib: 14e5f77d1b4c6fd322ef23e4d5e9a5c9a2046d07
   rn-fetch-blob: 25612b6d6f6e980c6f17ed98ba2f58f5696a51ca
   RNCallKeep: 1930a01d8caf48f018be4f2db0c9f03405c2f977
