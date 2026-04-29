@@ -153,157 +153,154 @@ export const SignUpScreen = ({
   }, [phoneNumber, region]);
 
   return (
-    <View style={{ flex: 1 }}>
-      <Layout withPadding={false}>
-        <KeyboardAwareScrollView
-          enableOnAndroid={true}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          extraScrollHeight={50}
-        >
-          <EmailConfirmationModal
-            visible={showModal}
-            onClose={() => {
-              setShowModal(false);
-              navigation.goBack();
-            }}
+    <KeyboardAwareScrollView
+      enableOnAndroid={true}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      extraScrollHeight={50}
+      style={styles.screen}
+    >
+      <Layout withPadding>
+        <EmailConfirmationModal
+          visible={showModal}
+          onClose={() => {
+            setShowModal(false);
+            navigation.goBack();
+          }}
+        />
+        {phoneNumber == "" ? (
+          <HeaderWithBack customStyle={{ paddingHorizontal: 5 }} />
+        ) : null}
+
+        <Image style={[styles.icon, { marginTop: 10 }]} source={Logo} />
+        <View style={[mainStyles.center, { marginBottom: $space_xxl }]}>
+          {phoneNumber != "" ? (
+            <Text style={[styles.subtitleStyle, { fontSize: 12 }]}>
+              {t("welcomeSignup")}
+            </Text>
+          ) : null}
+
+          <Text style={[styles.subtitleStyle, { fontSize: 12 }]}>
+            {"\n"}
+            {t("mandatorySignupFields")}
+          </Text>
+
+          <Text style={[styles.subtitleStyle, { fontSize: 12 }]}>
+            {"\n"}
+            {t("goodluck")}
+          </Text>
+        </View>
+
+        <View>
+          <LabelInput
+            required
+            label={t("form.label.first-name")}
+            value={form?.firstName}
+            caretHidden={false}
+            placeholder={t("form.label.first-name")}
+            onChangeText={onChange("firstName")}
+            error={!!errors?.firstName}
+            errorMessage={errors?.firstName}
+            autoCompleteType="off"
           />
-          <Layout>
-            {phoneNumber == "" ? (
-              <HeaderWithBack customStyle={{ paddingHorizontal: 5 }} />
-            ) : null}
+          <LabelInput
+            required
+            label={t("form.label.last-name")}
+            value={form?.lastName}
+            caretHidden={false}
+            placeholder={t("form.label.last-name")}
+            onChangeText={onChange("lastName")}
+            error={!!errors?.lastName}
+            errorMessage={errors?.lastName}
+            autoCompleteType="off"
+          />
+          <LabelInput
+            required
+            label={t("form.label.phone")}
+            value={phone?.number}
+            caretHidden={false}
+            placeholder={t("form.label.phone")}
+          >
+            <PhoneInputMemo />
+          </LabelInput>
+          <LabelInput
+            required
+            label={t("form.label.email")}
+            value={form?.email}
+            caretHidden={false}
+            placeholder={t("form.label.email")}
+            onChangeText={onChange("email")}
+            error={!!errors?.email}
+            errorMessage={errors?.email}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
 
-            <Image style={[styles.icon, { marginTop: 10 }]} source={Logo} />
-            <View style={[mainStyles.center, { marginBottom: $space_xxl }]}>
-              {phoneNumber != "" ? (
-                <Text style={[styles.subtitleStyle, { fontSize: 12 }]}>
-                  {t("welcomeSignup")}
-                </Text>
-              ) : null}
-
-              <Text style={[styles.subtitleStyle, { fontSize: 12 }]}>
-                {"\n"}
-                {t("mandatorySignupFields")}
-              </Text>
-
-              <Text style={[styles.subtitleStyle, { fontSize: 12 }]}>
-                {"\n"}
-                {t("goodluck")}
-              </Text>
+          <TooltipInfo popOverText={t("errors.strong-password")}>
+            <View style={{ marginLeft: windowWidth * 0.85, top: 10 }}>
+              <AntDesign name="infocirlce" size={15} />
             </View>
+          </TooltipInfo>
 
-            <View>
-              <LabelInput
-                required
-                label={t("form.label.first-name")}
-                value={form?.firstName}
-                caretHidden={false}
-                placeholder={t("form.label.first-name")}
-                onChangeText={onChange("firstName")}
-                error={!!errors?.firstName}
-                errorMessage={errors?.firstName}
-                autoCompleteType="off"
+          <LabelInput
+            required
+            label={t("form.label.password")}
+            value={form?.password}
+            placeholder={t("form.placeholder.password-for-mobile")}
+            onChangeText={onChange("password")}
+            secureTextEntry={secureTextEntry}
+            error={!!errors?.password}
+            errorMessage={errors?.password}
+            rightIcon={
+              <SwitchIcon
+                active={secureTextEntry}
+                icon="eye"
+                activeIcon="eye-off"
+                onPress={onSwitchSecureTextEntry}
               />
-              <LabelInput
-                required
-                label={t("form.label.last-name")}
-                value={form?.lastName}
-                caretHidden={false}
-                placeholder={t("form.label.last-name")}
-                onChangeText={onChange("lastName")}
-                error={!!errors?.lastName}
-                errorMessage={errors?.lastName}
-                autoCompleteType="off"
-              />
-              <LabelInput
-                required
-                label={t("form.label.phone")}
-                value={phone?.number}
-                caretHidden={false}
-                placeholder={t("form.label.phone")}
-              >
-                <PhoneInputMemo />
-              </LabelInput>
-              <LabelInput
-                required
-                label={t("form.label.email")}
-                value={form?.email}
-                caretHidden={false}
-                placeholder={t("form.label.email")}
-                onChangeText={onChange("email")}
-                error={!!errors?.email}
-                errorMessage={errors?.email}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-
-              <TooltipInfo popOverText={t("errors.strong-password")}>
-                <View style={{ marginLeft: windowWidth * 0.85, top: 10 }}>
-                  <AntDesign name="infocirlce" size={15} />
-                </View>
-              </TooltipInfo>
-
-              <LabelInput
-                required
-                label={t("form.label.password")}
-                value={form?.password}
-                placeholder={t("form.placeholder.password-for-mobile")}
-                onChangeText={onChange("password")}
-                secureTextEntry={secureTextEntry}
-                error={!!errors?.password}
-                errorMessage={errors?.password}
-                rightIcon={
-                  <SwitchIcon
-                    active={secureTextEntry}
-                    icon="eye"
-                    activeIcon="eye-off"
-                    onPress={onSwitchSecureTextEntry}
-                  />
-                }
-              />
-              <Text
-                style={[
-                  styles.subtitleStyle,
-                  { fontSize: 12, textAlign: "left", marginTop: -15 },
-                ]}
-              >
-                ({t("passwordCharacterstics")})
-              </Text>
-              <TooltipInfo popOverText={t("errors.strong-password")}>
-                <View style={{ marginLeft: windowWidth * 0.85, top: 15 }}>
-                  <AntDesign name="infocirlce" size={15} />
-                </View>
-              </TooltipInfo>
-
-              <LabelInput
-                required
-                label={t("form.label.confirm-password")}
-                value={form?.confirmPassword}
-                placeholder={t("form.label.confirm-password")}
-                onChangeText={onChange("confirmPassword")}
-                secureTextEntry={secureTextEntry}
-                error={!!errors?.confirmPassword}
-                errorMessage={errors?.confirmPassword}
-                rightIcon={
-                  <SwitchIcon
-                    active={secureTextEntry}
-                    icon="eye"
-                    activeIcon="eye-off"
-                    onPress={onSwitchSecureTextEntry}
-                  />
-                }
-              />
+            }
+          />
+          <Text
+            style={[
+              styles.subtitleStyle,
+              { fontSize: 12, textAlign: "left", marginTop: -15 },
+            ]}
+          >
+            ({t("passwordCharacterstics")})
+          </Text>
+          <TooltipInfo popOverText={t("errors.strong-password")}>
+            <View style={{ marginLeft: windowWidth * 0.85, top: 15 }}>
+              <AntDesign name="infocirlce" size={15} />
             </View>
-            <ElementButton
-              loading={signUpResponse.loading}
-              title={t("btn.sign-up")}
-              onPress={onSubmit}
-              buttonStyle={{ borderRadius: 10, height: 45, marginBottom: 20 }}
-            />
-          </Layout>
-        </KeyboardAwareScrollView>
+          </TooltipInfo>
+
+          <LabelInput
+            required
+            label={t("form.label.confirm-password")}
+            value={form?.confirmPassword}
+            placeholder={t("form.label.confirm-password")}
+            onChangeText={onChange("confirmPassword")}
+            secureTextEntry={secureTextEntry}
+            error={!!errors?.confirmPassword}
+            errorMessage={errors?.confirmPassword}
+            rightIcon={
+              <SwitchIcon
+                active={secureTextEntry}
+                icon="eye"
+                activeIcon="eye-off"
+                onPress={onSwitchSecureTextEntry}
+              />
+            }
+          />
+        </View>
+        <ElementButton
+          loading={signUpResponse.loading}
+          title={t("btn.sign-up")}
+          onPress={onSubmit}
+          buttonStyle={{ borderRadius: 10, height: 45, marginBottom: 20 }}
+        />
       </Layout>
-    </View>
+    </KeyboardAwareScrollView>
   );
 
   function onSwitchSecureTextEntry() {

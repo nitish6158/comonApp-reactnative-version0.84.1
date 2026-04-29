@@ -23,6 +23,7 @@ import Colors from "@/Constants/Colors";
 import Header from "@/Components/header/Header";
 import HiddenItem from "./HiddenFile";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 // import RealmContext from "../../../../schemas";
 
 import { SwipeListView } from "react-native-swipe-list-view";
@@ -126,7 +127,6 @@ export default function ChatsScreen({ navigation }: any) {
   const MyProfile = useAppSelector((state) => state.Chat.MyProfile);
   const currentTab = useAtomValue(FolderAndTabsAtom);
   const setLimit = useSetAtom(conversationLimit);
-  const commonContact = useAppSelector((state) => state.Contact.comonContact);
   const contacts = useAppSelector((state) => state.Contact.contacts);
   const [filteredRooms, setFilteredRooms] = useState<RoomData[]>([]);
   const { formateLastMessage } = useRoomLastMessage();
@@ -414,27 +414,17 @@ export default function ChatsScreen({ navigation }: any) {
         ListEmptyComponent={EmptyRoomList}
       />
 
-      {commonContact.length > 0 && (
+      <View style={styles.floatingActions}>
+       
         <Pressable
           onPress={() => {
             navigate("CreateChatRooms", {});
           }}
-          style={{
-            height: 50,
-            width: 50,
-            backgroundColor: Colors.light.PrimaryColor,
-            marginBottom: 20,
-            position: "absolute",
-            bottom: 0,
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 50,
-            right: 20,
-          }}
+          style={styles.floatingButton}
         >
           <MaterialIcons name="chat" size={26} color="white" />
         </Pressable>
-      )}
+      </View>
     </View>
   );
 
@@ -517,5 +507,21 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.light.White,
     flex: 1,
+  },
+  floatingActions: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  floatingButton: {
+    height: 50,
+    width: 50,
+    backgroundColor: Colors.light.PrimaryColor,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 50,
+    marginLeft: 12,
   },
 });

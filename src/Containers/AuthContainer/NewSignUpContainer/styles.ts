@@ -11,6 +11,10 @@ export const NOT_EMPTY_CELL_BG_COLOR = Colors.dark.background;
 export const ACTIVE_CELL_BG_COLOR = Colors.light.tableHeadBg;
 
 const styles = StyleSheet.create({
+  screen: {
+    backgroundColor: Colors.light.background,
+    flex: 1,
+  },
   description: {
     marginBottom: $space_xxl,
   },

@@ -92,9 +92,6 @@ export default function CreateChatRooms({ navigation, route }: CreateChatRoomsPr
   }
 
   function ListHeader() {
-    if (contacts.length == 0) {
-      return <></>;
-    }
     return (
       <View style={styles.newChatContainer}>
         <Text style={{ color: "gray", marginBottom: 15 }}>{t("label.new-chatroom")}</Text>
@@ -170,7 +167,9 @@ export default function CreateChatRooms({ navigation, route }: CreateChatRoomsPr
           </View>
         </Pressable>
 
-        <Text style={styles.sectionTitle}>{t("label.contacts-on-comon")}</Text>
+        {contacts.length > 0 && (
+          <Text style={styles.sectionTitle}>{t("label.contacts-on-comon")}</Text>
+        )}
       </View>
     );
   }

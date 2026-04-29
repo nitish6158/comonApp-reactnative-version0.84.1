@@ -15,7 +15,6 @@ import Animated, {
   Extrapolate,
   interpolate,
   runOnJS,
-  useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
@@ -53,7 +52,7 @@ import AudioRecordRed from "@Images/AudioRecording/AudioRecordRed.svg";
 import Colors from "@/Constants/Colors";
 import DigitalTimeString from "@Components/AudioPlayer/src/DigitalTimeString";
 import { ListItem } from "react-native-elements";
-import { PanGestureHandler } from "react-native-gesture-handler";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import PauseRecording from "@Images/AudioRecording/PauseRecording.svg";
 import PlayRecording from "@Images/AudioRecording/PlayRecording.svg";
 import RNFetchBlob from "rn-fetch-blob";
@@ -505,13 +504,13 @@ export default function AudioRecording({
   };
 
   const X = useSharedValue(0);
-  const animatedGestureEvent = useAnimatedGestureHandler({
-    onActive: (e) => {
+  const animatedGestureEvent = Gesture.Pan()
+    .onUpdate((e) => {
       if (e.translationX < 0) {
         X.value = e.translationX;
       }
-    },
-    onEnd: () => {
+    })
+    .onEnd(() => {
       if (X.value < -163) {
         X.value = withSpring(-0);
 
@@ -519,8 +518,7 @@ export default function AudioRecording({
       } else {
         X.value = withSpring(0);
       }
-    },
-  });
+    });
   const AnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateX: X.value }],
@@ -671,9 +669,7 @@ export default function AudioRecording({
                           }
                         }}
                       >
-                        <PanGestureHandler
-                          onGestureEvent={animatedGestureEvent}
-                        >
+                        <GestureDetector gesture={animatedGestureEvent}>
                           <Animated.View
                             style={[
                               // eslint-disable-next-line react-native/no-inline-styles
@@ -697,7 +693,7 @@ export default function AudioRecording({
                             )}
                             {/* <AudioRecordBlue style={styles.audioblue} /> */}
                           </Animated.View>
-                        </PanGestureHandler>
+                        </GestureDetector>
                       </Pressable>
                     )}
                     <Pressable
