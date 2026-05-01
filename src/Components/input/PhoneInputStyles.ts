@@ -47,6 +47,10 @@ const PhoneInputStyle = StyleSheet.create({
     fontSize: 18,
     lineHeight: 22,
   },
+  flagImage: {
+    height: 14,
+    width: 20,
+  },
   errorContainer: {
     marginTop: 6,
   },

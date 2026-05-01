@@ -30,7 +30,7 @@ const TextField = (props) => {
     left: 0,
     top: _animatedIsFocused?.interpolate({
       inputRange: [0, 1],
-      outputRange: [4, -20],
+      outputRange: [-10, -20],
     }),
 
     fontSize: _animatedIsFocused?.interpolate({

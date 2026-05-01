@@ -59,7 +59,7 @@ import { socketManager } from "@/utils/socket/SocketManager";
 // const { useRealm } = RealmContext;
 interface SendMoreOptionModalProps { }
 
-const SUPPORTED_AUDIO_EXTENSIONS = ["mp3", "wav"];
+const SUPPORTED_AUDIO_EXTENSIONS = ["mp3", "wav", "m4a"];
 const SUPPORTED_DOCUMENT_EXTENSIONS = [
   "pdf",
   "doc",

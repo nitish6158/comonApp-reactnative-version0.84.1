@@ -16,7 +16,7 @@ import MessageCommonWrapper from "./MessageCommonWrapper";
 import RNFS from "react-native-fs";
 // import RealmContext from "../../../../../../schemas";
 import Sound from "react-native-sound";
-import { backgroundUpload } from "react-native-compressor";
+import { UploadType, backgroundUpload } from "react-native-compressor";
 import { useAtom } from "jotai";
 import useFileSystem from "@Hooks/useFileSystem";
 
@@ -169,24 +169,29 @@ function DocumentUploadPreview({
         variables: {
           input: {
             path: path,
-            contentType: type,
+            contentType: tempType,
           },
         },
       }).then(async (res) => {
         if (res.data?.getUploadSignedUrl.url) {
           const headers = {
-            "Content-Type": type,
+            "Content-Type": tempType,
           };
 
           const uploadResult = await backgroundUpload(
             res.data?.getUploadSignedUrl.url,
             file,
-            { httpMethod: "PUT", headers },
+            {
+              httpMethod: "PUT",
+              headers,
+              mimeType: tempType,
+              uploadType: UploadType.BINARY_CONTENT,
+            },
             (written, total) => {
               setProgress(written / (total / 100) / 100);
             }
           ).catch((e) => {
-            console.log("error", Object.keys(e).length);
+            console.log("Document upload failed", e);
             setError(t("others.File have some problem"));
           });
 

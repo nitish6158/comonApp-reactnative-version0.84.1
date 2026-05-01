@@ -66,7 +66,7 @@ export default function DocumentPreview({ item }: { item: Conversation }) {
       ToastMessage(t("label.file-not-found"));
       return;
     }
-    if (GetExtension(resolvedFileUrl) == ".mp3") {
+    if ([".mp3", ".m4a"].includes(GetExtension(resolvedFileUrl))) {
       setAudioVisible(true);
       setAudioUrl(getFileLocationByFilename(fileEndpoint));
     } else {

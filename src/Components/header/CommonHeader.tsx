@@ -1,4 +1,4 @@
-import { ActivityIndicator, Pressable, Text, View, useWindowDimensions } from "react-native";
+import { ActivityIndicator, Platform, Pressable, Text, View, useWindowDimensions } from "react-native";
 import { AllScreenParamList, navigate, navigateBack } from "@Navigation/utility";
 import { mainStyles, typographyStyles } from "../../styles/main";
 
@@ -47,12 +47,17 @@ export default function CommonHeader({
   return (
     <View
       style={[
-        headerStyle.header,
-        mainStyles.row,
-        layoutStyle.containerBackground,
-        headerStyle.headerWithScreenName,
-        { paddingTop: Math.max(insets.top, 10), height: 55 + Math.max(insets.top, 10) },
-      ]}
+  headerStyle.header,
+  mainStyles.row,
+  layoutStyle.containerBackground,
+  headerStyle.headerWithScreenName,
+  {
+    height: Platform.OS === "ios" 
+      ? 2 + Math.max(insets.top, 10) 
+      : 55 + Math.max(insets.top, 10),
+  
+  },
+]}
     >
       <Pressable
         onPress={() => {

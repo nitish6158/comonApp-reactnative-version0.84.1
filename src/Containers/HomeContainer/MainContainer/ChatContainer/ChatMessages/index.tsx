@@ -24,7 +24,13 @@ function ChatMessages({ navigation, route }: any) {
   global.roomId = route.params.RoomId;
   const currentRoomId = route?.params?.RoomId;
   const display = useRoomDataFormatter(currentRoomId);
-  const { setRoomId, setConversation } = useContext(ChatContext);
+  const {
+    setRoomId,
+    setConversation,
+    conversation,
+    isFetching,
+    isFirstLoad,
+  } = useContext(ChatContext);
   const setChatSearch = useSetAtom(chatSearchEnabledAtom);
   const [networkOffline, setNetworkOffline] = useState<boolean>(false);
   const isDisplayReady = !!display && display.roomId === currentRoomId;
@@ -114,7 +120,10 @@ function ChatMessages({ navigation, route }: any) {
       </>
     );
   }
-  if (!isDisplayReady) {
+  const isInitialMessageLoad =
+    isDisplayReady && isFirstLoad && isFetching && conversation.length === 0;
+
+  if (!isDisplayReady || isInitialMessageLoad) {
     return (
       <View
         style={[

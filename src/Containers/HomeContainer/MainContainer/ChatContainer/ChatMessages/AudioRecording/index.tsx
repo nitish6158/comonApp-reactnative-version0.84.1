@@ -1,7 +1,6 @@
 import { AddTaskResultDto, Edge, Task } from "@Service/generated/types";
 import {
   Alert,
-  PermissionsAndroid,
   Platform,
   Pressable,
   StyleSheet,
@@ -11,7 +10,6 @@ import {
   ViewStyle,
 } from "react-native";
 import Animated, {
-  Easing,
   Extrapolate,
   interpolate,
   runOnJS,
@@ -21,19 +19,19 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import AudioRecorderPlayer, {
+import {
   AVEncoderAudioQualityIOSType,
-  AVEncodingOption,
   AudioEncoderAndroidType,
   AudioSourceAndroidType,
+  createSound,
   OutputFormatAndroidType,
   RecordBackType,
 } from "react-native-nitro-sound";
 import {
   PERMISSIONS,
   check,
-  checkMultiple,
   openSettings,
+  request,
 } from "react-native-permissions";
 import React, {
   MutableRefObject,
@@ -41,7 +39,6 @@ import React, {
   useEffect,
   useRef,
   useState,
-  useTransition,
 } from "react";
 import { onAddTaskResultType, useTaskReport } from "@Hooks/useTaskReport";
 import { useDispatch, useSelector } from "react-redux";
@@ -51,7 +48,6 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import AudioRecordRed from "@Images/AudioRecording/AudioRecordRed.svg";
 import Colors from "@/Constants/Colors";
 import DigitalTimeString from "@Components/AudioPlayer/src/DigitalTimeString";
-import { ListItem } from "react-native-elements";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import PauseRecording from "@Images/AudioRecording/PauseRecording.svg";
 import PlayRecording from "@Images/AudioRecording/PlayRecording.svg";
@@ -71,7 +67,7 @@ import { useTranslation } from "react-i18next";
 import { useUploadFileMutation } from "@Service/generated/task.generated";
 import uuid from "react-native-uuid";
 
-const audioRecorderPlayer = AudioRecorderPlayer;
+const audioRecorderPlayer = createSound();
 // create a component
 export type props = {
   task: Task;
@@ -150,13 +146,12 @@ export default function AudioRecording({
   const dirs = RNFetchBlob.fs.dirs;
 
   const path = Platform.select({
-    // Discussion: https://github.com/hyochan/react-native-audio-recorder-player/discussions/479
-    // ios: 'https://firebasestorage.googleapis.com/v0/b/cooni-ebee8.appspot.com/o/test-audio.mp3?alt=media&token=d05a2150-2e52-4a2e-9c8c-d906450be20b',
-    // ios: 'https://staging.media.ensembl.fr/original/uploads/26403543-c7d0-4d44-82c2-eb8364c614d0',
-    ios: `${dayjs().format("YYYYMMDD_hh_mm")}_recording.m4a`,
+    ios: `${dirs.CacheDir}/${dayjs().format(
+      "YYYYMMDD_HH_mm_ss_SSS"
+    )}_recording.m4a`,
     android: `${dirs.CacheDir}/${dayjs().format(
-      "YYYYMMDD_hh_mm"
-    )}_recording.mp3`,
+      "YYYYMMDD_HH_mm_ss_SSS"
+    )}_recording.m4a`,
   });
 
   const PermissionAlert = () => {
@@ -181,20 +176,7 @@ export default function AudioRecording({
 
   async function checkAudioPermission() {
     if (Platform.OS == "android") {
-      const checkAudio = await checkMultiple([
-        PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-        PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-        PERMISSIONS.ANDROID.RECORD_AUDIO,
-      ]);
-      if (
-        checkAudio["android.permission.READ_EXTERNAL_STORAGE"] == "granted" &&
-        checkAudio["android.permission.READ_EXTERNAL_STORAGE"] == "granted" &&
-        checkAudio["android.permission.WRITE_EXTERNAL_STORAGE"] == "granted"
-      ) {
-        return true;
-      } else {
-        return false;
-      }
+      return (await check(PERMISSIONS.ANDROID.RECORD_AUDIO)) == "granted";
     } else {
       const checkAudio = await check(PERMISSIONS.IOS.MICROPHONE);
 
@@ -208,22 +190,9 @@ export default function AudioRecording({
 
   async function requestAudioPermission() {
     if (Platform.OS == "android") {
-      const askAudio = await checkMultiple([
-        PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-        PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-        PERMISSIONS.ANDROID.RECORD_AUDIO,
-      ]);
-      if (
-        askAudio["android.permission.READ_EXTERNAL_STORAGE"] == "granted" &&
-        askAudio["android.permission.READ_EXTERNAL_STORAGE"] == "granted" &&
-        askAudio["android.permission.WRITE_EXTERNAL_STORAGE"] == "granted"
-      ) {
-        return true;
-      } else {
-        return false;
-      }
+      return (await request(PERMISSIONS.ANDROID.RECORD_AUDIO)) == "granted";
     } else {
-      const askAudio = await check(PERMISSIONS.IOS.MICROPHONE);
+      const askAudio = await request(PERMISSIONS.IOS.MICROPHONE);
       if (askAudio == "granted") {
         return true;
       } else {
@@ -232,30 +201,42 @@ export default function AudioRecording({
     }
   }
 
-  function startAudio() {
+  async function startAudio() {
+    const isAudioPermission = await checkAudioPermission();
+    if (!isAudioPermission) {
+      const askAudio = await requestAudioPermission();
+      if (!askAudio) {
+        PermissionAlert();
+        return;
+      }
+    }
+
+    cTRef.current = 0;
+    setDuration(0);
+    setmovingduration(0);
+    setaudioUrl("");
     setIsRecording(true);
     setIsPaused(false);
+    setIsplaying(false);
 
     const audioSet = {
       AudioSourceAndroid: AudioSourceAndroidType.MIC,
       AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
-      OutputFormatAndroid: OutputFormatAndroidType.AAC_ADTS,
+      OutputFormatAndroid: OutputFormatAndroidType.MPEG_4,
       AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
       AVNumberOfChannelsKeyIOS: 2,
-      AVFormatIDKeyIOS: AVEncodingOption.aac,
+      AVFormatIDKeyIOS: "aac" as const,
     };
 
-    audioRecorderPlayer.startRecorder(path, audioSet, true).catch(async (e) => {
-      const isAudioPermission = await checkAudioPermission();
-      if (isAudioPermission) {
-        startAudio();
+    audioRecorderPlayer.startRecorder(path, audioSet, true).catch(async (error) => {
+      console.log("Error starting audio recorder", error);
+      setIsRecording(false);
+      setIsPaused(false);
+      const hasAudioPermission = await checkAudioPermission();
+      if (hasAudioPermission) {
+        ToastMessage(t("others.File have some problem"));
       } else {
-        const askAudio = await requestAudioPermission();
-        if (askAudio) {
-          startAudio();
-        } else {
-          PermissionAlert();
-        }
+        PermissionAlert();
       }
     });
   }
@@ -325,7 +306,7 @@ export default function AudioRecording({
     autoStart: boolean
   ) => {
     const file = {
-      name: "mp3",
+      name: "m4a",
       uri: recordingURI,
     };
     // console.log("recordingURI", recordingURI);
@@ -408,16 +389,17 @@ export default function AudioRecording({
     }
 
     const decodedUri = decodeURIComponent(recordingURI);
+    const recordingDuration = parseInt(cTRef.current.toFixed(0), 10);
 
     try {
       await cancelAudio();
       const conversation = {
         _id: uuid.v4(),
         roomId: display.roomId,
-        type: "LOADING/DOCUMENT/recording/mpeg",
+        type: "LOADING/DOCUMENT/recording/mp4",
         sender: display.currentUserUtility.user_id,
         message: "",
-        duration: parseInt(cTRef.current.toFixed(0)),
+        duration: recordingDuration,
         fileURL: decodedUri ?? "",
         thumbnail: "",
         favourite_by: [],
@@ -439,13 +421,13 @@ export default function AudioRecording({
       const payload = {
         data: {
           roomId: display?.roomId,
-          type: "LOADING/DOCUMENT/recording/mpeg",
+          type: "LOADING/DOCUMENT/recording/mp4",
           fileURL: decodedUri ?? "",
           isForwarded: false,
           message: "",
           fontStyle: "",
           thumbnail: "",
-          duration: parseInt(cTRef.current.toFixed(0)),
+          duration: recordingDuration,
         },
         reply_msg: null,
       };
@@ -468,8 +450,12 @@ export default function AudioRecording({
   const cancelAudio = async () => {
     setIsRecording(false);
     setShowInitialView(true);
+    setIsPaused(false);
+    cTRef.current = 0;
     onpressCancel(false);
-    await audioRecorderPlayer.stopRecorder();
+    try {
+      await audioRecorderPlayer.stopRecorder();
+    } catch (error) {}
     audioRecorderPlayer.removeRecordBackListener();
   };
   const startPlayRecording = async () => {
@@ -800,14 +786,17 @@ function AudioRecordingTimer({
   const [time, setTime] = useState(initialValueRef.current);
   useEffect(() => {
     audioRecorderPlayer.addRecordBackListener(async (e: RecordBackType) => {
-      // console.log(e);
       if (e.currentPosition >= maxLimit) {
         onMaxLimit();
-        ToastMessage("You cannot record audio more than 1 minute");
+        ToastMessage("You cannot record audio more than 10 minutes");
       }
       setTime(e.currentPosition);
       initialValueRef.current = e.currentPosition;
     });
+
+    return () => {
+      audioRecorderPlayer.removeRecordBackListener();
+    };
   }, []);
   return visibility ? <DigitalTimeString time={time} /> : <></>;
 }

@@ -24,6 +24,16 @@ const getFlagEmoji = (countryCode?: string) => {
     .join("");
 };
 
+const getFlagImageUrl = (countryCode?: string) => {
+  const code = countryCode?.toLowerCase();
+
+  if (!code || !/^[a-z]{2}$/.test(code)) {
+    return "https://flagcdn.com/w40/in.png";
+  }
+
+  return `https://flagcdn.com/w40/${code}.png`;
+};
+
 interface PhoneInputProps extends PhoneInputComponentProps {
   required?: boolean;
   skipDefaultValue?: boolean;
@@ -55,18 +65,18 @@ export const PhoneInput = forwardRef(
     const [selectedCountryCode, setSelectedCountryCode] = useState(defaultCountryCode || "IN");
     const { phone, setCode } = usePhoneContext();
 
-    const handleChangeText = (text: string) => {
+    const handleChangeText = (nextText: string) => {
       if (onChangeText) {
-        onChangeText(text);
+        onChangeText(nextText);
       }
-      setText(text);
+      setText(nextText);
     };
 
     useEffect(() => {
       if ((defaultValue || phone) && !skipDefaultValue) {
         setText(defaultValue || phone?.number);
       }
-    }, [defaultValue, defaultCountryCode]);
+    }, [defaultValue, defaultCountryCode, phone, skipDefaultValue]);
 
     useEffect(() => {
       if (typeof defaultCountryCode === "string" && /^[A-Z]{2}$/.test(defaultCountryCode)) {
@@ -83,15 +93,22 @@ export const PhoneInput = forwardRef(
       typeof selectedCountryCode === "string" && /^[A-Z]{2}$/.test(selectedCountryCode)
         ? selectedCountryCode
         : "IN";
-    const renderIosFlagAccessory =
-      Platform.OS === "ios" ? (
-        <View style={styles.countryPickerAccessory}>
+    const renderFlagAccessory = (
+      <View pointerEvents="none" style={styles.countryPickerAccessory}>
+        {Platform.OS === "android" ? (
+          <Image
+            source={{ uri: getFlagImageUrl(countryCode) }}
+            resizeMode="contain"
+            style={styles.flagImage}
+          />
+        ) : (
           <RNText allowFontScaling={false} style={styles.flagEmoji}>
             {getFlagEmoji(countryCode)}
           </RNText>
-          <Image source={{ uri: dropDown }} resizeMode="contain" style={styles.dropDownImage} />
-        </View>
-      ) : undefined;
+        )}
+        <Image source={{ uri: dropDown }} resizeMode="contain" style={styles.dropDownImage} />
+      </View>
+    );
 
     return (
       <View style={styles.container}>
@@ -105,7 +122,7 @@ export const PhoneInput = forwardRef(
           textContainerStyle={styles.textContainerStyle}
           textInputStyle={styles.textInputStyle}
           codeTextStyle={styles.codeTextStyle}
-          renderDropdownImage={renderIosFlagAccessory}
+          renderDropdownImage={renderFlagAccessory}
           textInputProps={{
             onEndEditing: handleSubmit,
           }}
