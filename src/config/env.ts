@@ -1,0 +1,51 @@
+import Config from 'react-native-config';
+
+type AppEnvironment = 'development' | 'staging' | 'production';
+
+function toBoolean(value: string | undefined): boolean {
+  return value === 'true';
+}
+
+function toNumber(value: string | undefined, fallback: number): number {
+  if (!value) {
+    return fallback;
+  }
+
+  const parsedValue = Number(value);
+  return Number.isNaN(parsedValue) ? fallback : parsedValue;
+}
+
+const DEFAULT_PUBLIC_API_HOST = 'https://comon.axiusstaging.in/graphql';
+const DEFAULT_PUBLIC_API = 'https://comon.axiusstaging.in';
+const DEFAULT_PUBLIC_URL = 'https://comon.axiusstaging.in';
+const DEFAULT_SOCKET_URL = 'https://comon.axiusstaging.in?token=';
+const DEFAULT_BACKGROUND_API = 'https://comon.axiusstaging.in';
+const DEFAULT_PRIVACY_POLICY = 'https://fe-pr-preview-pb2r7hxayq-ez.a.run.app/privacy-policy';
+const DEFAULT_AGORA_APP_ID = '86c93a4f76bc4f069cd51ffed38048e5';
+const DEFAULT_GOOGLE_PLACE_API_KEY = 'AIzaSyAHJGLj2qeJwuI96x7T3Hz_-Q6LV5DKhUk';
+const DEFAULT_IMAGE_URL = 'https://storage.googleapis.com/comon-bucket/';
+const DEFAULT_USER_MANUAL_URL = 'https://axius-staging.com/wp/comon_user_manual';
+
+export const env = {
+  appEnv: (Config.APP_ENV ?? 'development') as AppEnvironment,
+  appName: Config.APP_NAME ?? 'Comon',
+  publicApiHost: Config.PUBLIC_API_HOST ?? DEFAULT_PUBLIC_API_HOST,
+  publicApi: Config.PUBLIC_API ?? DEFAULT_PUBLIC_API,
+  publicUrl: Config.PUBLIC_URL ?? DEFAULT_PUBLIC_URL,
+  socketUrl: Config.SOCKET_URL ?? DEFAULT_SOCKET_URL,
+  backgroundApi: Config.BACKGROUND_API ?? DEFAULT_BACKGROUND_API,
+  privacyPolicy: Config.PRIVACY_POLICY ?? DEFAULT_PRIVACY_POLICY,
+  agoraAppId: Config.AGORA_APP_ID ?? DEFAULT_AGORA_APP_ID,
+  googlePlaceApiKey: Config.GOOGLE_PLACE_API_KEY ?? DEFAULT_GOOGLE_PLACE_API_KEY,
+  publicJwtExpire: toNumber(Config.PUBLIC_JWT_EXPIRE, 10),
+  iosUrl: Config.IOS_URL ?? 'https://apps.apple.com/in/app/comon-app/id1624464685',
+  androidUrl: Config.ANDROID_URL ?? 'https://play.google.com/store/apps/details?id=io.comon.app',
+  defaultImageUrl: Config.DEFAULT_IMAGE_URL ?? DEFAULT_IMAGE_URL,
+  imageUrl: 'resources/images/16694514102-individual_default.png',
+  groupUrl: 'resources/images/16694514287-group_default.png',
+  userManualUrl: Config.USER_MANUAL_URL ?? DEFAULT_USER_MANUAL_URL,
+  usesCleartextTraffic: toBoolean(Config.USES_CLEARTEXT_TRAFFIC),
+} as const;
+
+export default env;
+

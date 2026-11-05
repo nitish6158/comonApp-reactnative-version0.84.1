@@ -1,0 +1,49 @@
+diff --git a/node_modules/rn-fetch-blob/android/build.gradle b/node_modules/rn-fetch-blob/android/build.gradle
+index cceb1d3..776e64f 100644
+--- a/node_modules/rn-fetch-blob/android/build.gradle
++++ b/node_modules/rn-fetch-blob/android/build.gradle
+@@ -6,29 +6,22 @@ def safeExtGet(prop, fallback) {
+ 
+ repositories {
+     mavenCentral()
+-    jcenter()
+     google()
+ }
+ 
+-buildscript {
+-    repositories {
+-        jcenter()
+-        google()
+-    }
+-    dependencies {
+-        classpath 'com.android.tools.build:gradle:3.2.1'
+-    }
+-}
+-
+ android {
++    namespace "com.RNFetchBlob"
+     compileSdkVersion safeExtGet('compileSdkVersion', 28)
+-    buildToolsVersion safeExtGet('buildToolsVersion', '28.0.3')
+     defaultConfig {
+-        minSdkVersion safeExtGet('minSdkVersion', 16)
++        minSdkVersion safeExtGet('minSdkVersion', 21)
+         targetSdkVersion safeExtGet('targetSdkVersion', 28)
+         versionCode 1
+         versionName "1.0"
+     }
++    compileOptions {
++        sourceCompatibility JavaVersion.VERSION_11
++        targetCompatibility JavaVersion.VERSION_11
++    }
+     buildTypes {
+         release {
+             minifyEnabled false
+@@ -40,7 +33,7 @@ android {
+ }
+ 
+ dependencies {
+-    implementation "com.facebook.react:react-native:${safeExtGet('reactNativeVersion', '+')}"
++    implementation "com.facebook.react:react-android"
+     //compile 'com.squareup.okhttp3:okhttp:+'
+     //{RNFetchBlob_PRE_0.28_DEPDENDENCY}
+ }

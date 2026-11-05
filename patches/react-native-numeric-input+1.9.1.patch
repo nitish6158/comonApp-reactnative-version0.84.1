@@ -1,0 +1,73 @@
+diff --git a/node_modules/react-native-numeric-input/NumericInput/NumericInput.js b/node_modules/react-native-numeric-input/NumericInput/NumericInput.js
+index 2925548..9d6afdc 100644
+--- a/node_modules/react-native-numeric-input/NumericInput/NumericInput.js
++++ b/node_modules/react-native-numeric-input/NumericInput/NumericInput.js
+@@ -1,5 +1,5 @@
+ import React, { Component } from 'react'
+-import { View, TextInput, StyleSheet, Text } from 'react-native'
++import { View, TextInput, StyleSheet, Text, Pressable } from 'react-native'
+ import Icon from 'react-native-vector-icons/Ionicons'
+ import Button from '../Button'
+ import PropTypes from 'prop-types'
+@@ -37,6 +37,9 @@ export default class NumericInput extends Component {
+         calcSize = create({ width, height })
+     }
+     inc = () => {
++        if(this.props.disabled){
++            return;
++        }
+         let value = this.props.value && (typeof this.props.value === 'number') ? this.props.value : this.state.value
+         if (this.props.maxValue === null || (value + this.props.step < this.props.maxValue)) {
+             value = (value + this.props.step).toFixed(12)
+@@ -52,6 +55,9 @@ export default class NumericInput extends Component {
+             this.props.onChange && this.props.onChange(Number(value))
+     }
+     dec = () => {
++        if(this.props.disabled){
++            return;
++        }
+         let value = this.props.value && (typeof this.props.value === 'number') ? this.props.value : this.state.value
+         if (this.props.minValue === null || (value - this.props.step > this.props.minValue)) {
+             value = (value - this.props.step).toFixed(12)
+@@ -71,6 +77,9 @@ export default class NumericInput extends Component {
+     intMatch = (value) => value && value.match(/-?\d+/) && value.match(/-?\d+/)[0] === value.match(/-?\d+/).input
+ 
+     onChange = (value) => {
++        if(this.props.disabled){
++            return;
++        }
+         let currValue = typeof this.props.value === 'number' ? this.props.value : this.state.value
+         if ((value.length === 1 && value === '-') || (value.length === 2 && value === '0-')) {
+             this.setState({ stringValue: '-' })
+@@ -218,14 +227,14 @@ export default class NumericInput extends Component {
+         if (this.props.type === 'up-down')
+             return (
+                 <View style={inputContainerStyle}>
+-                    <TextInput {...this.props.extraTextInputProps} editable={editable} returnKeyType='done' underlineColorAndroid='rgba(0,0,0,0)' keyboardType='numeric' value={this.state.stringValue} onChangeText={this.onChange} style={inputStyle} ref={ref => this.ref = ref} onBlur={this.onBlur} onFocus={this.onFocus} />
++                    <TextInput {...this.props.extraTextInputProps} editable={!this.props.disabled ?? true} returnKeyType='done' underlineColorAndroid='rgba(0,0,0,0)' keyboardType='numeric' value={this.state.stringValue} onChangeText={this.onChange} style={inputStyle} ref={ref => this.ref = ref} onBlur={this.onBlur} onFocus={this.onFocus} />
+                     <View style={upDownStyle}>
+-                        <Button onPress={this.inc} style={{ flex: 1, width: '100%', alignItems: 'center' }}>
++                        <Pressable disabled={this.props.disabled ?? false} onPress={this.inc} style={{ flex: 1, width: '100%', alignItems: 'center' }}>
+                             <Icon name='ios-arrow-up' size={fontSize} style={[...iconStyle, maxReached ? this.props.reachMaxIncIconStyle : {}, minReached ? this.props.reachMinIncIconStyle : {}]} />
+-                        </Button>
+-                        <Button onPress={this.dec} style={{ flex: 1, width: '100%', alignItems: 'center' }}>
++                        </Pressable>
++                        <Pressable disabled={this.props.disabled ?? false}  onPress={this.dec} style={{ flex: 1, width: '100%', alignItems: 'center' }}>
+                             <Icon name='ios-arrow-down' size={fontSize} style={[...iconStyle, maxReached ? this.props.reachMaxDecIconStyle : {}, minReached ? this.props.reachMinDecIconStyle : {}]} />
+-                        </Button>
++                        </Pressable>
+                     </View>
+                 </View>)
+         else return (
+diff --git a/node_modules/react-native-numeric-input/index.d.ts b/node_modules/react-native-numeric-input/index.d.ts
+index b128e17..93ba8f8 100644
+--- a/node_modules/react-native-numeric-input/index.d.ts
++++ b/node_modules/react-native-numeric-input/index.d.ts
+@@ -32,6 +32,7 @@ declare module 'react-native-numeric-input' {
+     reachMinIncIconStyle?: ViewStyle
+     reachMinDecIconStyle?: ViewStyle
+     extraTextInputProps?: object
++    disabled?:boolean
+   }
+ 
+   export default class NumericInput extends React.Component<

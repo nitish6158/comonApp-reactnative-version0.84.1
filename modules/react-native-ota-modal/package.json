@@ -1,0 +1,8 @@
+{
+  "name": "react-native-ota-modal",
+  "version": "0.1.1",
+  "description": "A React Native component to display a user interface for Over-The-Air (OTA) updates in a modal.",
+  "main": "index.tsx",
+  "author": "Deepak Tiwari",
+  "license": "MIT"
+}

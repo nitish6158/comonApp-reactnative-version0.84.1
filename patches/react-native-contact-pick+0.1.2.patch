@@ -1,0 +1,22 @@
+diff --git a/node_modules/react-native-contact-pick/android/src/main/java/com/contactpick/ContactPickModule.kt b/node_modules/react-native-contact-pick/android/src/main/java/com/contactpick/ContactPickModule.kt
+index a7fd2d6..46c66ea 100644
+--- a/node_modules/react-native-contact-pick/android/src/main/java/com/contactpick/ContactPickModule.kt
++++ b/node_modules/react-native-contact-pick/android/src/main/java/com/contactpick/ContactPickModule.kt
+@@ -29,7 +29,7 @@ class ContactPickModule(reactContext: ReactApplicationContext) :
+     }
+ 
+     val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
+-    val activity = currentActivity
++    val activity = reactApplicationContext.currentActivity
+ 
+     if (activity == null) {
+       _promise.reject("Activity not available")
+@@ -38,7 +38,7 @@ class ContactPickModule(reactContext: ReactApplicationContext) :
+ 
+     promise = _promise
+     contactOptions = options
+-    activity?.startActivityForResult(intent, PICK_CONTACT_REQUEST)
++    activity.startActivityForResult(intent, PICK_CONTACT_REQUEST)
+   }
+ 
+   private val activityEventListener = object : BaseActivityEventListener() {

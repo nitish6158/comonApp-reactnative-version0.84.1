@@ -1,0 +1,736 @@
+{
+  "Activity": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "AprovalReminderTimeSchema": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "ArchivedBy": {
+    "keyFields": null
+  },
+  "Assignment": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "Attachment": {
+    "keyFields": null
+  },
+  "BackupFile": {
+    "keyFields": null
+  },
+  "BasicResponce": {
+    "keyFields": null
+  },
+  "BasicResponceSurvey": {
+    "keyFields": null
+  },
+  "Bio": {
+    "keyFields": null
+  },
+  "BioDto": {
+    "keyFields": null
+  },
+  "BlockedContact": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "BlockedRoom": {
+    "keyFields": null
+  },
+  "Call": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "CallCalled": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "CallHistories": {
+    "keyFields": null
+  },
+  "CallHistory": {
+    "keyFields": null
+  },
+  "CallLists": {
+    "keyFields": null
+  },
+  "CallWithParticipant": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "CallWithToken": {
+    "keyFields": null
+  },
+  "CameraRollOffBy": {
+    "keyFields": null
+  },
+  "ChatFileData": {
+    "keyFields": null
+  },
+  "ChatFileUploadResponse": {
+    "keyFields": null
+  },
+  "ChatRoom": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "ChatRoomDetails": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "Chats": {
+    "keyFields": null
+  },
+  "CheckValidDateResponse": {
+    "keyFields": null
+  },
+  "Client": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "CommonRoom": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "ContactDetailsDto": {
+    "keyFields": [
+      "userId"
+    ]
+  },
+  "ContactList": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "ContactResponse": {
+    "keyFields": null
+  },
+  "Contacts": {
+    "keyFields": [
+      "userId"
+    ]
+  },
+  "Conversation": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "ConversationWithIndex": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "CustomExpression": {
+    "keyFields": null
+  },
+  "DateTimeSchema": {
+    "keyFields": null
+  },
+  "DaylyParams": {
+    "keyFields": null
+  },
+  "DeletedBy": {
+    "keyFields": null
+  },
+  "DeliveredTo": {
+    "keyFields": null
+  },
+  "DeliveredToType": {
+    "keyFields": null
+  },
+  "DeviceInfo": {
+    "keyFields": null
+  },
+  "DisappearedOnBy": {
+    "keyFields": null
+  },
+  "DownloadBy": {
+    "keyFields": null
+  },
+  "Edge": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "EdgeOption": {
+    "keyFields": null
+  },
+  "FavouriteBy": {
+    "keyFields": null
+  },
+  "FileDetails": {
+    "keyFields": null
+  },
+  "FixedBy": {
+    "keyFields": null
+  },
+  "GetDeliveredAndReadResponse": {
+    "keyFields": null
+  },
+  "GetMediaByRoomIdResponse": {
+    "keyFields": null
+  },
+  "GetRoomDetailsResponse": {
+    "keyFields": null
+  },
+  "GetUsersDto": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "GlobalFrequencyUnitSchema": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "GroupMedia": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "Invite": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "LastMsg": {
+    "keyFields": null
+  },
+  "LastSynced": {
+    "keyFields": null
+  },
+  "Last_msg": {
+    "keyFields": null
+  },
+  "LocationType": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "Logs": {
+    "keyFields": null
+  },
+  "MasterAdmin": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "Measurement": {
+    "keyFields": null
+  },
+  "MeasurementSubfield": {
+    "keyFields": null
+  },
+  "Member": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "Message": {
+    "keyFields": null
+  },
+  "MetaData": {
+    "keyFields": null
+  },
+  "MonthlyParams": {
+    "keyFields": null
+  },
+  "MonthlyParamsForReminder": {
+    "keyFields": null
+  },
+  "Mutation": {
+    "keyFields": null
+  },
+  "MutedBy": {
+    "keyFields": null
+  },
+  "NextPrompt": {
+    "keyFields": null
+  },
+  "NextPrompts": {
+    "keyFields": null
+  },
+  "Notification": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "NotificationData": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "NotificationDto": {
+    "keyFields": null
+  },
+  "NotifyTo": {
+    "keyFields": null
+  },
+  "NotifyUsers": {
+    "keyFields": null
+  },
+  "NumberType": {
+    "keyFields": null
+  },
+  "OnGoingCallResponse": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "Organization": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "PaginatedAssignment": {
+    "keyFields": null
+  },
+  "PaginatedClient": {
+    "keyFields": null
+  },
+  "PaginatedReport": {
+    "keyFields": null
+  },
+  "PaginatedScenario": {
+    "keyFields": null
+  },
+  "Participant": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "ParticipantStatus": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "Participants": {
+    "keyFields": null
+  },
+  "ParticipantsFromContact": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "PinBy": {
+    "keyFields": null
+  },
+  "Position": {
+    "keyFields": null
+  },
+  "PostponeApprovalList": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "PostponeApprovalListResponse": {
+    "keyFields": null
+  },
+  "PostponeApprovalModel": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "Query": {
+    "keyFields": null
+  },
+  "QuestionAnswer": {
+    "keyFields": [
+      "createdAt"
+    ]
+  },
+  "RangeExpression": {
+    "keyFields": null
+  },
+  "ReadBy": {
+    "keyFields": null
+  },
+  "ReadByType": {
+    "keyFields": null
+  },
+  "ReadReceipts": {
+    "keyFields": null
+  },
+  "Record": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "ReplyMessage": {
+    "keyFields": null
+  },
+  "Report": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "ReportAnalyticResponse": {
+    "keyFields": null
+  },
+  "ReportChatRoom": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "RestoreHistory": {
+    "keyFields": null
+  },
+  "Ringtone": {
+    "keyFields": [
+      "userId"
+    ]
+  },
+  "RoomAccess": {
+    "keyFields": null
+  },
+  "RoomBio": {
+    "keyFields": null
+  },
+  "RoomDeletedBy": {
+    "keyFields": null
+  },
+  "RoomWithNameAndImage": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "RtmToken": {
+    "keyFields": null
+  },
+  "Scenario": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "ScenarioCategory": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "ScenarioResponseDto": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "Session": {
+    "keyFields": null
+  },
+  "SessionToken": {
+    "keyFields": null
+  },
+  "SignInAndSignUpResponse": {
+    "keyFields": null
+  },
+  "SignedUrlResponse": {
+    "keyFields": null
+  },
+  "SmsInvite": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "Sound": {
+    "keyFields": null
+  },
+  "SoundDetails": {
+    "keyFields": null
+  },
+  "StorageItem": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "Subscription": {
+    "keyFields": null
+  },
+  "SurveyParticipant": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "Task": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "TaskData": {
+    "keyFields": null
+  },
+  "Topic": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "UnreadBy": {
+    "keyFields": null
+  },
+  "UpdateAssignmentTimeResponse": {
+    "keyFields": null
+  },
+  "User": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "UserContact": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "UserDetailsDto": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "UsersStatus": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "UsersStatusWeb": {
+    "keyFields": [
+      "userId"
+    ]
+  },
+  "Wallpaper": {
+    "keyFields": null
+  },
+  "YearMonth": {
+    "keyFields": null
+  },
+  "__Directive": {
+    "keyFields": null
+  },
+  "__EnumValue": {
+    "keyFields": null
+  },
+  "__Field": {
+    "keyFields": null
+  },
+  "__InputValue": {
+    "keyFields": null
+  },
+  "__Schema": {
+    "keyFields": null
+  },
+  "__Type": {
+    "keyFields": null
+  },
+  "addParticipantsResponse": {
+    "keyFields": null
+  },
+  "adminSurvey": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "adminSurveyAnalyticResponse": {
+    "keyFields": null
+  },
+  "adminSurveyRecentActivity": {
+    "keyFields": null
+  },
+  "adminSurveyResponse": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "adminSurveyResponsePage": {
+    "keyFields": null
+  },
+  "agendaAttachment": {
+    "keyFields": null
+  },
+  "answerPercentages": {
+    "keyFields": null
+  },
+  "appointmentResponse": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "callEndedResponse": {
+    "keyFields": null
+  },
+  "callInfo": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "callParticipants": {
+    "keyFields": null
+  },
+  "callReminderResponse": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "callStatusChanged": {
+    "keyFields": null
+  },
+  "createRoomResponse": {
+    "keyFields": null
+  },
+  "deleteContactsReponse": {
+    "keyFields": null
+  },
+  "deviceInfo": {
+    "keyFields": null
+  },
+  "favouriteChat": {
+    "keyFields": null
+  },
+  "folder": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "getChannelStatusDto": {
+    "keyFields": null
+  },
+  "joinedRooms": {
+    "keyFields": null
+  },
+  "language": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "membersDetail": {
+    "keyFields": null
+  },
+  "myCallListReponse": {
+    "keyFields": null
+  },
+  "partialRoom": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "partialUser": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "participantType": {
+    "keyFields": [
+      "createdAt"
+    ]
+  },
+  "participantTypes": {
+    "keyFields": [
+      "createdAt"
+    ]
+  },
+  "reminderRangeResponse": {
+    "keyFields": null
+  },
+  "reminderResponse": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "requestVideoCallResponse": {
+    "keyFields": null
+  },
+  "scheduleResponse": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "sendChatDataSchema": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "seniorCitizenRoomSchema": {
+    "keyFields": [
+      "userId"
+    ]
+  },
+  "subRecord": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "subTopic": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "superAdmin": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "surveyAnswer": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "surveyAnswerResponsePage": {
+    "keyFields": null
+  },
+  "surveyEdge": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "surveyEdgeOption": {
+    "keyFields": null
+  },
+  "surveyNextPrompts": {
+    "keyFields": null
+  },
+  "surveyNotifyUsers": {
+    "keyFields": null
+  },
+  "surveyOptionsS": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "surveyQuestions": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "surveyReports": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "surveyScenario": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "userFolder": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "userSubFolder": {
+    "keyFields": [
+      "_id"
+    ]
+  },
+  "versionManagement": {
+    "keyFields": [
+      "_id"
+    ]
+  }
+}
