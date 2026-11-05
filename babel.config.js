@@ -28,6 +28,7 @@ module.exports = function (api) {
             '@Store': './src/redux',
             '@Util': './src/utils',
             '@Types': './types',
+            '@Styles': './src/styles',
             '@LocalDB': './src/local_DB',
           },
           extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
