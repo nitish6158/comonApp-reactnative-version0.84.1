@@ -3,7 +3,6 @@ import CallParticipantsMode, { participantsFormatted } from "./component/CallPar
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { callAtom, callAtomType } from "@Atoms/callAtom";
 import { callFullScreenState, callMiniScreenState } from "@Atoms/GlobalCallController";
-import createAgoraRtcEngine, { ChannelProfileType, ClientRoleType, IRtcEngine, LogLevel } from "react-native-agora";
 import notifee, { EventType } from "@notifee/react-native";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
@@ -47,6 +46,8 @@ import { requestCameraPermission } from "@/utils/permissionUtils";
 import { parseSocketMessage } from "@/utils/callSocket";
 import { socketConnect } from "@/utils/socket/SocketConnection";
 import Sound from "react-native-sound";
+import { liveKitCallService } from "@/services/livekit/LiveKitCallService";
+import { LIVEKIT_URL } from "@Service/provider/endpoints";
 
 const { width, height } = Dimensions.get("window");
 
@@ -97,7 +98,7 @@ function ActiveCallModel() {
   const activeCallData = useRef<callAtomType | null>(null);
   const [isTokenGenerated, setIsTokenGenerated] = useState<boolean>(false);
   const [connectedWithAgora, setConnectedWithAgora] = useState<boolean>(false);
-  const engine = useRef<IRtcEngine | null>(global.engine);
+  const callService = useRef(liveKitCallService);
   const [speakerEnabled, setSpeakerEnabled] = useState(false);
   const [muteAudio, setMuteAudio] = useState(false);
   const inProgress = useRef(false);
@@ -185,7 +186,6 @@ function ActiveCallModel() {
       clearTimeout(NoAnswerCallAutoCutRef.current);
       ToastMessage(getBusyCallMessage(payload));
       await closeCall();
-      engine?.current?.leaveChannel();
     },
     [getBusyCallMessage, t]
   );
@@ -394,112 +394,68 @@ function ActiveCallModel() {
   }, []);
 
   useEffect(() => {
-    engine?.current?.registerEventHandler({
-      onJoinChannelSuccess: () => {
-        console.log("Successfully joined the channel");
+    callService.current.setListeners({
+      onJoinSuccess: () => {
+        console.log("[LiveKit] Successfully joined room");
         if (Platform.OS == "android") {
           OutgoingCall();
         }
 
         if (!activeCallData.current?.isReceiver) {
-          //IF I AM ORIGIN THEN START 31 SEC TIMER AND END THE CALL IF NOT ONE JOIN THE CALL
-
           NoAnswerCallAutoCut(activeCallData?.current?.callId);
         }
       },
-      onUserJoined: (connection, uid) => {
-        //IF JOINED REMOTE USER COUNT IS GRATER THEN 0 THEN START CALL DURATION TIMER, AND MONITOR OTHER PARTICIPANTS JOIN STATUS AND MANAGE IT LOCALLY.
-        if (connection.channelId === "agora-echo-test-audio_only") return;
+      onUserJoined: (uid: number) => {
+        console.log("[LiveKit] onUserJoined", uid);
         player.current?.stop();
         handleRemoteUser(uid);
         if (Platform.OS == "android") {
           OngoingCall();
         }
       },
-      onUserOffline: (connection, uid, reason) => {
-        console.log("Remote User onLeaveChannel", uid, reason);
-        //IF REMOTE USER LEFT THE CALL THEN MANAGE IT LOCALLY AND IF ALL REMOTE USER LEFT THEN AUTO CUT THR CALL
+      onUserLeft: (uid: number) => {
+        console.log("[LiveKit] onUserLeft", uid);
         markRemoteVideoEnabled(uid);
         removeRemoteUser(uid);
       },
-      onRemoteVideoStateChanged: (connection, remoteUid, state, reason, elapsed) => {
-        if (reason === 5 || reason === 12) {
-          markRemoteVideoDisabled(remoteUid);
-        } else if (reason === 6) {
-          markRemoteVideoEnabled(remoteUid);
-        }
-      },
-      onUserMuteVideo: (connection, remoteUid, muted) => {
+      onUserMuteVideo: (uid: number, muted: boolean) => {
         if (muted) {
-          markRemoteVideoDisabled(remoteUid);
+          markRemoteVideoDisabled(uid);
         } else {
-          markRemoteVideoEnabled(remoteUid);
+          markRemoteVideoEnabled(uid);
         }
       },
-      onTranscodingUpdated: () => {
-        console.log("Transcoding updated");
-      },
-      onAudioRoutingChanged: (routing) => {
-        if (routing === 5) {
-          setIsBluetoothEnabled(true);
-        } else {
-          setIsBluetoothEnabled(false);
-        }
-      },
-      onRemoteAudioStateChanged: (connection, remoteUid, state, reason, elapsed) => {
-        if (state === 1 || reason === 6) {
-          if (activeCallData.current?.participants) {
-            activeCallData.current.participants = activeCallData.current.participants.map((cp) => {
-              return commonCondition(remoteUid, parseInt(cp.uid)) ? { ...cp, micEnable: true } : cp;
-            });
+      onUserMuteAudio: (uid: number, muted: boolean) => {
+        if (activeCallData.current?.participants) {
+          activeCallData.current.participants = activeCallData.current.participants.map((cp) => {
+            return commonCondition(uid, parseInt(cp.uid)) ? { ...cp, micEnable: !muted } : cp;
+          });
 
-            updatePart((prev) =>
-              prev.map((prv) => ({
-                ...prv,
-                micEnable: commonCondition(remoteUid, prv.uid) ? true : prv.micEnable,
-              }))
-            );
-          }
-        } else if (state === 0 && reason === 5) {
-          if (activeCallData.current?.participants) {
-            activeCallData.current.participants = activeCallData.current.participants.map((cp) => {
-              return commonCondition(remoteUid, parseInt(cp.uid)) ? { ...cp, micEnable: false } : cp;
-            });
-
-            updatePart((prev) =>
-              prev.map((prv) => ({
-                ...prv,
-                micEnable: commonCondition(remoteUid, prv.uid) ? false : prv.micEnable,
-              }))
-            );
-          }
+          updatePart((prev) =>
+            prev.map((prv) => ({
+              ...prv,
+              micEnable: commonCondition(uid, prv.uid) ? !muted : prv.micEnable,
+            }))
+          );
         }
       },
-      onError: async (err, msg) => {
-        // await closeCall();
-      },
-      onConnectionStateChanged(connection, state, reason) {
-        if (AgoraErrorTypes[state]) {
-          callState.current = AgoraErrorTypes[state];
-        }
-        const joinCallData = activeCallData.current;
-        if (state === 1 || state === 5) {
-          if (state === 5) engine.current?.leaveChannel();
-          if (joinCallData && Object.keys(joinCallData).length) {
-            const uid = joinCallData.participants.find((e) => e._id === MyProfile?._id);
-            if (uid?.uid) {
-              rejoinChannel(joinCallData.token, joinCallData.channelId, parseInt(uid.uid));
-            }
-          }
+      onConnectionStateChanged: (state) => {
+        console.log("[LiveKit] ConnectionState:", state);
+        if (state === "connected") {
+          callState.current = "Connected";
+        } else if (state === "reconnecting") {
+          callState.current = "Reconnecting";
+        } else if (state === "disconnected") {
+          callState.current = "Disconnected";
         }
       },
-      onLeaveChannel: (e) => {},
-      onConnectionLost: (e) => {},
+      onError: async (err) => {
+        console.error("[LiveKit] Error in call service", err);
+      },
     });
+
     return () => {
       callTimer({ type: "STOP", duration: 0 });
-
-      engine?.current?.removeAllListeners();
     };
   }, []);
 
@@ -530,8 +486,7 @@ function ActiveCallModel() {
         callTimer({ type: "SPECIFIC", duration: Number(callRequest?.appKilled?.startTime ?? 0) });
 
         if (callRequest?.callType === "video") {
-          engine?.current?.enableVideo();
-          engine.current?.startPreview();
+          callService.current.setCamera(true);
           setVideoCameraOn(true);
         }
         return;
@@ -561,32 +516,26 @@ function ActiveCallModel() {
                 return permissionAlert("Microphone", CloseCallONError);
               }
 
-              engine.current?.enableLocalAudio(true);
-              engine.current?.setEnableSpeakerphone?.(data.callType === "video");
-              // engine.current?.startEchoTest();
               if (data.callType === "video") {
                 const cameraPermission = await requestCameraPermission();
                 if (cameraPermission === "denied") {
                   return permissionAlert("Camera", CloseCallONError);
                 }
-                engine.current?.startPreview();
-                engine?.current?.enableVideo();
-                engine.current?.setChannelProfile(ChannelProfileType.ChannelProfileLiveBroadcasting);
                 setVideoCameraOn(true);
-              } else {
-                engine.current?.setChannelProfile(ChannelProfileType.ChannelProfileCommunication);
-                engine.current?.disableVideo?.();
               }
-              // FLOW => TAKE RTM TOKEN AND CONNECT WITH AGORA
-              engine?.current?.stopEchoTest();
+
               const uid = data.participants.find((dp) => dp.userId._id == MyProfile?._id);
-              engine.current?.leaveChannel();
               if (uid) {
-                const status = engine?.current?.joinChannel(data?.token, data?.channelId, parseInt(uid?.uid), {
-                  clientRoleType: ClientRoleType.ClientRoleBroadcaster,
+                const joined = await callService.current.join({
+                  serverUrl: LIVEKIT_URL,
+                  token: data?.token,
+                  callId: data?.callId,
+                  channelName: data?.channelId,
+                  uid: parseInt(uid?.uid, 10) || 1,
+                  callType: data?.callType as "audio" | "video",
                 });
 
-                if (status == 0) {
+                if (joined) {
                   MyuidRef.current = parseInt(uid?.uid);
                   player.current?.play();
                   setConnectedWithAgora(true);
@@ -616,11 +565,11 @@ function ActiveCallModel() {
             if (mounted.current) {
               if (activeCallData.current?.callType === "video") {
                 await requestCameraPermission();
-                engine.current?.enableVideo?.();
-                engine.current?.setEnableSpeakerphone?.(true);
+                await callService.current.setCamera(true);
+                await callService.current.setSpeaker(true);
               } else {
-                engine.current?.disableVideo?.();
-                engine.current?.setEnableSpeakerphone?.(false);
+                await callService.current.setCamera(false);
+                await callService.current.setSpeaker(false);
               }
             }
             mounted.current = true;
@@ -633,17 +582,17 @@ function ActiveCallModel() {
   const callback = (data) => {};
 
   const switchToVideoCall = useCallback(async () => {
-    engine.current?.enableVideo();
+    await callService.current.setCamera(true);
     setVideoCameraOn(true);
     activeCallData.current = { ...activeCallData.current, callType: "video" };
-    engine.current?.setEnableSpeakerphone(false);
+    await callService.current.setSpeaker(false);
   }, []);
 
   const videoCallRejected = useCallback(async () => {
-    engine.current?.disableVideo();
+    await callService.current.setCamera(false);
     setVideoCameraOn(false);
     activeCallData.current = { ...activeCallData.current, callType: "video" };
-    engine.current?.setEnableSpeakerphone(true);
+    await callService.current.setSpeaker(true);
   }, []);
 
   function NoAnswerCallAutoCut(id: string) {
@@ -659,7 +608,6 @@ function ActiveCallModel() {
             .finally(() => {
               player.current?.stop();
               resetCall();
-              engine?.current?.leaveChannel();
               ToastMessage(t("callNotAnswered"));
             });
         }
@@ -682,36 +630,28 @@ function ActiveCallModel() {
           if (!audioPermission) {
             return permissionAlert("Microphone", errorCallCut);
           }
-          engine.current?.enableLocalAudio(true);
-          engine.current?.setEnableSpeakerphone?.(data.callType === "video");
           let cameraPermission = undefined;
           if (data.callType === "video") {
             cameraPermission = await requestCameraPermission();
             if (cameraPermission === "denied") {
               return permissionAlert("Camera", errorCallCut);
             }
-            engine.current?.startPreview();
-            engine?.current?.enableVideo();
-            engine.current?.setChannelProfile(ChannelProfileType.ChannelProfileLiveBroadcasting);
             setVideoCameraOn(true);
-          } else {
-            engine.current?.setChannelProfile(ChannelProfileType.ChannelProfileCommunication);
-            engine.current?.disableVideo?.();
           }
-          // FLOW => TAKE RTM TOKEN AND CONNECT WITH AGORA
-          engine?.current?.stopEchoTest();
 
           const uid = data.participants.find((dp) => dp.userId == MyProfile?._id);
-          engine.current?.leaveChannel();
-          console.log("Leaving previous channel");
           if (uid) {
-            const status = engine?.current?.joinChannel(data?.token, data?.channelId, parseInt(uid?.uid), {
-              clientRoleType: ClientRoleType.ClientRoleBroadcaster,
-            });
-            console.log("joining new channel");
             remoteUserData.current = data.participants;
-            console.log("status", status);
-            if (status == 0) {
+            const joinedRoom = await callService.current.join({
+              serverUrl: LIVEKIT_URL,
+              token: data?.token,
+              callId: data?.callId,
+              channelName: data?.channelId,
+              uid: parseInt(uid?.uid, 10) || 1,
+              callType: data?.callType as "audio" | "video",
+            });
+
+            if (joinedRoom) {
               MyuidRef.current = parseInt(uid?.uid);
 
               setConnectedWithAgora(true);
@@ -739,14 +679,18 @@ function ActiveCallModel() {
     });
   }
 
-  function rejoinChannel(token: string, channelId: string, uid: number) {
-    const status = engine.current?.joinChannel(token, channelId, uid, {
-      clientRoleType: ClientRoleType.ClientRoleBroadcaster,
-    });
-    if (status === 0) {
-      return true;
+  async function rejoinChannel(token: string, channelId: string, uid: number) {
+    if (activeCallData.current) {
+      const ok = await callService.current.join({
+        serverUrl: LIVEKIT_URL,
+        token,
+        callId: activeCallData.current.callId || "",
+        channelName: channelId,
+        uid,
+        callType: (activeCallData.current.callType as "audio" | "video") || "audio",
+      });
+      if (ok) return true;
     }
-
     closeCall();
   }
 
@@ -941,9 +885,8 @@ function ActiveCallModel() {
     callTimer({ type: "STOP", duration: 0 });
 
     RNVoipCall.endAllCalls();
-    engine.current?.setEnableSpeakerphone(false);
+    await callService.current.leave();
     setSpeakerEnabled(false);
-    engine.current?.enableLocalAudio(false);
     setMuteAudio(false);
     myStatusSended.current = false;
     callState.current = "";
@@ -959,25 +902,27 @@ function ActiveCallModel() {
   }
 
   async function toggleSpeaker() {
-    engine.current?.setEnableSpeakerphone(!speakerEnabled);
-    setSpeakerEnabled(!speakerEnabled);
+    const nextState = !speakerEnabled;
+    await callService.current.setSpeaker(nextState);
+    setSpeakerEnabled(nextState);
   }
 
   async function toggleMute() {
-    engine.current?.enableLocalAudio(muteAudio);
-    setMuteAudio(!muteAudio);
+    const nextMuteAudio = !muteAudio;
+    await callService.current.setMicrophone(muteAudio);
+    setMuteAudio(nextMuteAudio);
   }
 
   async function toggleCamera() {
-    engine.current?.switchCamera();
+    await callService.current.switchCamera();
   }
 
   async function toggleVideoOnOff() {
     if (videoCameraOn) {
-      engine.current?.muteLocalVideoStream(true);
+      await callService.current.setCamera(false);
       setVideoCameraOn(false);
     } else {
-      engine.current?.muteLocalVideoStream(false);
+      await callService.current.setCamera(true);
       setVideoCameraOn(true);
     }
   }
@@ -1021,7 +966,6 @@ function ActiveCallModel() {
               await notifee.cancelNotification(onGoingNotificationId.current);
 
               clearTimeout(NoAnswerCallAutoCutRef.current);
-              engine?.current?.leaveChannel();
             }
           })
           .catch((err) => {
@@ -1038,7 +982,6 @@ function ActiveCallModel() {
               await notifee.stopForegroundService();
               await notifee.cancelNotification(onGoingNotificationId.current);
               clearTimeout(NoAnswerCallAutoCutRef.current);
-              engine?.current?.leaveChannel();
             }
           })
           .catch((err) => {

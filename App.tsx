@@ -26,12 +26,14 @@ import linking from "@/navigation/LinkingConfiguration";
 import { currentUserIdAtom } from "@Atoms/RealmloginManager";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import createAgoraRtcEngine, { LogLevel } from "react-native-agora";
-import { AGORA_APP_ID } from "@Service/provider/endpoints";
+import { registerGlobals } from "@livekit/react-native";
 
 import { ApolloProvider } from "@apollo/client";
 import { client } from "@Service/provider/authLink";
 import { user } from "@/schemas/schema";
+
+// Register WebRTC globals needed for LiveKit
+registerGlobals();
 
 /**
  * Main entry point of the application.
@@ -41,7 +43,6 @@ function App() {
   LogBox.ignoreAllLogs();
 
   useEffect(() => {
-    initializeGlobalAgora();
     setTimeout(() => {
       initializeCall();
     }, 2000);
@@ -64,21 +65,6 @@ function App() {
         .then(() => {})
         .catch();
     }
-  }
-
-  /**
-   * Initializes the global Agora engine for fast and global access.
-   */
-  function initializeGlobalAgora() {
-    const AgoraEngine = createAgoraRtcEngine();
-    global.engine = AgoraEngine;
-    AgoraEngine.initialize({
-      appId: AGORA_APP_ID,
-      logConfig: {
-        fileSizeInKB: 1024,
-        level: LogLevel.LogLevelInfo,
-      },
-    });
   }
 
   return (

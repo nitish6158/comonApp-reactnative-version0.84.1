@@ -2,7 +2,7 @@ import { Block, Center, HStack, Typography } from "rnmuilib";
 import { DefaultImageUrl, GroupUrl, ImageUrl } from "@Service/provider/endpoints";
 import { Alert, Platform, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import React, { Fragment, useEffect, useMemo, useState } from "react";
-import { RtcSurfaceView, RtcTextureView, VideoViewSetupMode } from "react-native-agora";
+import LiveKitVideoTrack from "./LiveKitVideoTrack";
 
 import AntDesign from "react-native-vector-icons/AntDesign";
 import CallBackground from "./CallBackground";
@@ -186,19 +186,13 @@ export default function SeniorCallMode({
                       bottom={90}
                       right={30}
                     >
-                      {!videoCameraOn ? (
-                        <VideoDisableBlock height={140} width={100} borderRadius={24} />
-                      ) : Platform.OS === "android" ? (
-                        <RtcTextureView
-                          canvas={{ uid: 0, setupMode: VideoViewSetupMode.VideoViewSetupAdd }}
-                          style={{ height: 140, width: 100 }}
-                        />
-                      ) : (
-                        <RtcSurfaceView
-                          canvas={{ uid: 0, setupMode: VideoViewSetupMode.VideoViewSetupAdd }}
-                          style={{ height: 140, width: 100 }}
-                        />
-                      )}
+                      <LiveKitVideoTrack
+                        isLocal={true}
+                        height={140}
+                        width={100}
+                        borderRadius={24}
+                        disabled={!videoCameraOn}
+                      />
                     </Block>
                   )}
                 </Fragment>

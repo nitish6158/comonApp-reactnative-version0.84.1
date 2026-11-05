@@ -1,6 +1,6 @@
 import { ImageBackground, Platform, View, useWindowDimensions } from "react-native";
 import React, { useMemo } from "react";
-import { RtcSurfaceView, RtcTextureView } from "react-native-agora";
+import LiveKitVideoTrack from "./LiveKitVideoTrack";
 
 import { calculateHeightWidth } from "./VideoGrid";
 import VideoDisableBlock from "./VideoDisableBlock";
@@ -72,23 +72,13 @@ function CallBackground({
 
           return (
             <View key={renderKey} style={{ height: item.height, width: item.width }}>
-              {isVideoDisabled ? (
-                <VideoDisableBlock height={item.height} width={item.width} />
-              ) : Platform.OS === "android" ? (
-                <RtcTextureView
-                  canvas={{
-                    uid: item.uid,
-                  }}
-                  style={{ height: item.height, width: item.width }}
-                />
-              ) : (
-                <RtcSurfaceView
-                  canvas={{
-                    uid: item.uid,
-                  }}
-                  style={{ height: item.height, width: item.width }}
-                />
-              )}
+              <LiveKitVideoTrack
+                isLocal={false}
+                uid={item.uid}
+                height={item.height}
+                width={item.width}
+                disabled={isVideoDisabled}
+              />
             </View>
           );
         })}

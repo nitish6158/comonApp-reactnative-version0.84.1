@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import Config from 'react-native-config';
 
 type AppEnvironment = 'development' | 'staging' | 'production';
@@ -25,6 +26,15 @@ const DEFAULT_AGORA_APP_ID = '86c93a4f76bc4f069cd51ffed38048e5';
 const DEFAULT_GOOGLE_PLACE_API_KEY = 'AIzaSyAHJGLj2qeJwuI96x7T3Hz_-Q6LV5DKhUk';
 const DEFAULT_IMAGE_URL = 'https://storage.googleapis.com/comon-bucket/';
 const DEFAULT_USER_MANUAL_URL = 'https://axius-staging.com/wp/comon_user_manual';
+const DEFAULT_LIVEKIT_URL = Platform.OS === 'android' ? 'ws://10.0.2.2:7880' : 'ws://localhost:7880';
+
+function resolveLiveKitUrl(rawUrl: string | undefined): string {
+  const url = rawUrl || DEFAULT_LIVEKIT_URL;
+  if (Platform.OS === 'android' && url.includes('localhost')) {
+    return url.replace('localhost', '10.0.2.2');
+  }
+  return url;
+}
 
 export const env = {
   appEnv: (Config.APP_ENV ?? 'development') as AppEnvironment,
@@ -36,6 +46,8 @@ export const env = {
   backgroundApi: Config.BACKGROUND_API ?? DEFAULT_BACKGROUND_API,
   privacyPolicy: Config.PRIVACY_POLICY ?? DEFAULT_PRIVACY_POLICY,
   agoraAppId: Config.AGORA_APP_ID ?? DEFAULT_AGORA_APP_ID,
+  livekitUrl: resolveLiveKitUrl(Config.LIVEKIT_URL),
+  useLivekit: Config.USE_LIVEKIT !== undefined ? toBoolean(Config.USE_LIVEKIT) : true,
   googlePlaceApiKey: Config.GOOGLE_PLACE_API_KEY ?? DEFAULT_GOOGLE_PLACE_API_KEY,
   publicJwtExpire: toNumber(Config.PUBLIC_JWT_EXPIRE, 10),
   iosUrl: Config.IOS_URL ?? 'https://apps.apple.com/in/app/comon-app/id1624464685',
