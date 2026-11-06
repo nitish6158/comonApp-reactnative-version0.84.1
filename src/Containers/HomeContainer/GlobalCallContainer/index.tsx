@@ -242,9 +242,9 @@ function ActiveCallModel() {
             });
           }
         }
-        if (data.type === "voipFailed") {
+        if (type === "voipFailed") {
           const parsedData =
-            typeof data?.msg === "string" ? JSON.parse(data?.msg) : data?.msg ?? data;
+            typeof msg === "string" ? JSON.parse(msg) : msg;
           const activeCall = activeCallData.current;
 
           if (!activeCall?.callId || activeCall?.isReceiver) {
@@ -351,7 +351,7 @@ function ActiveCallModel() {
         dispatch(removeActiveCall());
         notifee.cancelNotification(onGoingNotificationId.current);
         clearTimeout(NoAnswerCallAutoCutRef.current);
-        engine?.current?.leaveChannel();
+        callService.current.leave();
       }
     });
     let subs = { remove: () => {} };
@@ -501,11 +501,11 @@ function ActiveCallModel() {
         console.log(callRequest);
         callStatus.current = `ComOn ${callRequest?.callType == "audio" ? t("audio") : t("video")} ${t("call")}`;
         createNewCall(callRequest, CloseCallONError).then(async (data) => {
-          console.log("CALLER createNewCall result", data);
-          if (typeof data == "object") {
-            // console.log("createCall", data);
+          console.log("[GlobalCallContainer] createNewCall result:", JSON.stringify(data));
+          console.log("[GlobalCallContainer] MyProfile _id:", MyProfile?._id);
+          if (typeof data == "object" && data !== null) {
             activeCallData.current = data;
-            console.log("CALLER activeCallData set", data?.callId);
+            console.log("[GlobalCallContainer] activeCallData set", data?.callId);
             dispatch(addActiveCall(data));
             setIsTokenGenerated(true);
             if (typeof data?.callId == "string") {
@@ -524,8 +524,14 @@ function ActiveCallModel() {
                 setVideoCameraOn(true);
               }
 
-              const uid = data.participants.find((dp) => dp.userId._id == MyProfile?._id);
+              const myId = MyProfile?._id?.toString();
+              const uid = data.participants?.find((dp: any) => {
+                const pId = typeof dp.userId === "object" && dp.userId?._id ? dp.userId._id : dp.userId;
+                return pId?.toString() === myId || dp.pId?.toString() === myId;
+              });
+              console.log("[GlobalCallContainer] matched uid participant:", uid);
               if (uid) {
+                console.log("[GlobalCallContainer] Joining LiveKit room with url:", LIVEKIT_URL, "token:", data?.token?.substring(0, 25));
                 const joined = await callService.current.join({
                   serverUrl: LIVEKIT_URL,
                   token: data?.token,
@@ -534,22 +540,25 @@ function ActiveCallModel() {
                   uid: parseInt(uid?.uid, 10) || 1,
                   callType: data?.callType as "audio" | "video",
                 });
+                console.log("[GlobalCallContainer] callService.join returned:", joined);
 
                 if (joined) {
                   MyuidRef.current = parseInt(uid?.uid);
                   player.current?.play();
                   setConnectedWithAgora(true);
                 } else {
+                  console.warn("[GlobalCallContainer] Join failed, showing cannot-join-call toast");
                   ToastMessage(t("label.cannot-join-call"));
                   resetCall();
                 }
               } else {
+                console.warn("[GlobalCallContainer] Current user not found in participants!");
                 ToastMessage(t("label.current-user-not-found"));
                 resetCall();
               }
             }
           } else {
-            console.log("data is null", data);
+            console.log("[GlobalCallContainer] data is null or not object:", data);
             setIsTokenGenerated(false);
           }
         });
@@ -591,7 +600,7 @@ function ActiveCallModel() {
   const videoCallRejected = useCallback(async () => {
     await callService.current.setCamera(false);
     setVideoCameraOn(false);
-    activeCallData.current = { ...activeCallData.current, callType: "video" };
+    activeCallData.current = { ...activeCallData.current, callType: "audio" };
     await callService.current.setSpeaker(true);
   }, []);
 
@@ -639,7 +648,11 @@ function ActiveCallModel() {
             setVideoCameraOn(true);
           }
 
-          const uid = data.participants.find((dp) => dp.userId == MyProfile?._id);
+          const myId = MyProfile?._id?.toString();
+          const uid = data.participants.find((dp: any) => {
+            const pId = typeof dp.userId === "object" && dp.userId?._id ? dp.userId._id : dp.userId;
+            return pId?.toString() === myId || dp.pId?.toString() === myId;
+          });
           if (uid) {
             remoteUserData.current = data.participants;
             const joinedRoom = await callService.current.join({
@@ -658,9 +671,25 @@ function ActiveCallModel() {
               if (isBackground) {
                 BackgroundTimer.stop();
               }
+
+              // Immediately inform backend that call is accepted by receiver
+              if (!myStatusSended.current && data?.callId) {
+                myStatusSended.current = true;
+                changeCallStatusRequest({
+                  variables: {
+                    input: {
+                      callId: data.callId,
+                      userId: MyProfileRef.current?._id || myId,
+                      status: "accepted",
+                      device: "App",
+                    },
+                  },
+                }).catch((e) => console.log("changeCallStatusRequest error:", e));
+              }
+
               const permissionCheck =
                 data.callType === "video" ? audioPermission && cameraPermission === "granted" : audioPermission;
-              if (permissionCheck) getChannelStatus(data);
+              if (permissionCheck && !data?.isReceiver) getChannelStatus(data);
             } else {
               ToastMessage(t("label.cannot-join-call"));
 
@@ -670,6 +699,10 @@ function ActiveCallModel() {
                 BackgroundTimer.stop();
               }
             }
+          } else {
+            console.warn("[GlobalCallContainer] initiateJoinCalls: current user not found in participants!");
+            ToastMessage(t("label.cannot-join-call"));
+            resetCall();
           }
         }
       } else {
@@ -695,7 +728,7 @@ function ActiveCallModel() {
   }
 
   function getChannelStatus(data: callAtomType) {
-    if (data?.roomType !== "individual") return;
+    if (data?.roomType !== "individual" || data?.isReceiver) return;
 
     getChannelStatusTimerRef.current = setTimeout(() => {
       channelStatus({
@@ -727,7 +760,7 @@ function ActiveCallModel() {
         .catch((err) => {
           console.log("Error in getting channel status", err);
         });
-    }, 10000);
+    }, 40000);
   }
 
   function handleRemoteUser(localUid: number) {
@@ -970,6 +1003,9 @@ function ActiveCallModel() {
           })
           .catch((err) => {
             console.error("Error in ending call", err);
+          })
+          .finally(() => {
+            resetCall();
           });
       } else {
         leftUserRequest({ variables: { input: { _id: activeCallData?.current?.callId } } })
@@ -986,8 +1022,13 @@ function ActiveCallModel() {
           })
           .catch((err) => {
             console.error("Error in ending call", err);
+          })
+          .finally(() => {
+            resetCall();
           });
       }
+    } else {
+      resetCall();
     }
 
     setTimeout(() => {

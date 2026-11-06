@@ -141,10 +141,32 @@ export class LiveKitCallService {
         await this.setSpeaker(false);
       }
 
+      // Process existing remote participants already in the room
+      this.room.remoteParticipants.forEach((participant) => {
+        console.log("[LiveKit] Existing participant in room on connect:", participant.identity);
+        const uid = parseInt(participant.identity, 10);
+        if (!isNaN(uid)) {
+          this.listeners.onUserJoined?.(uid);
+        }
+        participant.trackPublications.forEach((pub) => {
+          if (pub.track) {
+            console.log("[LiveKit] Existing track on connect:", pub.kind, "from", participant.identity);
+            if (!isNaN(uid)) {
+              if (pub.kind === Track.Kind.Video) {
+                this.listeners.onUserMuteVideo?.(uid, pub.isMuted);
+              } else if (pub.kind === Track.Kind.Audio) {
+                this.listeners.onUserMuteAudio?.(uid, pub.isMuted);
+              }
+            }
+          }
+        });
+      });
+      this.listeners.onTracksChanged?.();
+
       this.listeners.onJoinSuccess?.();
       return true;
     } catch (err: any) {
-      console.error("[LiveKit] Error joining room:", err);
+      console.warn("[LiveKit] Error joining room message:", err?.message, "stack:", err?.stack || err);
       this.listeners.onError?.(err);
       return false;
     }
@@ -325,3 +347,4 @@ export class LiveKitCallService {
 }
 
 export const liveKitCallService = LiveKitCallService.getInstance();
+

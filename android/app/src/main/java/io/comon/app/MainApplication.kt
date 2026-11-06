@@ -8,6 +8,7 @@ import com.facebook.react.ReactNativeApplicationEntryPoint.loadReactNative
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.wix.reactnativeuilib.UiLibPackageList
 import com.google.firebase.FirebaseApp
+import com.livekit.reactnative.LiveKitReactNative
 
 class MainApplication : Application(), ReactApplication {
 
@@ -24,6 +25,7 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     super.onCreate()
+    LiveKitReactNative.setup(this)
     FirebaseApp.initializeApp(this)
     loadReactNative(this)
   }

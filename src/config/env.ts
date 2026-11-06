@@ -28,8 +28,15 @@ const DEFAULT_IMAGE_URL = 'https://storage.googleapis.com/comon-bucket/';
 const DEFAULT_USER_MANUAL_URL = 'https://axius-staging.com/wp/comon_user_manual';
 const DEFAULT_LIVEKIT_URL = Platform.OS === 'android' ? 'ws://10.0.2.2:7880' : 'ws://localhost:7880';
 
+function normalizeUrl(url: string | undefined, fallback: string): string {
+  const target = url || fallback;
+  return target
+    .replace(/192\.168\.0\.44/g, '192.168.1.38')
+    .replace(/192\.168\.1\.43/g, '192.168.1.38');
+}
+
 function resolveLiveKitUrl(rawUrl: string | undefined): string {
-  const url = rawUrl || DEFAULT_LIVEKIT_URL;
+  const url = normalizeUrl(rawUrl, DEFAULT_LIVEKIT_URL);
   if (Platform.OS === 'android' && url.includes('localhost')) {
     return url.replace('localhost', '10.0.2.2');
   }
@@ -39,11 +46,11 @@ function resolveLiveKitUrl(rawUrl: string | undefined): string {
 export const env = {
   appEnv: (Config.APP_ENV ?? 'development') as AppEnvironment,
   appName: Config.APP_NAME ?? 'Comon',
-  publicApiHost: Config.PUBLIC_API_HOST ?? DEFAULT_PUBLIC_API_HOST,
-  publicApi: Config.PUBLIC_API ?? DEFAULT_PUBLIC_API,
-  publicUrl: Config.PUBLIC_URL ?? DEFAULT_PUBLIC_URL,
-  socketUrl: Config.SOCKET_URL ?? DEFAULT_SOCKET_URL,
-  backgroundApi: Config.BACKGROUND_API ?? DEFAULT_BACKGROUND_API,
+  publicApiHost: normalizeUrl(Config.PUBLIC_API_HOST, DEFAULT_PUBLIC_API_HOST),
+  publicApi: normalizeUrl(Config.PUBLIC_API, DEFAULT_PUBLIC_API),
+  publicUrl: normalizeUrl(Config.PUBLIC_URL, DEFAULT_PUBLIC_URL),
+  socketUrl: normalizeUrl(Config.SOCKET_URL, DEFAULT_SOCKET_URL),
+  backgroundApi: normalizeUrl(Config.BACKGROUND_API, DEFAULT_BACKGROUND_API),
   privacyPolicy: Config.PRIVACY_POLICY ?? DEFAULT_PRIVACY_POLICY,
   agoraAppId: Config.AGORA_APP_ID ?? DEFAULT_AGORA_APP_ID,
   livekitUrl: resolveLiveKitUrl(Config.LIVEKIT_URL),

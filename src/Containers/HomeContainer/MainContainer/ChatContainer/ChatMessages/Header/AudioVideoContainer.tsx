@@ -48,10 +48,13 @@ export default function AudioVideoContainer() {
           style={styles.buttonContainer}
           onPress={async () => {
             Keyboard.dismiss();
+            console.log("[AudioVideoContainer] Video Call Pressed, internet:", internet, "callRequest:", callRequest);
             const res = await checkCallPermissions("video");
+            console.log("[AudioVideoContainer] checkCallPermissions video result:", res);
             if (res === true) {
               if (internet) {
                 if (callRequest == null) {
+                  console.log("[AudioVideoContainer] Setting callRequest for video...");
                   setCallRequest({
                     callType: "video",
                     roomType: display.roomType,
@@ -62,9 +65,11 @@ export default function AudioVideoContainer() {
                     isReceiver: false,
                   });
                 } else {
+                  console.log("[AudioVideoContainer] Already in callRequest:", callRequest);
                   ToastMessage(`${t("toastmessage.incall-already-message")}`);
                 }
               } else {
+                console.log("[AudioVideoContainer] No internet!");
                 Alert.alert(
                   "",
                   t("others.Couldn't place call. Make sure your device have an internet connection and try again")
@@ -81,12 +86,13 @@ export default function AudioVideoContainer() {
           style={styles.buttonContainer}
           onPress={async () => {
             Keyboard.dismiss();
+            console.log("[AudioVideoContainer] Audio Call Pressed, internet:", internet, "callRequest:", callRequest);
             const res = await checkCallPermissions("audio");
-            // console.log(res)
+            console.log("[AudioVideoContainer] checkCallPermissions audio result:", res);
             if (res === true) {
               if (internet) {
-                // console.log(callRequest)
                 if (callRequest == null) {
+                  console.log("[AudioVideoContainer] Setting callRequest for audio...");
                   setCallRequest({
                     callType: "audio",
                     roomType: display.roomType,
@@ -97,9 +103,11 @@ export default function AudioVideoContainer() {
                     isReceiver: false,
                   });
                 } else {
+                  console.log("[AudioVideoContainer] Already in callRequest:", callRequest);
                   ToastMessage(`${t("toastmessage.incall-already-message")}`);
                 }
               } else {
+                console.log("[AudioVideoContainer] No internet!");
                 Alert.alert(
                   "",
                   t("others.Couldn't place call. Make sure your device have an internet connection and try again")

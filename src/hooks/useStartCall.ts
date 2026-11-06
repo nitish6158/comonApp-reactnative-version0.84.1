@@ -49,15 +49,16 @@ function useStartCall() {
             data["participants"] = participants;
           }
         }
-        console.log("create call data", JSON.stringify(data));
+        console.log("[useStartCall] create call data payload:", JSON.stringify(data));
         const response = await callNotifcationRequest({
           variables: {
             input: data,
           },
         });
+        console.log("[useStartCall] createNewCall mutation response:", JSON.stringify(response));
         let returnRes = undefined;
-        if (response.data?.createNewCall.token) {
-          const callId = response.data.createNewCall.call._id;
+        if (response.data?.createNewCall?.token) {
+          const callId = response.data.createNewCall.call?._id;
           if (callId) {
             returnRes = {
               callId: callId,
@@ -69,13 +70,17 @@ function useStartCall() {
               callBackground: CallSender.callBackground,
               isReceiver: false,
               roomId: roomId,
-              participants: response?.data?.createNewCall?.call?.callParticipants.map((gp) => {
-                return { ...gp, micEnable: false, callStatus: "calling", pId: gp.userId._id };
-              }),
+              participants: response?.data?.createNewCall?.call?.callParticipants?.map((gp) => {
+                const pId = typeof gp.userId === "object" && gp.userId?._id ? gp.userId._id : gp.userId;
+                return { ...gp, micEnable: false, callStatus: "calling", pId };
+              }) || [],
             };
           } else {
-            ToastMessage(response?.errors[0]?.message);
+            console.warn("[useStartCall] callId is missing from response!");
+            ToastMessage(response?.errors?.[0]?.message);
           }
+        } else {
+          console.warn("[useStartCall] token missing in createNewCall response! errors:", response?.errors);
         }
         return returnRes;
       } catch (error) {
@@ -94,13 +99,18 @@ function useStartCall() {
 
       try {
         let returnRes = null;
-        let uid = CallReceiver.participants.find((cp) => cp.userId == MyProfile?._id);
-        console.log("joinCall");
+        const myId = MyProfile?._id?.toString();
+        const uid = CallReceiver.participants?.find((cp: any) => {
+          const pId = typeof cp.userId === "object" && cp.userId?._id ? cp.userId._id : cp.userId;
+          return pId?.toString() === myId || cp.pId?.toString() === myId;
+        });
+        const channelName = CallReceiver.channelName || CallReceiver.channelId;
+        console.log("joinCall uid found:", uid, "channelName:", channelName);
         let agoraRes = await AgoraTokenRequest({
           variables: {
             input: {
-              uid: uid ? uid.uid : 1,
-              channelName: CallReceiver.channelId,
+              uid: uid ? parseInt(uid.uid, 10) || 1 : 1,
+              channelName: channelName,
               type: "publisher",
             },
           },
@@ -112,15 +122,17 @@ function useStartCall() {
           returnRes = {
             callId: CallReceiver.callId,
             token: token,
-            channelId: CallReceiver.channelName,
+            channelId: channelName,
+            channelName: channelName,
             callType: CallReceiver.callType,
             roomType: CallReceiver.roomType,
             roomName: CallReceiver.roomName,
             callBackground: CallReceiver.callBackground,
             isReceiver: true,
             roomId: CallReceiver?.roomId,
-            participants: CallReceiver.participants.map((gp) => {
-              return { ...gp, micEnable: false, callStatus: "calling", pId: gp.userId };
+            participants: CallReceiver.participants.map((gp: any) => {
+              const pId = typeof gp.userId === "object" && gp.userId?._id ? gp.userId._id : gp.userId;
+              return { ...gp, micEnable: false, callStatus: "calling", pId };
             }),
           };
         }
