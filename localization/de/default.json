@@ -74,14 +74,14 @@
   "onlineStatus": {
     "contact-refresh": "Um das aktualisierte Telefonbuch zu sehen, drücken Sie bitte die Aktualisieren-Schaltfläche oben.",
     "major-update": "Großes Update",
-    "major-update-des": "Es gibt ein großes Update in der ComOn-App, bitte deinstallieren und installieren Sie es erneut, um es zu nutzen.",
+    "major-update-des": "Es gibt ein großes Update in der MeetUs-App, bitte deinstallieren und installieren Sie es erneut, um es zu nutzen.",
     "stable-version": "Stabile Version",
     "uninstall-app": "App deinstallieren",
     "close-app": "App schließen",
     "contact-error": "Beim Synchronisieren Ihrer Kontakte auf unserem Server ist ein Fehler aufgetreten.",
     "updating-contact": "Kontaktliste wird aktualisiert",
     "checking-contact": "Kontaktliste wird überprüft",
-    "contact-syncing": "Kontakte werden mit dem ComOn-Server synchronisiert, bitte warten",
+    "contact-syncing": "Kontakte werden mit dem MeetUs-Server synchronisiert, bitte warten",
     "retry": "Erneut versuchen",
     "update-reminder": "Update-Erinnerung",
     "set-reminder": "Erinnerung setzen",
@@ -518,7 +518,7 @@
       "confirm-password": "Bestätigen Sie Ihr Passwort!",
       "new-password": "Geben Sie Ihr neues Passwort ein!",
       "confirm-new-password": "Bestätigen Sie Ihr neues Passwort!",
-      "password-for-mobile": "Passwort als ComOn-Mitglied"
+      "password-for-mobile": "Passwort als MeetUs-Mitglied"
     },
     "extra": {
       "salutation": "Verwenden Sie den Text #salutation#, um den Begrüßungstext durch den obigen Namen in Rundfunkgruppennachrichten zu ersetzen.",
@@ -536,7 +536,7 @@
     }
   },
   "sign-in": {
-    "title": "Willkommen bei ComOn",
+    "title": "Willkommen bei MeetUs",
     "remember": "Erinnere mich",
     "submit": "Anmelden",
     "actions": {
@@ -680,7 +680,7 @@
   },
   "sign-up": {
     "title": "Registrieren, um Mitglied zu werden",
-    "label": "Wenn du bereits ein ComOn-Benutzer bist -",
+    "label": "Wenn du bereits ein MeetUs-Benutzer bist -",
     "back": "Anmelden"
   },
   "label": {
@@ -699,7 +699,7 @@
     "new-group": "Neue Gruppe",
     "new-broadcast": "Neue Rundsendung",
     "new-chatroom": "Neuer Chatraum",
-    "contacts-on-comon": "Kontakte auf Comon",
+    "contacts-on-comon": "Kontakte auf MeetUs",
     "no-result-found-for": "Kein Ergebnis gefunden für",
     "message-scheduled": "Nachricht erfolgreich geplant",
     "message-updated": "Geplante Nachricht erfolgreich aktualisiert",
@@ -764,8 +764,8 @@
   "contacts": {
     "numbers": "Wähle eine Telefonnummer aus",
     "sms": {
-      "title": "ComOn Einladung",
-      "description": "Trete jetzt ComOn bei! 😊 Bitte lade die Anwendung herunter unter "
+      "title": "MeetUs Einladung",
+      "description": "Trete jetzt MeetUs bei! 😊 Bitte lade die Anwendung herunter unter "
     },
     "denied": {
       "title": "Ändere die App-Berechtigungen, um auf deine Kontakte zugreifen zu können!",
@@ -844,7 +844,7 @@
     "custom-tone": "Eigenen Ton",
     "alert-tone": "Benachrichtigungston",
     "None-Default": "Keiner (Standard)",
-    "comon-wallpaper-description": "Dies ist das Standard-Comon-Hintergrundbild",
+    "comon-wallpaper-description": "Dies ist das Standard-MeetUs-Hintergrundbild",
     "set-wallpaper-description-": "Setze ein Hintergrundbild für ein besseres Erlebnis"
   },
   "disapper-messages": {
@@ -900,9 +900,9 @@
     "invalid-phone-number": "Ungültige Telefonnummer",
     "please-check-number": "Bitte überprüfe die Nummer",
     "permission-alert": "Berechtigungsalarm",
-    "permission-alert-message": "ComOn hat keinen Zugriff auf deine Kamera oder Bibliothek. Um den Zugriff zu aktivieren, tippe auf Einstellungen und schalte es ein ",
+    "permission-alert-message": "MeetUs hat keinen Zugriff auf deine Kamera oder Bibliothek. Um den Zugriff zu aktivieren, tippe auf Einstellungen und schalte es ein ",
     "permission-alert-microphone": "Berechtigungsalarm",
-    "permission-alert-message-microphone": "ComOn hat keinen Zugriff auf dein Mikrofon. Um den Zugriff zu aktivieren, tippe auf Einstellungen und schalte es ein.",
+    "permission-alert-message-microphone": "MeetUs hat keinen Zugriff auf dein Mikrofon. Um den Zugriff zu aktivieren, tippe auf Einstellungen und schalte es ein.",
     "failed-to-upload-wallpaer": "Fehler beim Hochladen des Hintergrundbildes.",
     "incoming-call-from-subscription": "Eingehender Anruf von Abonnement",
     "is-calling": "ruft an"
@@ -1103,18 +1103,18 @@
   "toJoin": "Ihrer Organisation beizutreten",
   "forwarded": "weitergeleitet",
   "repliedOn": "Antwort am",
-  "welcomeSignup": "Willkommen. Du bist nur wenige Schritte davon entfernt, dich als Mitglied bei ComOn zu registrieren. Du wurdest über deine Telefonnummer eingeladen und wirst damit registriert.",
+  "welcomeSignup": "Willkommen. Du bist nur wenige Schritte davon entfernt, dich als Mitglied bei MeetUs zu registrieren. Du wurdest über deine Telefonnummer eingeladen und wirst damit registriert.",
   "mandatorySignupFields": "Bitte füllen Sie die mit einem Sternchen gekennzeichneten Felder aus und geben Sie ein Passwort ein, das Sie sich leicht merken können.",
   "passwordCharacterstics": "Das Passwort muss aus mindestens 6 Zeichen bestehen. Mindestens ein Großbuchstabe, ein Kleinbuchstabe, eine Zahl und ein Sonderzeichen wie @+-#§$%&.",
-  "goodluck": "Wir freuen uns, Sie in der ComOn-Community begrüßen zu dürfen.",
-  "agreeTermsAndCondition": "Du musst zustimmen, um Mitglied bei ComOn zu werden.",
+  "goodluck": "Wir freuen uns, Sie in der MeetUs-Community begrüßen zu dürfen.",
+  "agreeTermsAndCondition": "Du musst zustimmen, um Mitglied bei MeetUs zu werden.",
   "accessPermission": "Zugriffsberechtigung auf Kontakte",
-  "contactDisclosure": "ComOn verbessert deine Chat-Erfahrung, indem es Kontakte synchronisiert, um personalisierte Benutzernamen zu ermöglichen. Deine Kontakte bleiben auf unserem Server und werden nur dir zugewiesen und niemals extern geteilt. Bitte klicke auf OK, um fortzufahren.",
-  "mediaConsent": "Zugriff auf und Weitergabe von Medien durch ComOn:",
-  "mediaDisclosure": "ComOn bereichert deine Chat-Erfahrung durch personalisiertes Medien-Sharing. Deine Bilder und Videos bleiben innerhalb von ComOn, werden nur in deinen individuellen und Gruppen-Chats geteilt und niemals extern weitergegeben.\n\n Wie ComOn deine Medien verwendet und teilt:\n\n‣ Bilder und Videos teilen: Verbessere deine Kommunikation durch personalisiertes Medien-Sharing.\n‣ Fotos und Videos aufnehmen: Genieße eine nahtlose Kameraerfahrung innerhalb von ComOn.\n‣ Deine Medien: Werden auf unserem sicheren Server ausschließlich für deine Chats verarbeitet.\n‣ Keine Weitergabe an Dritte: Deine Medien werden nur innerhalb von ComOn geteilt und respektieren deine Privatsphäre.",
-  "invitation": "Eine Einladung verschicken, um Mitglied bei ComOn zu werden",
+  "contactDisclosure": "MeetUs verbessert deine Chat-Erfahrung, indem es Kontakte synchronisiert, um personalisierte Benutzernamen zu ermöglichen. Deine Kontakte bleiben auf unserem Server und werden nur dir zugewiesen und niemals extern geteilt. Bitte klicke auf OK, um fortzufahren.",
+  "mediaConsent": "Zugriff auf und Weitergabe von Medien durch MeetUs:",
+  "mediaDisclosure": "MeetUs bereichert deine Chat-Erfahrung durch personalisiertes Medien-Sharing. Deine Bilder und Videos bleiben innerhalb von MeetUs, werden nur in deinen individuellen und Gruppen-Chats geteilt und niemals extern weitergegeben.\n\n Wie MeetUs deine Medien verwendet und teilt:\n\n‣ Bilder und Videos teilen: Verbessere deine Kommunikation durch personalisiertes Medien-Sharing.\n‣ Fotos und Videos aufnehmen: Genieße eine nahtlose Kameraerfahrung innerhalb von MeetUs.\n‣ Deine Medien: Werden auf unserem sicheren Server ausschließlich für deine Chats verarbeitet.\n‣ Keine Weitergabe an Dritte: Deine Medien werden nur innerhalb von MeetUs geteilt und respektieren deine Privatsphäre.",
+  "invitation": "Eine Einladung verschicken, um Mitglied bei MeetUs zu werden",
   "invitationSuggestion": "Bitte wähle einen Kontakt aus und drücke auf die Einladungsschaltfläche. Der Kontakt ist markiert, um eingeladen zu werden. Du wirst den Kontakt auch über jede andere Nachrichten-App, die dein Kontakt verwendet, einladen.",
-  "linkShare": "Hallo 👋, ich sende einen Link für eine beeindruckende App. ComOn kommuniziert sicher und verschlüsselt miteinander und ermöglicht Aufgaben - auch in großen Teams - auf eine nachvollziehbare Weise erstellt und bearbeitet zu werden.\n\nHier klicken zum Herunterladen:",
+  "linkShare": "Hallo 👋, ich sende einen Link für eine beeindruckende App. MeetUs kommuniziert sicher und verschlüsselt miteinander und ermöglicht Aufgaben - auch in großen Teams - auf eine nachvollziehbare Weise erstellt und bearbeitet zu werden.\n\nHier klicken zum Herunterladen:",
   "messengerService": "Bitte wähle einen Messenger aus dem nächsten Bildschirm aus, um die angezeigte Nachricht zu senden.",
   "message": "Nachricht",
   "invitationMessage": "Einladungsnachricht",
@@ -1154,14 +1154,14 @@
   "noMember": "Kein Mitglied hinzugefügt",
   "setWallpaper": "Hintergrundbild für bessere Erfahrung einstellen",
   "goToSettings": "Zu den Einstellungen gehen",
-  "defaultWallpaper": "Dies ist das Standard-Comon-Hintergrundbild",
+  "defaultWallpaper": "Dies ist das Standard-MeetUs-Hintergrundbild",
   "noLongerParticipant": "Sie können keine Nachrichten an diese Gruppe senden, weil Sie kein Teilnehmer mehr sind.",
   "blockedUser": "Sie haben diesen Benutzer blockiert",
   "onlyAdminMsg": "Nur der Administrator kann Nachrichten senden",
   "matches": "übereinstimmungen",
   "Message": "Nachricht",
   "saveContact": "Kontakt speichern",
-  "inviteToComon": "Zu ComOn einladen",
+  "inviteToComon": "Zu MeetUs einladen",
   "createdGroup": "Gruppe erstellt",
   "inCall": "Im Anruf",
   "leftCall": "Anruf verlassen",
@@ -1190,9 +1190,9 @@
   "document": "DOKUMENT",
   "chatClear": "Chat erfolgreich gelöscht",
   "criticalUpdate": "Obligatorisches kritisches Update",
-  "criticalUpdateDesc": "Sie verwenden eine veraltete Version von ComOn. Bitte aktualisieren Sie die App jetzt, um sie weiterhin verwenden zu können!",
+  "criticalUpdateDesc": "Sie verwenden eine veraltete Version von MeetUs. Bitte aktualisieren Sie die App jetzt, um sie weiterhin verwenden zu können!",
   "updateAvailable": "Update verfügbar",
-  "updateAvailableDesc": "Ein Update für die ComOn-App ist verfügbar. Bitte aktualisieren Sie für ein besseres Erlebnis!",
+  "updateAvailableDesc": "Ein Update für die MeetUs-App ist verfügbar. Bitte aktualisieren Sie für ein besseres Erlebnis!",
   "updateNow": "Jetzt aktualisieren",
   "exit": "Beenden",
   "skip": "Überspringen",

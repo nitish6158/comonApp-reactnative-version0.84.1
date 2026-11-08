@@ -45,7 +45,7 @@ function resolveLiveKitUrl(rawUrl: string | undefined): string {
 
 export const env = {
   appEnv: (Config.APP_ENV ?? 'development') as AppEnvironment,
-  appName: Config.APP_NAME ?? 'Comon',
+  appName: Config.APP_NAME ?? 'MeetUs',
   publicApiHost: normalizeUrl(Config.PUBLIC_API_HOST, DEFAULT_PUBLIC_API_HOST),
   publicApi: normalizeUrl(Config.PUBLIC_API, DEFAULT_PUBLIC_API),
   publicUrl: normalizeUrl(Config.PUBLIC_URL, DEFAULT_PUBLIC_URL),

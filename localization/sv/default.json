@@ -74,14 +74,14 @@
   "onlineStatus": {
     "contact-refresh": "För att se den uppdaterade telefonboken, tryck på Uppdatera-knappen högst upp.",
     "major-update": "Stor uppdatering",
-    "major-update-des": "Det finns en stor uppdatering i ComOn-appen, avinstallera den och installera om den för att använda.",
+    "major-update-des": "Det finns en stor uppdatering i MeetUs-appen, avinstallera den och installera om den för att använda.",
     "stable-version": "Stabil version",
     "uninstall-app": "Avinstallera app",
     "close-app": "Stäng app",
     "contact-error": "Det uppstod ett fel vid synkronisering av dina kontakter på vår server.",
     "updating-contact": "Uppdaterar kontaktlista",
     "checking-contact": "Kontrollera kontaktlista",
-    "contact-syncing": "Kontakterna synkroniseras med ComOn-servern, vänligen vänta",
+    "contact-syncing": "Kontakterna synkroniseras med MeetUs-servern, vänligen vänta",
     "retry": "Försök igen",
     "update-reminder": "Uppdateringspåminnelse",
     "set-reminder": "Ställ in påminnelse",
@@ -534,7 +534,7 @@
     }
   },
   "sign-in": {
-    "title": "Välkommen till ComOn",
+    "title": "Välkommen till MeetUs",
     "remember": "Kom ihåg mig",
     "submit": "Logga in",
     "actions": {
@@ -677,7 +677,7 @@
   },
   "sign-up": {
     "title": "Registrera dig för att bli medlem",
-    "label": "Om du är en ComOn-användare -",
+    "label": "Om du är en MeetUs-användare -",
     "back": "Logga in"
   },
   "label": {
@@ -738,8 +738,8 @@
   "contacts": {
     "numbers": "Välj ett telefonnummer",
     "sms": {
-      "title": "ComOn Inbjudan",
-      "description": "Gå med i ComOn nu! 😊 Vänligen ladda ner applikationen på "
+      "title": "MeetUs Inbjudan",
+      "description": "Gå med i MeetUs nu! 😊 Vänligen ladda ner applikationen på "
     },
     "denied": {
       "title": "Ändra appens behörigheter för att tillåta dina kontakter!",
@@ -818,7 +818,7 @@
     "custom-tone": "Anpassad ton",
     "alert-tone": "Varningsljud",
     "None-Default": "Inget (Standard)",
-    "comon-wallpaper-description": "Detta är standardbakgrundsbilden för Comon",
+    "comon-wallpaper-description": "Detta är standardbakgrundsbilden för MeetUs",
     "set-wallpaper-description-": "Ange bakgrundsbild för en bättre upplevelse"
   },
   "disapper-messages": {
@@ -874,9 +874,9 @@
     "invalid-phone-number": "Ogiltigt telefonnummer",
     "please-check-number": "Kontrollera telefonnumret",
     "permission-alert": "Behörighetsvarning",
-    "permission-alert-message": "ComOn har inte åtkomst till din kamera eller bibliotek. För att aktivera åtkomst, tryck på Inställningar och aktivera ",
+    "permission-alert-message": "MeetUs har inte åtkomst till din kamera eller bibliotek. För att aktivera åtkomst, tryck på Inställningar och aktivera ",
     "permission-alert-microphone": "Behörighetsvarning",
-    "permission-alert-message-microphone": "ComOn har inte åtkomst till din mikrofon. För att aktivera åtkomst, tryck på Inställningar och aktivera det.",
+    "permission-alert-message-microphone": "MeetUs har inte åtkomst till din mikrofon. För att aktivera åtkomst, tryck på Inställningar och aktivera det.",
     "failed-to-upload-wallpaer": "Misslyckades med att ladda upp tapet.",
     "incoming-call-from-subscription": "Inkommande samtal från prenumeration",
     "is-calling": "ringer"
@@ -1077,18 +1077,18 @@
   "toJoin": "att gå med i din organisation",
   "forwarded": "vidarebefordrat",
   "repliedOn": "Svarade den",
-  "welcomeSignup": "Välkommen. Du är bara några steg från att registrera dig som medlem i ComOn. Du har blivit inbjuden på ditt telefonnummer och kommer att registreras med det.",
+  "welcomeSignup": "Välkommen. Du är bara några steg från att registrera dig som medlem i MeetUs. Du har blivit inbjuden på ditt telefonnummer och kommer att registreras med det.",
   "mandatorySignupFields": "Fyll i fälten markerade med en asterisk och kom ihåg ditt lösenord.",
   "passwordCharacterstics": "Lösenordet måste bestå av minst 6 tecken. Minst en stor bokstav, en liten bokstav, en siffra och ett specialtecken som @+-#§$%&.",
   "goodluck": "Lycka till!!!!",
-  "agreeTermsAndCondition": "Du måste godkänna för att bli medlem i ComOn",
+  "agreeTermsAndCondition": "Du måste godkänna för att bli medlem i MeetUs",
   "accessPermission": "Kontaktåtkomsttillstånd",
-  "contactDisclosure": "ComOn förbättrar din chattupplevelse genom att synkronisera kontakter för personliga användarnamn. Dina kontakter förblir på vår server, endast tillgängliga för dig, och delas aldrig externt. Klicka på ok för att fortsätta",
-  "mediaConsent": "ComOn Medietillgång & Delningssamtycke:",
-  "mediaDisclosure": "ComOn berikar din chattupplevelse med personlig mediedelning. Dina bilder och videor stannar inom ComOn, delas endast i dina individuella och gruppchattrum, och delas aldrig externt.\n\n Hur ComOn använder och delar din media:\n\n‣ Dela bilder och videor: Förbättra din kommunikation med personlig mediedelning.\n‣ Ta foton och videor: Njut av en smidig kameraupplevelse inom ComOn.\n‣ Din media: Bearbetas på vår säkra server exklusivt för dina chattar.\n‣ Ingen tredjepartsdelning: Din media delas endast inom ComOn och respekterar din integritet.",
-  "invitation": "Skicka en inbjudan att bli medlem i ComOn",
+  "contactDisclosure": "MeetUs förbättrar din chattupplevelse genom att synkronisera kontakter för personliga användarnamn. Dina kontakter förblir på vår server, endast tillgängliga för dig, och delas aldrig externt. Klicka på ok för att fortsätta",
+  "mediaConsent": "MeetUs Medietillgång & Delningssamtycke:",
+  "mediaDisclosure": "MeetUs berikar din chattupplevelse med personlig mediedelning. Dina bilder och videor stannar inom MeetUs, delas endast i dina individuella och gruppchattrum, och delas aldrig externt.\n\n Hur MeetUs använder och delar din media:\n\n‣ Dela bilder och videor: Förbättra din kommunikation med personlig mediedelning.\n‣ Ta foton och videor: Njut av en smidig kameraupplevelse inom MeetUs.\n‣ Din media: Bearbetas på vår säkra server exklusivt för dina chattar.\n‣ Ingen tredjepartsdelning: Din media delas endast inom MeetUs och respekterar din integritet.",
+  "invitation": "Skicka en inbjudan att bli medlem i MeetUs",
   "invitationSuggestion": "Vänligen välj en kontakt och tryck på inbjudningsknappen. Kontakten är markerad för att bli inbjuden. Du kommer att bjuda in kontakten genom vilken annan meddelandeapp din kontakt också använder.",
-  "linkShare": "Hej 👋, Jag skickar en länk till en imponerande app. ComOn kommunicerar säkert och krypterat med varandra och gör det möjligt att skapa och redigera uppgifter - även i stora team - på ett spårbart sätt.\n\nKlicka här för att ladda ner:",
+  "linkShare": "Hej 👋, Jag skickar en länk till en imponerande app. MeetUs kommunicerar säkert och krypterat med varandra och gör det möjligt att skapa och redigera uppgifter - även i stora team - på ett spårbart sätt.\n\nKlicka här för att ladda ner:",
   "messengerService": "Välj en av messenger-tjänsterna på nästa skärm för att skicka det visas meddelandet",
   "message": "Meddelande",
   "invitationMessage": "Inbjudningsmeddelande",
@@ -1128,14 +1128,14 @@
   "noMember": "Ingen medlem tillagd",
   "setWallpaper": "Ställ in bakgrundsbild för en bättre upplevelse",
   "goToSettings": "Gå till inställningar",
-  "defaultWallpaper": "Detta är standard Comon-bakgrundsbilden",
+  "defaultWallpaper": "Detta är standard MeetUs-bakgrundsbilden",
   "noLongerParticipant": "Du kan inte skicka meddelanden till den här gruppen eftersom du inte längre är en deltagare.",
   "blockedUser": "Du har blockerat denna användare",
   "onlyAdminMsg": "Endast administratör kan skicka meddelanden",
   "matches": "matcher",
   "Message": "Meddelande",
   "saveContact": "Spara kontakt",
-  "inviteToComon": "Bjud in till ComOn",
+  "inviteToComon": "Bjud in till MeetUs",
   "createdGroup": "skapade grupp",
   "inCall": "I samtal",
   "leftCall": "Lämnade samtal",
@@ -1164,9 +1164,9 @@
   "document": "DOKUMENT",
   "chatClear": "Chatten rensad framgångsrikt",
   "criticalUpdate": "Obligatorisk kritisk uppdatering",
-  "criticalUpdateDesc": "Du använder en föråldrad version av ComOn. Uppdatera appen nu för att fortsätta använda den!",
+  "criticalUpdateDesc": "Du använder en föråldrad version av MeetUs. Uppdatera appen nu för att fortsätta använda den!",
   "updateAvailable": "Uppdatering finns tillgänglig",
-  "updateAvailableDesc": "En uppdatering är tillgänglig för ComOn-appen. Uppdatera för en bättre upplevelse!",
+  "updateAvailableDesc": "En uppdatering är tillgänglig för MeetUs-appen. Uppdatera för en bättre upplevelse!",
   "updateNow": "Uppdatera nu",
   "exit": "Avsluta",
   "skip": "Hoppa över",

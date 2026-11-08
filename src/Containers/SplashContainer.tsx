@@ -771,22 +771,31 @@ export default function SplashContainer() {
   }
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "white" }}>
+    <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <FastImage
-        source={require("../../assets/images/logo.png")}
-        style={{ height: 210, width: 210, marginBottom: 130 }}
+        source={require("../../assets/images/splash.png")}
+        style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+        resizeMode={FastImage.resizeMode.cover}
       />
 
-      <Progress.Bar progress={percentage} width={200} color={Colors.light.PrimaryColor} />
+      <View style={{ position: "absolute", bottom: 60, width: "100%", alignItems: "center" }}>
+        <Progress.Bar
+          progress={percentage}
+          width={180}
+          height={4}
+          color={Colors.light.PrimaryColor}
+          unfilledColor="rgba(0, 102, 255, 0.15)"
+          borderWidth={0}
+        />
+      </View>
       <Dialog
         visible={PermissionModal}
         overlayBackgroundColor="white"
         containerStyle={{ justifyContent: "space-between", paddingVertical: 40 }}
         ignoreBackgroundPress={true}
       >
-        <Text style={{ fontSize: 18, textAlign: "center", marginBottom: 15, fontWeight: "500", marginBottom: 150 }}>
-          You can not use Comon app without Allowing for contact permission. Please allow contact permission in
-          settings.
+        <Text style={{ fontSize: 18, textAlign: "center", fontWeight: "500", marginBottom: 150 }}>
+          You cannot use MeetUs app without allowing contact permission. Please allow contact permission in settings.
         </Text>
         <View>
           <Button

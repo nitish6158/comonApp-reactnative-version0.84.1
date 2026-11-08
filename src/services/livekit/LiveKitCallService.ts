@@ -79,20 +79,24 @@ export class LiveKitCallService {
       this.myUid = uid;
       await this.leave();
 
-      // Configure AudioSession for voice/video communication
-      await AudioSession.configureAudio({
-        android: {
-          preferredOutputList: ["bluetooth", "headset", "speaker", "earpiece"],
-          audioTypeOptions: {
-            manageAudioFocus: true,
-            audioMode: "inCommunication",
-            audioFocusMode: "gain",
-            audioAttributesUsageType: "voiceCommunication",
-            audioAttributesContentType: "speech",
+      // Configure AudioSession for voice/video communication (guarded against native uninitialized states)
+      try {
+        await AudioSession.configureAudio({
+          android: {
+            preferredOutputList: ["bluetooth", "headset", "speaker", "earpiece"],
+            audioTypeOptions: {
+              manageAudioFocus: true,
+              audioMode: "inCommunication",
+              audioFocusMode: "gain",
+              audioAttributesUsageType: "voiceCommunication",
+              audioAttributesContentType: "speech",
+            },
           },
-        },
-      });
-      await AudioSession.startAudioSession();
+        });
+        await AudioSession.startAudioSession();
+      } catch (audioErr) {
+        console.warn("[LiveKitCallService] AudioSession setup warning (native ADM may need rebuild):", audioErr);
+      }
 
       // Set up E2EE (End-to-End Encryption)
       const secret = e2eeKey || this.deriveE2EEKey(callId, channelName);

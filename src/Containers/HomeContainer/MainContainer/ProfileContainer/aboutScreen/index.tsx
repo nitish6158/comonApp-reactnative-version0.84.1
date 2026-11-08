@@ -13,12 +13,12 @@ export default function AboutContainer() {
 
   return (
     <View style={styles.main}>
-      <StatusBar backgroundColor={"#B4E8FF"} />
-      <HeaderWithBack customStyle={{ backgroundColor: "#B4E8FF" }} />
+      <StatusBar backgroundColor={Colors.light.PrimaryColor} />
+      <HeaderWithBack customStyle={{ backgroundColor: Colors.light.PrimaryColor }} />
       <View style={styles.container}>
         <View style={styles.logoContainer}>
           <FastImage source={require("@Images/logo.png")} style={{ width: 200, height: 200 }} />
-          <Text style={styles.appName}>ComOn</Text>
+          <Text style={styles.appName}>MeetUs</Text>
           <Text style={styles.appVersion}>{`${t("titles.version", { defaultValue: "Version" })} ${DeviceInfo.getVersion()} (${
             DeviceInfo.getBuildNumber() ?? "-"
           })`}</Text>
@@ -52,7 +52,7 @@ export default function AboutContainer() {
             <Text style={{ fontSize: 14, color: "rgba(51, 51, 51, 1)" }}>{t("titles.privacy-policy")}</Text>
           </Pressable>
 
-          <Text style={{ fontSize: 12, color: "#828282", marginTop: 30 }}>{"@ 2020 ComOn Inc."}</Text>
+          <Text style={{ fontSize: 12, color: "#828282", marginTop: 30 }}>{"@ 2026 MeetUs Inc."}</Text>
         </View>
       </View>
     </View>
@@ -62,7 +62,7 @@ export default function AboutContainer() {
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    backgroundColor: "#B4E8FF",
+    backgroundColor: Colors.light.PrimaryColor,
   },
   container: {
     flexGrow: 1,

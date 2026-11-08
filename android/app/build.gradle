@@ -122,7 +122,7 @@ android {
         multiDexEnabled true
         resValue "string", "build_config_package", "io.comon.app"
         manifestPlaceholders = [
-            appName: "Comon",
+            appName: "MeetUs",
             usesCleartextTraffic: "false",
         ]
 
@@ -137,21 +137,21 @@ android {
         development {
             dimension "environment"
             manifestPlaceholders = [
-                appName: "Comon Dev",
+                appName: "MeetUs Dev",
                 usesCleartextTraffic: "true",
             ]
         }
         staging {
             dimension "environment"
             manifestPlaceholders = [
-                appName: "Comon Staging",
+                appName: "MeetUs Staging",
                 usesCleartextTraffic: "false",
             ]
         }
         production {
             dimension "environment"
             manifestPlaceholders = [
-                appName: "Comon",
+                appName: "MeetUs",
                 usesCleartextTraffic: "false",
             ]
         }

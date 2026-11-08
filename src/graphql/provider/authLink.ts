@@ -87,10 +87,15 @@ const authLink = setContext(async (request, { headers }) => {
     }
   }
   console.log("Token is",token)
+  const authHeaders: Record<string, string> = {};
+  if (token && token !== "undefined" && token !== "null") {
+    authHeaders.Authorization = `Bearer ${token}`;
+  }
+
   let header = {
     headers: {
       ...headers,
-      Authorization: token ? `Bearer ${token}` : undefined,
+      ...authHeaders,
     },
   };
 

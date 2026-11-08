@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { ScreenWidth } from "react-native-elements/dist/helpers";
 import { FlatList } from "react-native-gesture-handler";
 
-export type tabType = "All" | "Comon" | "Other";
+export type tabType = "All" | "MeetUs" | "Comon" | "Other";
 
 type props = {
   currectTab: tabType;

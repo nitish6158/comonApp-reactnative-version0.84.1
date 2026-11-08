@@ -191,7 +191,7 @@ function ContactsScreen() {
           <NativeText style={style.suggestionStyle}>{t("invitationSuggestion")}</NativeText>
           <ContactTabView
             currectTab={currentTab}
-            tabList={[t("calls.all"), "Comon", t("label.other")]}
+            tabList={[t("calls.all"), "MeetUs", t("label.other")]}
             onTabPressed={setCurrentTab}
           />
           <View style={{ height: Platform.OS === "ios" ? height - 200 : height, backgroundColor: "white" }}>
@@ -750,7 +750,7 @@ function ContactsScreen() {
     const regex = /[A-Za-z]/;
 
     //hasComon
-    if (currentTab == "Comon") {
+    if (currentTab == "MeetUs" || currentTab == "Comon") {
       filtered = filtered.filter((item) => item.hasComon == true);
       // console.log(filtered);
     }

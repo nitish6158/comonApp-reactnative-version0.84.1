@@ -112,7 +112,7 @@ function Contact({
         >
           {item.hasComon || isInvited ? (
             <Text size="xs" style={{ color: "white" }}>
-              {item.hasComon ? "ComOn" : t("others.Invited")}
+              {item.hasComon ? "MeetUs" : t("others.Invited")}
             </Text>
           ) : (
             <Text size="xs" style={{ color: "white" }}>

@@ -4,11 +4,18 @@
  */
 
 export const Palette = {
-  // Brand / Primaries
-  primary: "#34CCFF",
-  primaryLight: "#A0E7FF",
-  primaryDark: "#115ABB",
-  primaryHover: "#5CDCFF",
+  // Brand / Primaries (from MeetUs splash screen branding: vibrant royal blue & purple)
+  primary: "#0B63F6",
+  primaryLight: "#EEF4FF",
+  primaryDark: "#0842A0",
+  primaryHover: "#2575FC",
+
+  // MeetUs Purple Gradient & Accent
+  purple: "#7C3AED",
+  purpleLight: "#F5F0FF",
+  purpleDark: "#5B21B6",
+  gradientStart: "#0B63F6",
+  gradientEnd: "#7C3AED",
 
   // Neutrals
   white: "#FFFFFF",
@@ -25,22 +32,22 @@ export const Palette = {
   gray900: "#222222",
 
   // Semantics / Feedback
-  success: "#18BD5A",
-  successLight: "#E8F8EE",
-  warning: "#EC942C",
-  warningLight: "#FEF4E8",
-  error: "#FF4D4F",
-  errorLight: "#FFF1F0",
-  info: "#007BFF",
-  infoLight: "#E6F0FF",
+  success: "#10B981",
+  successLight: "#ECFDF5",
+  warning: "#F59E0B",
+  warningLight: "#FFFBEB",
+  error: "#EF4444",
+  errorLight: "#FEF2F2",
+  info: "#0B63F6",
+  infoLight: "#EFF6FF",
 
   // Accents & Specialized
-  teal: "#135D66",
-  deepBlue: "#284B63",
-  softRed: "#FF8183",
-  lightRed: "#FF7D7D",
-  lightBlueBg: "#F3F9FC",
-  lightActiveBg: "#F0FEFF",
+  teal: "#0D9488",
+  deepBlue: "#1E3A8A",
+  softRed: "#F87171",
+  lightRed: "#FCA5A5",
+  lightBlueBg: "#F0F5FF",
+  lightActiveBg: "#EEF2FF",
   transparent: "transparent",
   backdrop: "rgba(0, 0, 0, 0.5)",
   overlayDark: "rgba(0, 0, 0, 0.7)",
@@ -54,13 +61,16 @@ const Colors = {
     text: "#000000D9",
     link: Palette.primary,
     blue: Palette.primaryDark,
+    purple: Palette.purple,
+    gradientStart: Palette.gradientStart,
+    gradientEnd: Palette.gradientEnd,
     Hiddengray: Palette.gray600,
     background: Palette.white,
     backgroundGray: Palette.gray100,
     backgroundActive: Palette.lightActiveBg,
     onlineGreen: Palette.success,
     AddMemberGreen: Palette.success,
-    backgroundMessage: "#32A4EE",
+    backgroundMessage: Palette.primary,
     backgroundMessageQuestion: "#F0F0F0",
     tintText: "#00000073",
     grayText: Palette.gray700,

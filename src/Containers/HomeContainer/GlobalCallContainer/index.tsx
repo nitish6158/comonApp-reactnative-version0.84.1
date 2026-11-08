@@ -482,7 +482,7 @@ function ActiveCallModel() {
         remoteUserList.current = callRequest?.appKilled?.participantUid;
         setRemoteUserListState(callRequest?.appKilled?.participantUid);
         joined.current = true;
-        callStatus.current = `ComOn ${callRequest?.callType == "audio" ? t("audio") : t("video")} ${t("call")}`;
+        callStatus.current = `MeetUs ${callRequest?.callType == "audio" ? t("audio") : t("video")} ${t("call")}`;
         callTimer({ type: "SPECIFIC", duration: Number(callRequest?.appKilled?.startTime ?? 0) });
 
         if (callRequest?.callType === "video") {
@@ -499,7 +499,7 @@ function ActiveCallModel() {
         console.log(`Call to doSomething took ${endTime - startTime} milliseconds.`);
       } else {
         console.log(callRequest);
-        callStatus.current = `ComOn ${callRequest?.callType == "audio" ? t("audio") : t("video")} ${t("call")}`;
+        callStatus.current = `MeetUs ${callRequest?.callType == "audio" ? t("audio") : t("video")} ${t("call")}`;
         createNewCall(callRequest, CloseCallONError).then(async (data) => {
           console.log("[GlobalCallContainer] createNewCall result:", JSON.stringify(data));
           console.log("[GlobalCallContainer] MyProfile _id:", MyProfile?._id);

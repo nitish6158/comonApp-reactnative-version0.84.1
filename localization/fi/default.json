@@ -73,14 +73,14 @@
   "onlineStatus": {
     "contact-refresh": "Näet päivitetyn puhelinluettelon painamalla ylhäällä olevaa Päivitä-painiketta.",
     "major-update": "Suuri päivitys",
-    "major-update-des": "ComOn-sovelluksessa on suuri päivitys, poista sovellus ja asenna se uudelleen käyttääksesi sitä.",
+    "major-update-des": "MeetUs-sovelluksessa on suuri päivitys, poista sovellus ja asenna se uudelleen käyttääksesi sitä.",
     "stable-version": "Vakaa versio",
     "uninstall-app": "Poista sovellus",
     "close-app": "Sulje sovellus",
     "contact-error": "Virhe synkronoitaessa yhteystietojasi palvelimellemme.",
     "updating-contact": "Päivitetään yhteystietoluetteloa",
     "checking-contact": "Tarkistetaan yhteystietoluetteloa",
-    "contact-syncing": "Yhteystietoja synkronoidaan ComOn-palvelimelle, odota hetki",
+    "contact-syncing": "Yhteystietoja synkronoidaan MeetUs-palvelimelle, odota hetki",
     "retry": "Yritä uudelleen",
     "update-reminder": "Päivitysmuistutus",
     "set-reminder": "Aseta muistutus",
@@ -532,7 +532,7 @@
     }
   },
   "sign-in": {
-    "title": "Tervetuloa ComOniin",
+    "title": "Tervetuloa MeetUsiin",
     "remember": "Muista minut",
     "submit": "Kirjaudu",
     "actions": {
@@ -676,7 +676,7 @@
   },
   "sign-up": {
     "title": "Rekisteröidy jäseneksi",
-    "label": "Jos olet ComOn-käyttäjä -",
+    "label": "Jos olet MeetUs-käyttäjä -",
     "back": "Kirjaudu sisään"
   },
   "label": {
@@ -751,8 +751,8 @@
   "contacts": {
     "numbers": "Valitse puhelinnumero",
     "sms": {
-      "title": "ComOn-kutsu",
-      "description": "Liity ComOniin nyt! 😊 Lataa sovellus osoitteesta "
+      "title": "MeetUs-kutsu",
+      "description": "Liity MeetUsiin nyt! 😊 Lataa sovellus osoitteesta "
     },
     "denied": {
       "title": "Muuta sovelluslupia salliaksesi yhteystietojesi käytön!",
@@ -831,7 +831,7 @@
     "custom-tone": "Mukautettu sävy",
     "alert-tone": "Hälytystoiminto",
     "None-Default": "Ei (Oletus)",
-    "comon-wallpaper-description": "Tämä on Comon oletustaustakuva",
+    "comon-wallpaper-description": "Tämä on MeetUs oletustaustakuva",
     "set-wallpaper-description-": "Aseta taustakuva paremman kokemuksen saamiseksi"
   },
   "disapper-messages": {
@@ -887,9 +887,9 @@
     "invalid-phone-number": "Virheellinen puhelinnumero.",
     "please-check-number": "Tarkista numero.",
     "permission-alert": "Lupa hälytys",
-    "permission-alert-message": "ComOnilla ei ole pääsyä kameraasi tai kirjastoosi. Voit sallia pääsyn napauttamalla Asetuksia ja ottamalla sen käyttöön.",
+    "permission-alert-message": "MeetUsilla ei ole pääsyä kameraasi tai kirjastoosi. Voit sallia pääsyn napauttamalla Asetuksia ja ottamalla sen käyttöön.",
     "permission-alert-microphone": "Lupa hälytys",
-    "permission-alert-message-microphone": "ComOnilla ei ole pääsyä mikrofoniisi. Voit sallia pääsyn menemällä Asetuksiin ja ottamalla sen käyttöön.",
+    "permission-alert-message-microphone": "MeetUsilla ei ole pääsyä mikrofoniisi. Voit sallia pääsyn menemällä Asetuksiin ja ottamalla sen käyttöön.",
     "failed-to-upload-wallpaer": "Taustakuvan lataus epäonnistui.",
     "incoming-call-from-subscription": "Saapuva puhelu tilauksesta",
     "is-calling": "soittaa"
@@ -1090,18 +1090,18 @@
   "toJoin": "liittymään organisaatioosi",
   "forwarded": "edelleenlähetetty",
   "repliedOn": "Vastattu",
-  "welcomeSignup": "Tervetuloa. Olet vain muutaman askeleen päässä rekisteröitymisestä ComOn-jäseneksi. Olet kutsuttu puhelinnumerollasi ja rekisteröidyt sillä.",
+  "welcomeSignup": "Tervetuloa. Olet vain muutaman askeleen päässä rekisteröitymisestä MeetUs-jäseneksi. Olet kutsuttu puhelinnumerollasi ja rekisteröidyt sillä.",
   "mandatorySignupFields": "Täytä tähdellä merkityt kentät ja muista salasanasi.",
   "passwordCharacterstics": "Salasanan on oltava vähintään 6 merkkiä pitkä. Siinä on oltava vähintään yksi iso kirjain, yksi pieni kirjain, yksi numero ja yksi erikoismerkki, kuten @+-#§$%&.",
   "goodluck": "Onnea matkaan!!!!",
-  "agreeTermsAndCondition": "Sinun on hyväksyttävä ComOn-jäseneksi tuleminen",
+  "agreeTermsAndCondition": "Sinun on hyväksyttävä MeetUs-jäseneksi tuleminen",
   "accessPermission": "Yhteystiedot-syöttöoikeus",
-  "contactDisclosure": "ComOn parantaa Chattikokemustasi synkronoimalla yhteystiedot henkilökohtaisten käyttäjänimien saamiseksi. Yhteystiedot pysyvät palvelimellamme, palvellen vain sinua, eikä niitä koskaan jaeta ulkoisesti. Klikkaa ok jatkaaksesi",
-  "mediaConsent": "ComOn Media Access & Sharing Consent:",
-  "mediaDisclosure": "ComOn rikastuttaa Chattikokemustasi henkilökohtaisella medianjakamisella. Kuvat ja videot pysyvät ComOnin sisällä, jaetaan vain yksilöllisissä ja ryhmä Chattihuoneissasi, eivätkä koskaan jaettu ulkoisesti.\n\n Miten ComOn käyttää ja jakaa mediaasi:\n\n‣ Jaa kuvia ja videoita: Paranna viestintääsi henkilökohtaisella medianjakamisella.\n‣ Ota valokuvia ja videoita: Nauti saumattomasta kameraelämyksestä ComOnin sisällä.\n‣ Sinun media: Käsitellään turvallisella palvelimellamme yksinomaan Chattiesi varalta.\n‣ Ei kolmannen osapuolen jakamista: Mediaasi jaetaan vain ComOnin sisällä, kunnioittaen yksityisyyttäsi.",
-  "invitation": "Lähetä kutsu tulla ComOn-jäseneksi",
+  "contactDisclosure": "MeetUs parantaa Chattikokemustasi synkronoimalla yhteystiedot henkilökohtaisten käyttäjänimien saamiseksi. Yhteystiedot pysyvät palvelimellamme, palvellen vain sinua, eikä niitä koskaan jaeta ulkoisesti. Klikkaa ok jatkaaksesi",
+  "mediaConsent": "MeetUs Media Access & Sharing Consent:",
+  "mediaDisclosure": "MeetUs rikastuttaa Chattikokemustasi henkilökohtaisella medianjakamisella. Kuvat ja videot pysyvät MeetUsin sisällä, jaetaan vain yksilöllisissä ja ryhmä Chattihuoneissasi, eivätkä koskaan jaettu ulkoisesti.\n\n Miten MeetUs käyttää ja jakaa mediaasi:\n\n‣ Jaa kuvia ja videoita: Paranna viestintääsi henkilökohtaisella medianjakamisella.\n‣ Ota valokuvia ja videoita: Nauti saumattomasta kameraelämyksestä MeetUsin sisällä.\n‣ Sinun media: Käsitellään turvallisella palvelimellamme yksinomaan Chattiesi varalta.\n‣ Ei kolmannen osapuolen jakamista: Mediaasi jaetaan vain MeetUsin sisällä, kunnioittaen yksityisyyttäsi.",
+  "invitation": "Lähetä kutsu tulla MeetUs-jäseneksi",
   "invitationSuggestion": "Valitse yhteystieto ja paina kutsupainiketta. Yhteystieto on merkitty kutsuttavaksi. Kutsut yhteystiedon myös muilla viestisovelluksilla, joita yhteystiedosi käyttää.",
-  "linkShare": "Hei 👋, Lähetän linkin vaikuttavalle sovellukselle. ComOn kommunikoi turvallisesti ja salatusti toistensa kanssa ja mahdollistaa tehtävien - jopa suurissa tiimeissä - luomisen ja muokkaamisen jäljitettävällä tavalla.\n\nKlikkaa tästä ladataksesi:",
+  "linkShare": "Hei 👋, Lähetän linkin vaikuttavalle sovellukselle. MeetUs kommunikoi turvallisesti ja salatusti toistensa kanssa ja mahdollistaa tehtävien - jopa suurissa tiimeissä - luomisen ja muokkaamisen jäljitettävällä tavalla.\n\nKlikkaa tästä ladataksesi:",
   "messengerService": "Valitse seuraavalla näytöllä yksi messengersovelluksista näytetyn viestin lähettämiseksi",
   "message": "Viesti",
   "invitationMessage": "Kutsuviesti",
@@ -1141,14 +1141,14 @@
   "noMember": "Ei jäseniä lisätty",
   "setWallpaper": "Aseta taustakuva paremman kokemuksen saamiseksi",
   "goToSettings": "Siirry asetuksiin",
-  "defaultWallpaper": "Tämä on oletustapetti Comonille",
+  "defaultWallpaper": "Tämä on oletustapetti MeetUsille",
   "noLongerParticipant": "Et voi lähettää viestejä tähän ryhmään, koska et ole enää osallistuja.",
   "blockedUser": "Olet estänyt tämän käyttäjän",
   "onlyAdminMsg": "Vain ylläpitäjä voi lähettää viestin",
   "matches": "ottelut",
   "Message": "Viesti",
   "saveContact": "Tallenna yhteystieto",
-  "inviteToComon": "Kutsu ComOniin",
+  "inviteToComon": "Kutsu MeetUsiin",
   "createdGroup": "loivat ryhmän",
   "inCall": "Puhelussa",
   "leftCall": "Lähti puhelusta",
@@ -1177,9 +1177,9 @@
   "document": "ASIALLINEN",
   "chatClear": "Keskustelu tyhjennetty onnistuneesti",
   "criticalUpdate": "Pakollinen Kriittinen Päivitys",
-  "criticalUpdateDesc": "Käytät vanhentunutta versiota ComOnista. Päivitä sovellus nyt jatkaaksesi sen käyttöä!",
+  "criticalUpdateDesc": "Käytät vanhentunutta versiota MeetUsista. Päivitä sovellus nyt jatkaaksesi sen käyttöä!",
   "updateAvailable": "Päivitys saatavilla",
-  "updateAvailableDesc": "ComOn-sovellukselle on saatavilla päivitys. Päivitä paremman kokemuksen saamiseksi!",
+  "updateAvailableDesc": "MeetUs-sovellukselle on saatavilla päivitys. Päivitä paremman kokemuksen saamiseksi!",
   "updateNow": "Päivitä nyt",
   "exit": "Poistu",
   "skip": "Ohita",
