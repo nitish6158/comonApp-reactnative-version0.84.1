@@ -1,4 +1,5 @@
-// import { AppState, Dimensions, Image, Linking, Platform, View, Text } from "react-native";
+// import { AppState, Dimensions, Image, Linking, Platform, View, Text, StatusBar, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 // import RNVoipCall, { RNVoipPushKit } from "react-native-voips-calls";
 
 // import React, { useEffect, useState, useRef, useContext } from "react";
@@ -326,7 +327,8 @@
 //     </View>
 //   );
 // }
-import { AppState, Dimensions, Image, Linking, Platform, View, Text } from "react-native";
+import { AppState, Dimensions, Image, Linking, Platform, View, Text, StatusBar, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import RNVoipCall, { RNVoipPushKit } from "react-native-voips-calls";
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { getSession, removeSession, setSession } from "../utils/session";
@@ -448,6 +450,8 @@ async function getOrCreateStoredDevice() {
 }
 
 export default function SplashContainer() {
+  const insets = useSafeAreaInsets();
+  const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
   const dispatch = useDispatch();
   const setDeviceUniqueID = useSetAtom(deviceUniqueID);
   const { setTokenLogin, tokenLogin } = React.useContext(AuthContext);
@@ -475,9 +479,12 @@ export default function SplashContainer() {
   const { t } = useTranslation();
 
   useEffect(() => {
+    StatusBar.setHidden(true, "none");
     checkForCurrentDeviceLoginStatus();
     iosPushKit();
-
+    return () => {
+      StatusBar.setHidden(false, "fade");
+    };
   }, []);
 
 
@@ -772,22 +779,20 @@ export default function SplashContainer() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+      <StatusBar hidden={true} translucent={true} backgroundColor="transparent" barStyle="dark-content" />
       <FastImage
         source={require("../../assets/images/splash.png")}
-        style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+        style={{
+          position: "absolute",
+          top: -insets.top,
+          left: -insets.left,
+          right: -insets.right,
+          bottom: -insets.bottom,
+          width: screenWidth,
+          height: screenHeight,
+        }}
         resizeMode={FastImage.resizeMode.cover}
       />
-
-      <View style={{ position: "absolute", bottom: 60, width: "100%", alignItems: "center" }}>
-        <Progress.Bar
-          progress={percentage}
-          width={180}
-          height={4}
-          color={Colors.light.PrimaryColor}
-          unfilledColor="rgba(0, 102, 255, 0.15)"
-          borderWidth={0}
-        />
-      </View>
       <Dialog
         visible={PermissionModal}
         overlayBackgroundColor="white"
