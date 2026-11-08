@@ -31,8 +31,9 @@ const DEFAULT_LIVEKIT_URL = Platform.OS === 'android' ? 'ws://10.0.2.2:7880' : '
 function normalizeUrl(url: string | undefined, fallback: string): string {
   const target = url || fallback;
   return target
-    .replace(/192\.168\.0\.44/g, '192.168.1.38')
-    .replace(/192\.168\.1\.43/g, '192.168.1.38');
+    .replace(/192\.168\.0\.44/g, '192.168.29.88')
+    .replace(/192\.168\.1\.43/g, '192.168.29.88')
+    .replace(/192\.168\.1\.38/g, '192.168.29.88');
 }
 
 function resolveLiveKitUrl(rawUrl: string | undefined): string {
