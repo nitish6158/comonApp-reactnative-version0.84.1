@@ -24,6 +24,12 @@ const MARK_CHAT_READ = "/chat/setChatReadBy";
 const CHAT_DELIVERED = "/chat/setChatDelivered";
 const CHANGE_CALL_STATUS = "/call/changeCallStatus";
 
+const getHeaders = (token?: string | null) => ({
+  "Content-Type": "application/json",
+  "ngrok-skip-browser-warning": "true",
+  ...(token && token !== "undefined" && token !== "null" ? { Authorization: `Bearer ${token}` } : {}),
+});
+
 type dataType = Chat & { TYPE: string };
 
 export const updateChat = async (data: dataType, input: string) => {
@@ -46,10 +52,7 @@ export const updateChat = async (data: dataType, input: string) => {
   };
   const res = await fetch(`${BASE_URL}${REPLY_CHAT}`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(token),
     body: JSON.stringify(requestBody),
   });
 
@@ -69,10 +72,7 @@ export const markChatRead = async (data: dataType) => {
   };
   const res = await fetch(`${BASE_URL}${MARK_CHAT_READ}`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(token),
     body: JSON.stringify(requestBody),
   });
   const resData = (await res.json()) as MarkAsReadResponse;
@@ -92,10 +92,7 @@ export const chatDelivered = async (data: dataType) => {
 
   const res = await fetch(`${BASE_URL}${CHAT_DELIVERED}`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(token),
     body: JSON.stringify(requestBody),
   });
 
@@ -121,10 +118,7 @@ export const changeCallStatus = async (data: CallNotification & { TYPE: string }
 
     const res = await fetch(`${BASE_URL}${CHANGE_CALL_STATUS}`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getHeaders(token),
       body: JSON.stringify(requestBody),
     });
 
@@ -153,10 +147,7 @@ export async function ChangeScheduleMessageStatus(scheduleId: string, Status: Pa
     // Perform the Fetch request
     fetch(PUBLIC_API_HOST, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getHeaders(token),
       body: JSON.stringify({
         query: EventStatusChange,
         variables: {
@@ -194,10 +185,7 @@ export async function changeEventParticipantStatus(reminderID: string, Status: P
     // Perform the Fetch request
     fetch(PUBLIC_API_HOST, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getHeaders(token),
       body: JSON.stringify({
         query: EventStatusChange,
         variables: {
@@ -236,10 +224,7 @@ export async function notificationLog(type: string) {
   // let userId = await AsyncStorage.getItem("userId");
   fetch(PUBLIC_API_HOST, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      // Authorization: `Bearer ${token}`,
-    },
+    headers: getHeaders(),
     body: JSON.stringify({
       query: NotificationLogs,
       variables: {
@@ -320,10 +305,7 @@ export async function dismissNotification(isDismiss: boolean, _id: string) {
     // Perform the Fetch request
     fetch(PUBLIC_API_HOST, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getHeaders(token),
       body: JSON.stringify({
         query: dismissMutation,
         variables: {
@@ -361,10 +343,7 @@ export async function leftCallRequest() {
     // Perform the Fetch request
     fetch(PUBLIC_API_HOST, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getHeaders(token),
       body: JSON.stringify({
         query: LeftCallDocument,
         variables: {
@@ -402,10 +381,7 @@ export async function RequestCallWaiting(callID: string) {
     // Perform the Fetch request
     fetch(PUBLIC_API_HOST, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getHeaders(token),
       body: JSON.stringify({
         query: CallWaitingDocument,
         variables: {

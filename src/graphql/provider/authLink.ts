@@ -87,7 +87,9 @@ const authLink = setContext(async (request, { headers }) => {
     }
   }
   console.log("Token is",token)
-  const authHeaders: Record<string, string> = {};
+  const authHeaders: Record<string, string> = {
+    "ngrok-skip-browser-warning": "true",
+  };
   if (token && token !== "undefined" && token !== "null") {
     authHeaders.Authorization = `Bearer ${token}`;
   }
@@ -104,6 +106,9 @@ const authLink = setContext(async (request, { headers }) => {
 
 const uploadLink = createUploadLink({
   uri: PUBLIC_API_HOST,
+  headers: {
+    "ngrok-skip-browser-warning": "true",
+  },
 });
 
 export const client = new ApolloClient({

@@ -346,6 +346,9 @@ class SocketConnection {
           rememberUpgrade: true,
           autoConnect: true,
           reconnection: false, // We'll handle reconnection ourselves
+          extraHeaders: {
+            "ngrok-skip-browser-warning": "true",
+          },
           query: {
             timeout: SocketConnection.CONNECTION_TIMEOUT,
           },
