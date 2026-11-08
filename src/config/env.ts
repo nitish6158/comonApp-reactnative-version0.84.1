@@ -26,22 +26,20 @@ const DEFAULT_AGORA_APP_ID = '86c93a4f76bc4f069cd51ffed38048e5';
 const DEFAULT_GOOGLE_PLACE_API_KEY = 'AIzaSyAHJGLj2qeJwuI96x7T3Hz_-Q6LV5DKhUk';
 const DEFAULT_IMAGE_URL = 'https://storage.googleapis.com/comon-bucket/';
 const DEFAULT_USER_MANUAL_URL = 'https://axius-staging.com/wp/comon_user_manual';
-const DEFAULT_LIVEKIT_URL = Platform.OS === 'android' ? 'ws://10.0.2.2:7880' : 'ws://localhost:7880';
+const DEFAULT_LIVEKIT_URL = 'ws://192.168.29.88:7880';
 
 function normalizeUrl(url: string | undefined, fallback: string): string {
   const target = url || fallback;
   return target
     .replace(/192\.168\.0\.44/g, '192.168.29.88')
     .replace(/192\.168\.1\.43/g, '192.168.29.88')
-    .replace(/192\.168\.1\.38/g, '192.168.29.88');
+    .replace(/192\.168\.1\.38/g, '192.168.29.88')
+    .replace(/10\.0\.2\.2/g, '192.168.29.88')
+    .replace(/localhost:7880/g, '192.168.29.88:7880');
 }
 
 function resolveLiveKitUrl(rawUrl: string | undefined): string {
-  const url = normalizeUrl(rawUrl, DEFAULT_LIVEKIT_URL);
-  if (Platform.OS === 'android' && url.includes('localhost')) {
-    return url.replace('localhost', '10.0.2.2');
-  }
-  return url;
+  return normalizeUrl(rawUrl, DEFAULT_LIVEKIT_URL);
 }
 
 export const env = {
