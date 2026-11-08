@@ -1,5 +1,4 @@
-// import { AppState, Dimensions, Image, Linking, Platform, View, Text, StatusBar, StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+// import { AppState, Dimensions, Image, Linking, Platform, View, Text } from "react-native";
 // import RNVoipCall, { RNVoipPushKit } from "react-native-voips-calls";
 
 // import React, { useEffect, useState, useRef, useContext } from "react";
