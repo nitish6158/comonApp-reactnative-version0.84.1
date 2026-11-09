@@ -209,35 +209,35 @@ export default function Application() {
       !tokenLogin ? (
         <AuthNavigator />
       ) : (
-    
-          <ChatProvider roomId={global.roomId || ""}>
-            <LanguageProvider>
-              
-                <View style={{ flex: 1 }}>
-                  <GlobalContainer />
-            
-                  <RootStack.Navigator initialRouteName="Splash">
-                    <RootStack.Screen
-                      name="Splash"
-                      component={SplashContainer}
-                      options={{ headerShown: false }}
-                    />
-                    <RootStack.Screen
-                      name="Main"
-                      component={MainNavigator}
-                      options={{ headerShown: false }}
-                    />
-                    <RootStack.Screen
-                      name="Senior"
-                      component={SeniorNavigator}
-                      options={{ headerShown: false }}
-                    />
-                  </RootStack.Navigator>
-                </View>
-              
-            </LanguageProvider>
-          </ChatProvider>
-     
+
+        <ChatProvider roomId={global.roomId || ""}>
+          <LanguageProvider>
+
+            <View style={{ flex: 1 }}>
+              <GlobalContainer />
+
+              <RootStack.Navigator initialRouteName="Splash">
+                <RootStack.Screen
+                  name="Splash"
+                  component={SplashContainer}
+                  options={{ headerShown: false }}
+                />
+                <RootStack.Screen
+                  name="Main"
+                  component={MainNavigator}
+                  options={{ headerShown: false }}
+                />
+                <RootStack.Screen
+                  name="Senior"
+                  component={SeniorNavigator}
+                  options={{ headerShown: false }}
+                />
+              </RootStack.Navigator>
+            </View>
+
+          </LanguageProvider>
+        </ChatProvider>
+
       )
     );
   }
@@ -245,7 +245,7 @@ export default function Application() {
   return (
     <>
       <InitialCallingContainer />
-      <CheckAppVersion />
+      {/* <CheckAppVersion /> */}
       <AuthProvider>
 
         <SessionInvalidationGuard />
