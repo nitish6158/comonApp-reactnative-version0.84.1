@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import ImageDownloadView from "@Components/ImageDownloadView";
 import { MediaPreviewAtom } from "../ChatListItem";
 import { useTranslation } from "react-i18next";
+import useE2eMediaUri from "@/hooks/useE2eMediaUri";
 
 const { height, width } = Dimensions.get("window");
 
@@ -56,16 +57,28 @@ export default function ImageMessageComponent({
         showForwardBadge={false}
         showStatusRow={false}
       >
-        <ImageComponent message={message} />
+        <ImageComponent message={message} display={display} />
       </MessageCommonWrapper>
     );
   }
 }
 
-function ImageComponent({ message }: { message: Conversation }) {
+function ImageComponent({
+  message,
+  display,
+}: {
+  message: Conversation;
+  display: singleRoomType;
+}) {
   const { getFileLocationByFilename } = useFileSystem();
   const DownloadFileStore = useSelector((state: any) => state.Chat.DownloadFileStore);
   const setMediaPreviewData = useSetAtom(MediaPreviewAtom);
+  const { uri: e2eUri, loading: e2eLoading, mediaPackage } = useE2eMediaUri(
+    message,
+    display,
+    { kind: "file" }
+  );
+  const isE2e = !!(mediaPackage || (message as any)?.e2eMedia);
 
   const isImageLocallyAvailable = useMemo(() => {
     return DownloadFileStore.indexOf(getDownloadfileName(message.fileURL)) !== -1;
@@ -79,6 +92,43 @@ function ImageComponent({ message }: { message: Conversation }) {
     return (
       <View style={[styles.imageContainer, { justifyContent: "center", alignItems: "center" }]}>
         <Text style={{ fontSize: 14 }}>File Not Found</Text>
+      </View>
+    );
+  }
+
+  // E2E ciphertext on CDN — show decrypted local file (or wait)
+  if (isE2e || e2eUri?.startsWith("file:")) {
+    const displayUri = isImageLocallyAvailable
+      ? url
+      : e2eUri?.startsWith("file:")
+        ? e2eUri
+        : null;
+    return (
+      <View style={styles.imageContainer}>
+        {displayUri ? (
+          <Pressable
+            onPress={() => {
+              setMediaPreviewData({
+                url: displayUri.startsWith("file:")
+                  ? displayUri
+                  : message.fileURL,
+                type: "IMAGE",
+                time: message.created_at,
+              });
+            }}
+          >
+            <FastImage
+              source={{ uri: displayUri, priority: FastImage.priority.high }}
+              style={{ height: "100%", width: "100%" }}
+            />
+          </Pressable>
+        ) : (
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <Text style={{ fontSize: 12 }}>
+              {e2eLoading ? "Decrypting…" : "🔒"}
+            </Text>
+          </View>
+        )}
       </View>
     );
   }

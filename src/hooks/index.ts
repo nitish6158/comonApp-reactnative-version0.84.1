@@ -10,4 +10,5 @@ export * from "./useSyncContactHook";
 export * from "./useTaskReport";
 export * from "./useTimeHook";
 export * from "./useUpdateChat";
+export * from "./useE2eMediaUri";
 

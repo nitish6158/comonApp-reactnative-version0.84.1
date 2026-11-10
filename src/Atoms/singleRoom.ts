@@ -49,6 +49,8 @@ export interface singleRoomType {
     muted_at?: number;
   }>;
   totalMedia?: number;
+  /** WhatsApp-style E2E flag from room schema (new 1:1 rooms default true). */
+  e2eEnabled?: boolean;
 }
 export const defaultgroupPermission = {
   EditInfoPermission: { permit: "common", type: "editInfo" },
@@ -87,6 +89,7 @@ export  const initialDisplayState: singleRoomType = {
   cacheTime: 0,
   ringtone: [],
   receipts: [],
+  e2eEnabled: false,
 };
 
 export const singleRoom = atom(initialDisplayState);

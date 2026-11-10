@@ -13,6 +13,7 @@ import { useAtom, useAtomValue } from "jotai";
 import useFileSystem from "@Hooks/useFileSystem";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import useE2eMediaUri from "@/hooks/useE2eMediaUri";
 
 type props = {
   isVisible: boolean;
@@ -72,22 +73,37 @@ export function AudioComponent({
 }) {
   const { getFileLocationByFilename } = useFileSystem();
   const DownloadFileStore = useSelector((state: any) => state.Chat.DownloadFileStore);
+  const display = useAtomValue(singleRoom);
+  const { uri: e2eUri, mediaPackage } = useE2eMediaUri(message, display, {
+    kind: "file",
+  });
+  const isE2e = !!(mediaPackage || (message as any)?.e2eMedia);
 
   const isAudioLocallyAvailable = useMemo(() => {
     return DownloadFileStore.indexOf(getDownloadfileName(message.fileURL)) !== -1;
   }, [message.fileURL, DownloadFileStore]);
 
+  const e2eReady = isE2e && !!e2eUri?.startsWith("file:");
+  const canPlay = isAudioLocallyAvailable || e2eReady;
+  const audioPath: string = e2eReady && e2eUri
+    ? e2eUri
+    : getFileLocationByFilename(message.fileURL);
+
   return (
     <View style={{ flexDirection: "row", alignItems: "center" }}>
-      {!isAudioLocallyAvailable ? (
-        <AudioDownloadView item={message} TextColor={Colors.light.black} />
+      {!canPlay ? (
+        isE2e ? (
+          <Text style={{ fontSize: 12, color: Colors.light.black }}>🔒</Text>
+        ) : (
+          <AudioDownloadView item={message} TextColor={Colors.light.black} />
+        )
       ) : (
         <AudioSlider
           senderProfileUrl={senderImage}
           duration={message.duration}
           topColor={Colors.light.PrimaryColor}
           backgroundColor={Colors.light.White}
-          audio={getFileLocationByFilename(message.fileURL)}
+          audio={audioPath}
           withoutWrapper={withoutWrapper}
         />
       )}

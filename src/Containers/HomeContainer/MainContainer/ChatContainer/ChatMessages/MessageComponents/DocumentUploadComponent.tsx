@@ -38,6 +38,15 @@ import { socketConnect } from "@/utils/socket/SocketConnection";
 import { ChatContext } from "@/Context/ChatProvider";
 
 import { VectorIconCompat } from "@/Components/icons";
+import {
+  buildMediaKeyPlaintext,
+  encryptFileToTemp,
+  encryptMediaKeyForPeer,
+  isE2eMediaRoom,
+  plainCaptionFromMessage,
+  resolveE2ePeerUserId,
+  unlinkQuiet,
+} from "@/services/e2e/e2eMedia";
 
 // const { useRealm, useQuery } = RealmContext;
 
@@ -109,6 +118,7 @@ function DocumentUploadPreview({
   const { t } = useTranslation();
   const { updateMessage } = useContext(ChatContext);
   const [, setDisplay] = useAtom(singleRoom);
+  const e2e = isE2eMediaRoom(display);
 
   const fileType = useMemo(() => {
     return getFileTypeFromFileName(message.fileURL);
@@ -147,6 +157,7 @@ function DocumentUploadPreview({
     console.log("durationA", durationA);
     // console.log(fileName);
     const path = `${display.roomId}/${display.currentUserUtility.user_id}/${fileName}`;
+    let encryptedTemp: string | null = null;
 
     const fileExist = await RNFS.exists(file);
     let tempType = type;
@@ -166,76 +177,122 @@ function DocumentUploadPreview({
 
       const size = await RNFS.stat(file);
       setDocumentSize(size.size);
+      const uploadContentType = e2e ? "application/octet-stream" : type;
       getUrl({
         variables: {
           input: {
             path: path,
-            contentType: type,
+            contentType: uploadContentType,
           },
         },
       }).then(async (res) => {
         if (res.data?.getUploadSignedUrl.url) {
-          const headers = {
-            "Content-Type": type,
-          };
+          try {
+            let uploadPath = file;
+            let encryptedMessage = "";
+            let e2eMediaPkg = null;
 
-          const uploadResult = await backgroundUpload(
-            res.data?.getUploadSignedUrl.url,
-            file,
-            { httpMethod: "PUT", headers },
-            (written, total) => {
-              setProgress(written / (total / 100) / 100);
-            }
-          ).catch((e) => {
-            console.log("error", Object.keys(e).length);
-            setError(t("others.File have some problem"));
-          });
-
-          if (uploadResult) {
-            // console.log("duration", parseInt(duration.toPrecision()), typeof duration);
-            copyFile(file, path);
-            const payload: UdpateChatInput = {
-              isSent: true,
-              data: {
-                _id: message._id,
-                type: isDocument ? "DOCUMENT" : "AUDIO",
-                fileURL: path,
-                roomId: message?.roomId,
-                isForwarded: false,
-                message: "",
-                fontStyle: "",
-                thumbnail: "",
-                duration: isDocument ? 0 : duration,
-              },
-              reply_msg: null,
-            };
-            console.log("Payload of document uploaded", payload);
-            updateChatMessage(payload)
-              .then((response) => {
-                if (response) {
-                  updateMessage(message._id, {
-                    type: "media",
-                    data: {
-                      isSent: true,
-                      fileURL: path,
-                      type: isDocument ? "DOCUMENT" : "AUDIO",
-                    },
-                  });
-                  setDisplay((prev) => ({
-                    ...prev,
-                    totalMedia: prev.totalMedia + 1,
-                  }));
-                  // uploadDocumentUpdate(path, isDocument);
-                }
-              })
-              .catch((err) => {
-                console.error(
-                  "Error in updating chat message while sending document",
-                  err
-                );
+            if (e2e) {
+              const peerUserId = resolveE2ePeerUserId(display);
+              if (!peerUserId) {
+                setError("E2E peer missing");
+                return;
+              }
+              const enc = await encryptFileToTemp(file, { mimeHint: type });
+              encryptedTemp = enc.tempPath;
+              uploadPath = enc.tempPath;
+              const caption = plainCaptionFromMessage(message?.message);
+              const packageJson = buildMediaKeyPlaintext({
+                keyB64: enc.keyB64,
+                ivB64: enc.ivB64,
+                mime: enc.mimeHint || type,
+                caption,
               });
-          } else {
-            console.log(uploadResult);
+              encryptedMessage = await encryptMediaKeyForPeer(
+                peerUserId,
+                packageJson
+              );
+              e2eMediaPkg = {
+                t: "media",
+                v: 1,
+                key: enc.keyB64,
+                iv: enc.ivB64,
+                mime: enc.mimeHint || type,
+                caption,
+              };
+            }
+
+            const headers = {
+              "Content-Type": uploadContentType,
+            };
+
+            const uploadResult = await backgroundUpload(
+              res.data?.getUploadSignedUrl.url,
+              uploadPath,
+              { httpMethod: "PUT", headers },
+              (written, total) => {
+                setProgress(written / (total / 100) / 100);
+              }
+            ).catch((e) => {
+              console.log("error", Object.keys(e).length);
+              setError(t("others.File have some problem"));
+            });
+
+            if (uploadResult) {
+              // console.log("duration", parseInt(duration.toPrecision()), typeof duration);
+              copyFile(file, path);
+              const payload: UdpateChatInput = {
+                isSent: true,
+                data: {
+                  _id: message._id,
+                  type: isDocument ? "DOCUMENT" : "AUDIO",
+                  fileURL: path,
+                  roomId: message?.roomId,
+                  isForwarded: false,
+                  message: e2e ? encryptedMessage : "",
+                  fontStyle: "",
+                  thumbnail: "",
+                  duration: isDocument ? 0 : duration,
+                },
+                reply_msg: null,
+              };
+              console.log("Payload of document uploaded", payload);
+              updateChatMessage(payload)
+                .then((response) => {
+                  if (response) {
+                    updateMessage(message._id, {
+                      type: "media",
+                      data: {
+                        isSent: true,
+                        fileURL: path,
+                        type: isDocument ? "DOCUMENT" : "AUDIO",
+                        message: e2e
+                          ? e2eMediaPkg?.caption ?? ""
+                          : message?.message ?? "",
+                        ...(e2e && e2eMediaPkg
+                          ? { e2eMedia: e2eMediaPkg }
+                          : {}),
+                      },
+                    });
+                    setDisplay((prev) => ({
+                      ...prev,
+                      totalMedia: prev.totalMedia + 1,
+                    }));
+                    // uploadDocumentUpdate(path, isDocument);
+                  }
+                })
+                .catch((err) => {
+                  console.error(
+                    "Error in updating chat message while sending document",
+                    err
+                  );
+                  setError(t("others.File have some problem"));
+                });
+            } else {
+              console.log(uploadResult);
+            }
+          } finally {
+            await unlinkQuiet(encryptedTemp);
           }
         } else {
           setError("Upload url fails");

@@ -89,7 +89,6 @@ import { socketConnect } from "@/utils/socket/SocketConnection";
 import uuid from "react-native-uuid";
 import RNFS from "react-native-fs";
 import { ChatContext } from "@/Context/ChatProvider";
-
 import { VectorIconCompat } from "@/Components/icons";
 
 const screenWidth = Dimensions.get("window").width;
@@ -368,6 +367,14 @@ function ChatInputBox() {
       return;
     }
 
+    const peer =
+      display?.e2eEnabled && display?.roomType === "individual"
+        ? (display.participantsNotLeft || display.participants || []).find(
+            (p: any) => String(p?.user_id) !== String(senderId)
+          )
+        : null;
+    const e2ePeerUserId = peer?.user_id ? String(peer.user_id) : "";
+
     const idLocal = String(uuid.v4());
     const optimisticMessage = {
       roomId: activeRoomId,
@@ -416,12 +423,15 @@ function ChatInputBox() {
           type: "text",
           fileURL: "",
           isForwarded: false,
-          message: message,
+          message,
           fontStyle: "",
           thumbnail: "",
           duration: 0,
           sender: senderId,
           id_local: idLocal,
+          // Client-only hints for ConversationSocketHandler encrypt (stripped before emit)
+          e2eEnabled: !!display?.e2eEnabled,
+          e2ePeerUserId,
         },
         reply_msg: Replymessage ? Replymessage : null,
       };
@@ -474,26 +484,25 @@ function ChatInputBox() {
         // });
       }
     } else {
-      const currentTimestamp = Date.now();
-
       const payload = {
         data: {
           roomId: activeRoomId,
           type: "text",
           fileURL: "",
           isForwarded: false,
-          message: message,
+          message,
           fontStyle: "",
           thumbnail: "",
           duration: 0,
           sender: senderId,
           id_local: idLocal,
+          e2eEnabled: !!display?.e2eEnabled,
+          e2ePeerUserId,
         },
         reply_msg: Replymessage ? Replymessage : null,
       };
 
       socketManager.conversation.sendChat(payload);
-
     }
   }
   const SendChatHandler = async (messageText = messageValue) => {

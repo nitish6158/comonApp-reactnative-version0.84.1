@@ -36,6 +36,17 @@ import { UdpateChatInput } from "@/graphql/generated/types";
 import useUpdateChat from "@/hooks/useUpdateChat";
 import { socket } from "@/redux/Reducer/SocketSlice";
 import { ChatContext } from "@/Context/ChatProvider";
+import {
+  buildMediaKeyPlaintext,
+  encryptFileToTemp,
+  encryptMediaKeyForPeer,
+  isE2eMediaRoom,
+  plainCaptionFromMessage,
+  resolveE2ePeerUserId,
+  unlinkQuiet,
+} from "@/services/e2e/e2eMedia";
+import useE2eMediaUri from "@/hooks/useE2eMediaUri";
+import { DefaultImageUrl } from "@Service/provider/endpoints";
 
 // const { useRealm, useQuery } = RealmContext;
 
@@ -103,6 +114,19 @@ function VideoComponent({
   const { updateChatMessage } = useUpdateChat();
   const { updateMessage } = useContext(ChatContext);
   const [, setDisplay] = useAtom(singleRoom);
+  const e2e = isE2eMediaRoom(display);
+  const { uri: e2eThumbUri } = useE2eMediaUri(message, display, {
+    kind: "thumbnail",
+  });
+
+  const displayThumb = useMemo(() => {
+    if (thumbnail) return thumbnail;
+    if (e2e && e2eThumbUri) return e2eThumbUri;
+    if (message.thumbnail && !message.thumbnail.startsWith("file:")) {
+      return `${DefaultImageUrl}${message.thumbnail}`;
+    }
+    return message.thumbnail || "";
+  }, [thumbnail, e2e, e2eThumbUri, message.thumbnail]);
 
   useEffect(() => {
     if (message.fileURL.startsWith("file:")) {
@@ -121,7 +145,7 @@ function VideoComponent({
   return (
     <View style={styles.VideoContainer}>
       <FastImage
-        source={{ uri: thumbnail, priority: FastImage.priority.high }}
+        source={{ uri: displayThumb, priority: FastImage.priority.high }}
         style={{ height: "100%", width: "100%" }}
       />
       <UploadingOverlay isVisible={isUploading} progress={progress} />
@@ -136,113 +160,198 @@ function VideoComponent({
     let bucketVideoUrl = `${display.roomId}/${display.currentUserUtility.user_id
       }/${message.fileURL.slice(-10)}`;
     setUploading(true);
-    const thumbnail = await createVideoThumbnail(message.fileURL);
-    setThumbnail(thumbnail.path);
+    let encVideoTemp: string | null = null;
+    let encThumbTemp: string | null = null;
+    try {
+      const thumbnail = await createVideoThumbnail(message.fileURL);
+      setThumbnail(thumbnail.path);
 
-    let thumbnailUploadUrl = await getUrl({
-      variables: {
-        input: {
-          path: bucketThumbnailUrl,
-          contentType: "image/jpeg",
+      const videoMime = message.type.replace("LOADING/", "");
+      const thumbContentType = e2e ? "application/octet-stream" : "image/jpeg";
+      const videoContentType = e2e ? "application/octet-stream" : videoMime;
+
+      let thumbnailUploadUrl = await getUrl({
+        variables: {
+          input: {
+            path: bucketThumbnailUrl,
+            contentType: thumbContentType,
+          },
         },
-      },
-    });
+      });
 
-    if (thumbnailUploadUrl.data?.getUploadSignedUrl.url) {
-      backgroundUpload(
-        thumbnailUploadUrl?.data?.getUploadSignedUrl.url,
-        thumbnail.path,
-        { httpMethod: "PUT", headers: { "Content-Type": "image/jpeg" } },
-        (written, total) => {
-          // console.log("Thumbnail upload", written, total);
-        }
-      );
+      if (!thumbnailUploadUrl.data?.getUploadSignedUrl.url) {
+        setRetry(true);
+        return;
+      }
+
+      let thumbUploadPath = thumbnail.path;
+      let encryptedMessage = message?.message || "";
+      let e2eMediaPkg = null;
+
+      if (e2e && !resolveE2ePeerUserId(display)) {
+        console.error("[e2e-media] missing peer for video upload");
+        setRetry(true);
+        return;
+      }
 
       getUrl({
         variables: {
           input: {
             path: bucketVideoUrl,
-            contentType: message.type.replace("LOADING/", ""),
+            contentType: videoContentType,
           },
         },
       }).then(async (res) => {
-        if (res.data?.getUploadSignedUrl.url) {
-          try {
-            const compressedUrl = await VideoCompress.compress(
-              message.fileURL,
-              {
-                compressionMethod: "auto",
-              },
-              (progress) => {
-                setProgress(progress / 2);
-              }
-            );
-
-            const headers = {
-              "Content-Type": message.type.replace("LOADING/", ""),
-            };
-
-            const uploadResult = await backgroundUpload(
-              res.data?.getUploadSignedUrl.url,
-              compressedUrl,
-              { httpMethod: "PUT", headers },
-              (written, total) => {
-                setProgress(written / (total / 100) / 100 / 2 + 0.47);
-              }
-            );
-
-            if (uploadResult) {
-              copyFile(compressedUrl, bucketVideoUrl);
-              setProgress(1);
-              const payload: UdpateChatInput = {
-                isSent: true,
-                data: {
-                  _id: message._id.toString(),
-                  roomId: message?.roomId,
-                  fileURL: bucketVideoUrl,
-                  thumbnail: bucketThumbnailUrl,
-                  message: message?.message,
-                  isForwarded: false,
-                  type: "VIDEO",
-                  fontStyle: "",
-                  duration: 0,
-                },
-                reply_msg: null,
-              };
-              updateChatMessage(payload)
-                .then((response) => {
-                  if (response) {
-                    updateMessage(message._id, {
-                      type: "media",
-                      data: {
-                        isSent: true,
-                        fileURL: bucketVideoUrl,
-                        thumbnail: bucketThumbnailUrl,
-                        type: "VIDEO",
-                      },
-                    });
-
-                    setDisplay((prev) => ({
-                      ...prev,
-                      totalMedia: prev.totalMedia + 1,
-                    }));
-
-                    unlinkFile(thumbnail.path);
-                    unlinkFile(compressedUrl);
-                  }
-                })
-                .catch((err) => {
-                  console.error(
-                    "Error in updating chat message while video uploading",
-                    err
-                  );
-                });
+        if (!res.data?.getUploadSignedUrl.url) {
+          setRetry(true);
+          return;
+        }
+        try {
+          const compressedUrl = await VideoCompress.compress(
+            message.fileURL,
+            {
+              compressionMethod: "auto",
+            },
+            (progress) => {
+              setProgress(progress / 2);
             }
-          } catch (error) {
-            console.log(error);
+          );
+
+          let videoUploadPath = compressedUrl;
+
+          if (e2e) {
+            const peerUserId = resolveE2ePeerUserId(display);
+            const encVideo = await encryptFileToTemp(compressedUrl, {
+              mimeHint: videoMime,
+            });
+            encVideoTemp = encVideo.tempPath;
+            videoUploadPath = encVideo.tempPath;
+
+            const encThumb = await encryptFileToTemp(thumbnail.path, {
+              keyB64: encVideo.keyB64,
+              mimeHint: "image/jpeg",
+            });
+            encThumbTemp = encThumb.tempPath;
+            thumbUploadPath = encThumb.tempPath;
+
+            const caption = plainCaptionFromMessage(message?.message);
+            const packageJson = buildMediaKeyPlaintext({
+              keyB64: encVideo.keyB64,
+              ivB64: encVideo.ivB64,
+              mime: encVideo.mimeHint || videoMime,
+              caption,
+              thumbIv: encThumb.ivB64,
+            });
+            encryptedMessage = await encryptMediaKeyForPeer(
+              peerUserId,
+              packageJson
+            );
+            e2eMediaPkg = {
+              t: "media",
+              v: 1,
+              key: encVideo.keyB64,
+              iv: encVideo.ivB64,
+              mime: encVideo.mimeHint || videoMime,
+              caption,
+              thumbIv: encThumb.ivB64,
+            };
           }
+
+          // Upload thumbnail (plaintext or ciphertext)
+          await backgroundUpload(
+            thumbnailUploadUrl?.data?.getUploadSignedUrl.url,
+            thumbUploadPath,
+            {
+              httpMethod: "PUT",
+              headers: { "Content-Type": thumbContentType },
+            },
+            () => {}
+          );
+
+          const headers = {
+            "Content-Type": videoContentType,
+          };
+
+          const uploadResult = await backgroundUpload(
+            res.data?.getUploadSignedUrl.url,
+            videoUploadPath,
+            { httpMethod: "PUT", headers },
+            (written, total) => {
+              setProgress(written / (total / 100) / 100 / 2 + 0.47);
+            }
+          );
+
+          if (uploadResult) {
+            copyFile(compressedUrl, bucketVideoUrl);
+            setProgress(1);
+            const payload: UdpateChatInput = {
+              isSent: true,
+              data: {
+                _id: message._id.toString(),
+                roomId: message?.roomId,
+                fileURL: bucketVideoUrl,
+                thumbnail: bucketThumbnailUrl,
+                message: e2e ? encryptedMessage : message?.message,
+                isForwarded: false,
+                type: "VIDEO",
+                fontStyle: "",
+                duration: 0,
+              },
+              reply_msg: null,
+            };
+            updateChatMessage(payload)
+              .then((response) => {
+                if (response) {
+                  updateMessage(message._id, {
+                    type: "media",
+                    data: {
+                      isSent: true,
+                      fileURL: bucketVideoUrl,
+                      thumbnail: bucketThumbnailUrl,
+                      type: "VIDEO",
+                      message: e2e
+                        ? e2eMediaPkg?.caption ?? ""
+                        : message?.message,
+                      ...(e2e && e2eMediaPkg
+                        ? { e2eMedia: e2eMediaPkg }
+                        : {}),
+                    },
+                  });
+
+                  setDisplay((prev) => ({
+                    ...prev,
+                    totalMedia: prev.totalMedia + 1,
+                  }));
+
+                  unlinkFile(thumbnail.path);
+                  unlinkFile(compressedUrl);
+                }
+              })
+              .catch((err) => {
+                console.error(
+                  "Error in updating chat message while video uploading",
+                  err
+                );
+                setRetry(true);
+              });
+          } else {
+            setRetry(true);
+          }
+        } catch (error) {
+          console.log(error);
+          setRetry(true);
+        } finally {
+          await unlinkQuiet(encVideoTemp);
+          await unlinkQuiet(encThumbTemp);
         }
       });
+    } catch (error) {
+      console.error("Error in uploadVideo", error);
+      setRetry(true);
+      await unlinkQuiet(encVideoTemp);
+      await unlinkQuiet(encThumbTemp);
+    } finally {
+      setUploading(false);
     }
   }
 }

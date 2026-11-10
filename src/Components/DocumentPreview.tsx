@@ -22,6 +22,10 @@ import { setDownloadFileStore } from "@/redux/Reducer/ChatReducer";
 import { useAppSelector } from "@/redux/Store";
 
 import { VectorIconCompat } from "@/Components/icons";
+import { useAtomValue } from "jotai";
+import { singleRoom } from "@Atoms/singleRoom";
+import useE2eMediaUri from "@/hooks/useE2eMediaUri";
+import { stripFileScheme } from "@/services/e2e/e2eMedia";
 
 export default function DocumentPreview({ item }: { item: any }) {
   const DownloadFileStore = useAppSelector((state) => state.Chat.DownloadFileStore);
@@ -32,6 +36,13 @@ export default function DocumentPreview({ item }: { item: any }) {
   const [audioVisible, setAudioVisible] = useState(false);
   const [audioUrl, setAudioUrl] = useState("");
   const { getFileLocationByFilename, readComonDirectory } = useFileSystem();
+  const display = useAtomValue(singleRoom);
+  const { uri: e2eUri, loading: e2eLoading, mediaPackage } = useE2eMediaUri(
+    item,
+    display,
+    { kind: "file" }
+  );
+  const isE2e = !!(mediaPackage || item?.e2eMedia);
 
   const resolvedFileUrl = useMemo(() => {
     return item?.fileURL || (item as any)?.file_URL || (item as any)?.url || "";
@@ -42,8 +53,12 @@ export default function DocumentPreview({ item }: { item: any }) {
   }, [resolvedFileUrl]);
 
   const fileType = useMemo(() => {
+    if (mediaPackage?.mime) {
+      const mimeExt = mediaPackage.mime.split("/").pop();
+      if (mimeExt) return mimeExt;
+    }
     return resolvedFileUrl.split(".").pop() || "";
-  }, [resolvedFileUrl]);
+  }, [resolvedFileUrl, mediaPackage?.mime]);
 
   const fileNameText = useMemo(() => {
     const filename = resolvedFileUrl.split("/").pop() || "";
@@ -63,16 +78,22 @@ export default function DocumentPreview({ item }: { item: any }) {
     return DownloadFileStore.indexOf(getDownloadfileName(fileEndpoint)) !== -1;
   }, [DownloadFileStore, fileEndpoint]);
 
-  const previewDoc = () => {
-    if (!fileEndpoint) {
+  const previewDoc = (overridePath?: string) => {
+    if (!fileEndpoint && !overridePath) {
       ToastMessage(t("label.file-not-found"));
       return;
     }
-    if (GetExtension(resolvedFileUrl) == ".mp3") {
+    const localPath = overridePath
+      ? stripFileScheme(overridePath)
+      : getFileLocationByFilename(fileEndpoint);
+    const isAudio =
+      GetExtension(resolvedFileUrl) == ".mp3" ||
+      mediaPackage?.mime?.startsWith("audio/");
+    if (isAudio) {
       setAudioVisible(true);
-      setAudioUrl(getFileLocationByFilename(fileEndpoint));
+      setAudioUrl(overridePath || getFileLocationByFilename(fileEndpoint));
     } else {
-      FileViewer.open(getFileLocationByFilename(fileEndpoint), { showOpenWithDialog: true }).catch(() => {
+      FileViewer.open(localPath, { showOpenWithDialog: true }).catch(() => {
         ToastMessage(`${t("toastmessage.install-message")} ${GetExtension(resolvedFileUrl)}`);
       });
     }
@@ -83,6 +104,21 @@ export default function DocumentPreview({ item }: { item: any }) {
       ToastMessage(t("label.file-not-found"));
       return;
     }
+
+    // E2E: open decrypted cache file (hook downloads + decrypts)
+    if (isE2e) {
+      if (e2eUri?.startsWith("file:")) {
+        previewDoc(e2eUri);
+        return;
+      }
+      if (e2eLoading) {
+        setIsDownLoading(true);
+        return;
+      }
+      ToastMessage(t("label.file-download-failed"));
+      return;
+    }
+
     if (!isDocumentLocallyAvailable) {
       setIsDownLoading(true);
 
@@ -112,6 +148,13 @@ export default function DocumentPreview({ item }: { item: any }) {
       previewDoc();
     }
   };
+
+  useEffect(() => {
+    if (isE2e && e2eUri?.startsWith("file:") && isDownLoading) {
+      setIsDownLoading(false);
+      setIsDownLoaded(true);
+    }
+  }, [isE2e, e2eUri, isDownLoading]);
 
   const textColor = Colors.light.black;
 
@@ -159,10 +202,10 @@ export default function DocumentPreview({ item }: { item: any }) {
       }}
     >
       <View style={{ marginRight: 10 }}>
-        {isDocumentLocallyAvailable ? (
+        {isDocumentLocallyAvailable || (isE2e && e2eUri?.startsWith("file:")) ? (
           // <FileIcon type={fileType.toUpperCase()} />
           <FileIconView type={fileType} />
-        ) : isDownLoading ? (
+        ) : isDownLoading || (isE2e && e2eLoading) ? (
           <ActivityIndicator color={textColor} />
         ) : (
           <VectorIconCompat name="download" size={24} color={textColor} />

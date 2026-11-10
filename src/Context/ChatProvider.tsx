@@ -26,6 +26,12 @@ import { produce } from "immer";
 import { storage as userStore } from '../redux/backup/mmkv'
 import { keys } from "@/redux/backup/keys";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  isE2eEnvelopeMessage,
+  signalProtocolService,
+} from "@/services/e2e/SignalProtocolService";
+import { signalKeyStore } from "@/services/e2e/SignalKeyStore";
+import { parseMediaKeyPlaintext } from "@/services/e2e/e2eMedia";
 // import { socketConnect } from "@/utils/socket/SocketConnection";
 
 // Main storage for chat messages
@@ -171,6 +177,79 @@ export const ChatProvider = ({
 
   // Track search request to avoid race conditions
   const searchRequestRef = useRef<any>(null);
+
+  // Ensure Signal identity + upload public keys once chat UI mounts (post-auth).
+  useEffect(() => {
+    signalProtocolService.ensureIdentityAndUpload().catch((err) => {
+      console.warn("[e2e] ensureIdentityAndUpload failed:", err);
+    });
+  }, []);
+
+  const maybeDecryptMessage = useCallback(async (message: any) => {
+    if (!message) return message;
+    const body = message.message;
+    if (!isE2eEnvelopeMessage(body)) {
+      // Already decrypted media package JSON left on the wire field
+      const pkg = parseMediaKeyPlaintext(body);
+      if (pkg) {
+        return {
+          ...message,
+          message: pkg.caption ?? "",
+          e2eMedia: pkg,
+        };
+      }
+      return message;
+    }
+
+    const selfId = String(userStore.getString(keys.userId) ?? "");
+    // Own messages: prefer optimistic plaintext or local plaintext cache.
+    if (selfId && String(message.sender) === selfId) {
+      const local = String(message?.id_local ?? message?.local_Id ?? "");
+      const existing = conversationRef.current.find((m: any) => {
+        return (
+          (local &&
+            (m?.id_local === local || m?.local_Id === local || m?._id === local)) ||
+          (message?._id && m?._id === message._id)
+        );
+      });
+      if (
+        existing?.message &&
+        typeof existing.message === "string" &&
+        !isE2eEnvelopeMessage(existing.message)
+      ) {
+        return {
+          ...message,
+          message: existing.message,
+          e2eMedia: existing.e2eMedia ?? message.e2eMedia,
+        };
+      }
+      if (local) {
+        const cached = signalKeyStore.loadOutgoingPlaintext(local);
+        if (cached) return { ...message, message: cached };
+      }
+      // Sender cannot decrypt own v1 envelope — keep any attached package
+      return message;
+    }
+
+    try {
+      const plaintext = await signalProtocolService.decryptText(
+        body,
+        String(message.sender ?? "")
+      );
+      const pkg = parseMediaKeyPlaintext(plaintext);
+      if (pkg) {
+        return {
+          ...message,
+          message: pkg.caption ?? "",
+          e2eMedia: pkg,
+        };
+      }
+      return { ...message, message: plaintext };
+    } catch (error) {
+      console.warn("[e2e] decrypt failed:", error);
+      return { ...message, message: "🔒 Unable to decrypt" };
+    }
+  }, []);
   useEffect(() => {
     if (!display?.roomId) return;
     let isActive = true;
@@ -226,16 +305,21 @@ export const ChatProvider = ({
           clearTimeout(timeoutId);
 
           if (data?.chats) {
-            let chats = _.uniqBy(
-              [...data.chats, ...conversationRef.current],
-              "_id"
-            );
-            saveCachedConversation(
-              roomIdRef.current,
-              chats.slice(0, messagesPerPage)
-            );
-            setConversation(chats);
-            conversationRef.current = chats;
+            void (async () => {
+              const decrypted = await Promise.all(
+                (data.chats as any[]).map((chat) => maybeDecryptMessage(chat))
+              );
+              let chats = _.uniqBy(
+                [...decrypted, ...conversationRef.current],
+                "_id"
+              );
+              saveCachedConversation(
+                roomIdRef.current,
+                chats.slice(0, messagesPerPage)
+              );
+              setConversation(chats);
+              conversationRef.current = chats;
+            })();
           }
           isFirstLoad.current = false;
           setIsFetching(false);
@@ -249,7 +333,7 @@ export const ChatProvider = ({
           setIsFetching(false);
         });
     },
-    [roomId, messagesPerPage]
+    [roomId, messagesPerPage, maybeDecryptMessage]
   );
 
   useEffect(() => {
@@ -379,7 +463,7 @@ export const ChatProvider = ({
         const message = unwrapSocketMessage(data);
         if (!isCurrentRoomMessage(message)) return;
 
-        const newMessage = {
+        const baseMessage = {
           ...message,
           _id:
             message?._id ||
@@ -388,8 +472,11 @@ export const ChatProvider = ({
             Date.now().toString(),
         };
 
-        const chats = addOrUpdateMessage(newMessage);
-        setConversation(chats);
+        // Local optimistic already has plaintext; server acks may carry envelopes.
+        void maybeDecryptMessage(baseMessage).then((newMessage) => {
+          const chats = addOrUpdateMessage(newMessage);
+          setConversation(chats);
+        });
       },
 
       onDeleteChat: (data: any) => {
@@ -437,7 +524,7 @@ export const ChatProvider = ({
 
         if (!isCurrentRoomMessage(message)) return;
 
-        const newMessage = {
+        const baseMessage = {
           ...message,
           _id:
             message?._id ||
@@ -446,14 +533,16 @@ export const ChatProvider = ({
             Date.now().toString(),
         };
 
-        const chats = addOrUpdateMessage(newMessage);
-        const id = userStore.getString(keys.userId);
+        void maybeDecryptMessage(baseMessage).then((newMessage) => {
+          const chats = addOrUpdateMessage(newMessage);
+          const id = userStore.getString(keys.userId);
 
-        if (message.sender !== id) {
-          socketManager.conversation.markMessagesRead(roomId, message._id);
-        }
+          if (message.sender !== id) {
+            socketManager.conversation.markMessagesRead(roomId, message._id);
+          }
 
-        setConversation(chats);
+          setConversation(chats);
+        });
       },
 
       MarkSeen: (data: any) => {
@@ -543,7 +632,7 @@ export const ChatProvider = ({
         unsubscribe();
       }
     };
-  }, [roomId]);
+  }, [roomId, maybeDecryptMessage]);
 
   const loadMoreMessages = useCallback(() => {
     if (!isValidRoomId(roomId)) return;

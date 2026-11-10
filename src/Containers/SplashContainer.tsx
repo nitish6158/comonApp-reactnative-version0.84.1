@@ -358,6 +358,7 @@ import { useAppSelector } from "@/redux/Store";
 import { resetChatState, setMyProfile } from "@/redux/Reducer/ChatReducer";
 import { storage } from "@/redux/backup/mmkv";
 import { keys } from "@/redux/backup/keys";
+import { signalProtocolService } from "@/services/e2e/SignalProtocolService";
 import {
   addServerContact,
   removeContact,
@@ -547,6 +548,11 @@ export default function SplashContainer() {
           }
         })
         .catch((err) => console.log("Background contact sync skipped", err));
+
+      // WhatsApp-style E2E: generate/load Signal keys and upload public material.
+      signalProtocolService
+        .ensureIdentityAndUpload()
+        .catch((err) => console.warn("[e2e] identity upload skipped", err));
     }
   }
 

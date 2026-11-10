@@ -9,6 +9,8 @@ import { conversations } from "@/schemas/schema";
 import uuid from "react-native-uuid";
 import { storage as mmkvStorage } from "@/redux/backup/mmkv";
 import { keys } from "@/redux/backup/keys";
+import { signalProtocolService } from "@/services/e2e/SignalProtocolService";
+import { signalKeyStore } from "@/services/e2e/SignalKeyStore";
 
 
 type ConversationCallback<T = any> = SocketCallback<T>;
@@ -293,16 +295,49 @@ export class ConversationSocketHandler extends BaseSocketHandler {
                     PinBy: [],
                 };
 
-                // Optimistic UI: show message immediately (even offline).
+                // Optimistic UI: show plaintext immediately (even offline).
                 socketConnect.dispatchLocalMessage(ConversationEventType.SEND_CHAT, optimisticMessage);
+
+                const rawData = { ...(data as any).data, sender: userId, id_local: idLocal };
+                const e2eEnabled = !!rawData.e2eEnabled;
+                const e2ePeerUserId =
+                    typeof rawData.e2ePeerUserId === "string" ? rawData.e2ePeerUserId : "";
+                delete rawData.e2eEnabled;
+                delete rawData.e2ePeerUserId;
+
+                // After local alias formatting: encrypt text for E2E rooms before wire emit.
+                if (
+                    e2eEnabled &&
+                    rawData.type === "text" &&
+                    e2ePeerUserId &&
+                    typeof rawData.message === "string" &&
+                    rawData.message.length > 0
+                ) {
+                    try {
+                        const plaintext = rawData.message;
+                        rawData.message = await signalProtocolService.encryptText(
+                            e2ePeerUserId,
+                            plaintext,
+                            client
+                        );
+                        // Cache plaintext for own-device history (v1; multi-device sealed sender later).
+                        signalKeyStore.saveOutgoingPlaintext(idLocal, plaintext);
+                    } catch (encryptErr) {
+                        console.error("[e2e] encrypt failed:", encryptErr);
+                        socketConnect.dispatchLocalMessage("updateMessage", {
+                            _id: idLocal,
+                            id_local: idLocal,
+                            isSent: false,
+                            sendFailed: true,
+                            updated_at: Date.now(),
+                        });
+                        throw encryptErr;
+                    }
+                }
 
                 const payload = {
                     ...data,
-                    data: {
-                        ...data.data,
-                        sender: userId,
-                        id_local: idLocal,
-                    },
+                    data: rawData,
                 };
 
                 if (socketConnect.getConnectionStatus() !== "connected") {

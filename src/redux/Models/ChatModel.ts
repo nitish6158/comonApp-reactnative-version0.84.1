@@ -137,6 +137,7 @@ export interface RoomData {
   unreadBy: RoomActionData[];
   username: string;
   blocked: boolean;
+  e2eEnabled?: boolean;
   log: {
     type: logType;
     created_at: string;

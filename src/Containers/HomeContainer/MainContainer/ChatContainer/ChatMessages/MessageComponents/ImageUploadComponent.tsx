@@ -46,6 +46,17 @@ import { socket } from "@/redux/Reducer/SocketSlice";
 import { ChatContext } from "@/Context/ChatProvider";
 import { produce } from "immer";
 import RNFS from "react-native-fs";
+import {
+  buildMediaKeyPlaintext,
+  encryptFileToTemp,
+  encryptMediaKeyForPeer,
+  isE2eMediaRoom,
+  plainCaptionFromMessage,
+  resolveE2ePeerUserId,
+  unlinkQuiet,
+} from "@/services/e2e/e2eMedia";
+import useE2eMediaUri from "@/hooks/useE2eMediaUri";
+import { DefaultImageUrl } from "@Service/provider/endpoints";
 
 // const { useRealm, useQuery, useObject } = RealmContext;
 
@@ -152,10 +163,17 @@ function ImageComponent({
   const { copyFile, donwloadFiles, unlinkFile } = useFileSystem();
 
   const { updateChatMessage } = useUpdateChat();
+  const e2e = isE2eMediaRoom(display);
+  const { uri: e2eUri } = useE2eMediaUri(message, display, { kind: "file" });
 
   const url = useMemo(() => {
+    if (message.fileURL?.startsWith("file:")) return message.fileURL;
+    if (e2e && e2eUri) return e2eUri;
+    if (message.fileURL && !message.fileURL.startsWith("file:")) {
+      return `${DefaultImageUrl}${message.fileURL}`;
+    }
     return message.fileURL;
-  }, []);
+  }, [message.fileURL, e2e, e2eUri]);
 
   useEffect(() => {
     // console.log("conversation",conversation)
@@ -183,14 +201,17 @@ function ImageComponent({
 
   async function uploadImage() {
     setUploading(true);
+    let encryptedTemp: string | null = null;
     try {
       const path = `${display.roomId}/${display.currentUserUtility.user_id
         }/${message.fileURL.slice(-10)}`;
+      const mimeType = message.type.replace("LOADING/", "");
+      const uploadContentType = e2e ? "application/octet-stream" : mimeType;
       const res = await getUrl({
         variables: {
           input: {
             path: path,
-            contentType: message.type.replace("LOADING/", ""),
+            contentType: uploadContentType,
           },
         },
       });
@@ -209,8 +230,45 @@ function ImageComponent({
           });
         }
 
+        let plaintextLocalPath = uploadFilePath;
+        let encryptedMessage = "";
+        let e2eMediaPkg = null;
+
+        if (e2e) {
+          const peerUserId = resolveE2ePeerUserId(display);
+          if (!peerUserId) {
+            console.error("[e2e-media] missing peer for image upload");
+            setRetry(true);
+            return;
+          }
+          const enc = await encryptFileToTemp(uploadFilePath, {
+            mimeHint: mimeType,
+          });
+          encryptedTemp = enc.tempPath;
+          uploadFilePath = enc.tempPath;
+          const caption = plainCaptionFromMessage(message?.message);
+          const packageJson = buildMediaKeyPlaintext({
+            keyB64: enc.keyB64,
+            ivB64: enc.ivB64,
+            mime: enc.mimeHint || mimeType,
+            caption,
+          });
+          encryptedMessage = await encryptMediaKeyForPeer(
+            peerUserId,
+            packageJson
+          );
+          e2eMediaPkg = {
+            t: "media",
+            v: 1,
+            key: enc.keyB64,
+            iv: enc.ivB64,
+            mime: enc.mimeHint || mimeType,
+            caption,
+          };
+        }
+
         const headers = {
-          "Content-Type": message.type.replace("LOADING/", ""),
+          "Content-Type": uploadContentType,
         };
         const isUploadFileReadable = await canUploadFile(uploadFilePath);
         if (!isUploadFileReadable) {
@@ -240,7 +298,7 @@ function ImageComponent({
               fileURL: path,
               roomId: message?.roomId,
               isForwarded: false,
-              message: "",
+              message: e2e ? encryptedMessage : "",
               fontStyle: "",
               thumbnail: "",
               duration: 0,
@@ -256,32 +314,42 @@ function ImageComponent({
                   isSent: true,
                   fileURL: path,
                   type: "IMAGE",
+                  message: e2e
+                    ? e2eMediaPkg?.caption ?? ""
+                    : message?.message ?? "",
+                  ...(e2e && e2eMediaPkg ? { e2eMedia: e2eMediaPkg } : {}),
                 },
               });
               setDisplay((prev) => ({
                 ...prev,
                 totalMedia: prev.totalMedia + 1
               }));
-              copyFile(uploadFilePath, path);
+              // Keep plaintext local copy for sender preview
+              copyFile(plaintextLocalPath, path);
             })
             .catch((err) => {
               console.error(
                 "Error in updating chat message while sending document",
                 err
               );
+              setRetry(true);
             });
         } else {
           console.log("else condition uploadImage----->", uploadResult);
+          setRetry(true);
         }
-        if (uploadFilePath !== message.fileURL) {
-          unlinkFile(uploadFilePath);
+        if (plaintextLocalPath !== message.fileURL) {
+          unlinkFile(plaintextLocalPath);
         }
       } else {
         console.log(res);
+        setRetry(true);
       }
     } catch (err) {
       console.error("Error in uploadImage", err);
+      setRetry(true);
     } finally {
+      await unlinkQuiet(encryptedTemp);
       setUploading(false);
     }
   }

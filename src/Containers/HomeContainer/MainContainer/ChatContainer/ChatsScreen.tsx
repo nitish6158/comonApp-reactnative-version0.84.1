@@ -309,6 +309,7 @@ export default function ChatsScreen({ navigation }: any) {
               cacheTime: Date.now(),
               ringtone: item.ringtone ?? [],
               receipts: item.receipts ?? [],
+              e2eEnabled: !!item.e2eEnabled,
             });
             setLimit(20);
             socketConnect.emit("removeDisappearedChats", { roomId: item?._id });
