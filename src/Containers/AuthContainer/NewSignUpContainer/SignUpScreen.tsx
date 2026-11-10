@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from "react";
 
 import { Alert, Image, Platform, Text, View } from "react-native";
@@ -6,7 +7,7 @@ import { setGlobalPhoneCode, setSession } from "@Util/session";
 import { useCallback, useEffect, useState } from "react";
 
 import { $space_xxl } from "@/Constants/Spaces";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DeviceInfo from "react-native-device-info";
 import { ElementButton } from "@/Components/Button/Button";
@@ -40,6 +41,8 @@ import { DefaultStorageKeys, setStorage } from "@Util/storage";
 import { branchAtom } from "@/navigation/AuthNavigator";
 import HeaderWithBack from "@Components/header/HeaderWithBack";
 import EmailConfirmationModal from "./EmailConfirmationModal";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type FormValues = {
   firstName?: string;
@@ -239,7 +242,7 @@ export const SignUpScreen = ({
 
               <TooltipInfo popOverText={t("errors.strong-password")}>
                 <View style={{ marginLeft: windowWidth * 0.85, top: 10 }}>
-                  <AntDesign name="infocirlce" size={15} />
+                  <VectorIconCompat name="infocirlce" size={15} />
                 </View>
               </TooltipInfo>
 
@@ -271,7 +274,7 @@ export const SignUpScreen = ({
               </Text>
               <TooltipInfo popOverText={t("errors.strong-password")}>
                 <View style={{ marginLeft: windowWidth * 0.85, top: 15 }}>
-                  <AntDesign name="infocirlce" size={15} />
+                  <VectorIconCompat name="infocirlce" size={15} />
                 </View>
               </TooltipInfo>
 

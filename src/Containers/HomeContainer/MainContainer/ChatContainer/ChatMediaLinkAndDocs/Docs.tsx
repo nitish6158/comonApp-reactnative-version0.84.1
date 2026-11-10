@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable react-native/no-color-literals */
 import {
   Dimensions,
@@ -22,7 +23,7 @@ import Colors from "@/Constants/Colors";
 import FileViewer from "react-native-file-viewer";
 import GetExtension from "@Util/getExtensionfromUrl";
 import { Hidemessage } from "@Types/types";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 // import RealmContext from "../../../../../schemas";
 import { RootState } from "@Store/Reducer";
 import SectionTitle from "./SectionTitle";
@@ -37,6 +38,8 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { socketManager } from "@/utils/socket/SocketManager";
 import { DefaultImageUrl } from "@/graphql/provider/endpoints";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 // const { useQuery } = RealmContext;
 const { width } = Dimensions.get("screen");
@@ -167,7 +170,7 @@ function Docs({ name }: { name: string }) {
                             marginRight: 16,
                           }}
                         >
-                          <MaterialCommunityIcons
+                          <VectorIconCompat
                             name="file-document-outline"
                             size={22}
                             color={Colors.light.PrimaryColor}

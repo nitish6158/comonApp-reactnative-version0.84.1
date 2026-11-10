@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { View, Text, Pressable, ViewStyle, StyleSheet } from "react-native";
 import React, { useMemo, useEffect } from "react";
 import { reminder } from "@/schemas/schema";

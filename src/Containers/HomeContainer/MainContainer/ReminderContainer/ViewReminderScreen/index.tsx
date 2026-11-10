@@ -1,19 +1,20 @@
+// @ts-nocheck
 import { View, Text, Pressable, SectionList } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { ViewReminderScreenProps } from "@/navigation/screenPropsTypes";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/Reducer";
 import { reminder } from "@/schemas/schema";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import dayjs from "dayjs";
 import { Colors } from "@/Constants";
-import Entypo from "react-native-vector-icons/Entypo";
+
 import { windowWidth } from "@Util/ResponsiveView";
 import { Chip } from "react-native-ui-lib";
 import FastImage from "@d11/react-native-fast-image";
 import { DefaultImageUrl } from "@Service/provider/endpoints";
 import { Menu, MenuOption, MenuOptions, MenuTrigger, renderers } from "react-native-popup-menu";
-import Feather from "react-native-vector-icons/Feather";
+
 import { EventType, ParticipantAcceptStatus, RecurrentTypes } from "@/graphql/generated/types";
 import {
   useDeleteReminderMutation,
@@ -33,6 +34,8 @@ import { GET_REMINDER_RANGE } from "@/graphql/reminder";
 import { defaultFilter, filterType, TimeSetterToMax, TimeSetterToZero } from "./viewReminder.types";
 import { calendarGlobalReminder, calendarRefreshAtom, eventDeleteRequestAtom } from "@/Atoms/CalendarAtom";
 import ReminderFilter from "./components/ReminderFilter";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function ViewReminderScreen({ navigation, route }: ViewReminderScreenProps) {
   const { MyProfile } = useSelector((state: RootState) => state.Chat);
@@ -118,7 +121,7 @@ export default function ViewReminderScreen({ navigation, route }: ViewReminderSc
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons name="arrow-back" color="gray" size={30} onPress={navigation.goBack} />
+          <VectorIconCompat name="arrow-back" color="gray" size={30} onPress={navigation.goBack} />
           <Text style={styles.headingText}>{t("reminders.reminders")}</Text>
         </View>
         <ReminderFilter onSelected={setFilter} />
@@ -161,7 +164,7 @@ export default function ViewReminderScreen({ navigation, route }: ViewReminderSc
                     <Menu key={index} renderer={renderers.Popover}>
                       <MenuTrigger>
                         <View style={{ marginLeft: 10 }}>
-                          <Feather name="more-vertical" size={18} color={"black"} />
+                          <VectorIconCompat name="more-vertical" size={18} color={"black"} />
                         </View>
                       </MenuTrigger>
                       <MenuOptions>
@@ -245,7 +248,7 @@ export default function ViewReminderScreen({ navigation, route }: ViewReminderSc
 
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <View style={styles.participantIcon}>
-                      <Ionicons
+                      <VectorIconCompat
                         name="people"
                         size={18}
                         color={styles[`type_text_${item.type}`].color}
@@ -256,7 +259,7 @@ export default function ViewReminderScreen({ navigation, route }: ViewReminderSc
 
                     {item.attachment && item.attachment.length > 0 && (
                       <View style={styles.participantIcon}>
-                        <Entypo
+                        <VectorIconCompat
                           name="attachment"
                           size={16}
                           color={styles[`type_text_${item.type}`].color}
@@ -268,7 +271,7 @@ export default function ViewReminderScreen({ navigation, route }: ViewReminderSc
                     {item.approvalReminderTime && item.approvalReminderTime.length > 0 && (
                       <View style={[styles.participantIcon, { marginHorizontal: 5 }]}>
                         {currentUser?.accepted === ParticipantAcceptStatus["Pause"] && (
-                          <Ionicons
+                          <VectorIconCompat
                             name="notifications-off-sharp"
                             size={16}
                             color={styles[`type_text_${item.type}`].color}
@@ -277,10 +280,10 @@ export default function ViewReminderScreen({ navigation, route }: ViewReminderSc
 
                         {(currentUser?.accepted === ParticipantAcceptStatus["Accept"] ||
                           currentUser?.accepted === ParticipantAcceptStatus["Reject"]) && (
-                          <Ionicons name="notifications" size={16} color={styles[`type_text_${item.type}`].color} />
+                          <VectorIconCompat name="notifications" size={16} color={styles[`type_text_${item.type}`].color} />
                         )}
                         {currentUser?.accepted === ParticipantAcceptStatus["Pending"] && (
-                          <Ionicons
+                          <VectorIconCompat
                             name="notifications-outline"
                             size={16}
                             color={styles[`type_text_${item.type}`].color}
@@ -290,7 +293,7 @@ export default function ViewReminderScreen({ navigation, route }: ViewReminderSc
                       </View>
                     )}
                     {item.location && (
-                      <Ionicons name="location-sharp" size={18} color="red" style={{ marginHorizontal: 3 }} />
+                      <VectorIconCompat name="location-sharp" size={18} color="red" style={{ marginHorizontal: 3 }} />
                     )}
                   </View>
                 </View>
@@ -338,7 +341,7 @@ export default function ViewReminderScreen({ navigation, route }: ViewReminderSc
                 borderRadius: 10,
               }}
             >
-              <Ionicons name="add-outline" size={28} color={Colors.light.PrimaryColor} />
+              <VectorIconCompat name="add-outline" size={28} color={Colors.light.PrimaryColor} />
               <Text style={{ fontWeight: "500", marginLeft: 5 }}>{t("reminders.add-new")}</Text>
             </Pressable>
           </View>

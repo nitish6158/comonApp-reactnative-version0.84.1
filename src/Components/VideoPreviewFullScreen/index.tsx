@@ -11,7 +11,7 @@ import Video from "react-native-video";
 type props = {
   ImagePreviewVisible: boolean;
   closeImageModal: () => void;
-  ImagePreviewImage: { type: "IMAGE" | "VIDEO"; url: String };
+  ImagePreviewImage: { type: string; url: string };
 };
 
 function VideoFullScreenPreview({ ImagePreviewVisible, closeImageModal, ImagePreviewImage }: props) {

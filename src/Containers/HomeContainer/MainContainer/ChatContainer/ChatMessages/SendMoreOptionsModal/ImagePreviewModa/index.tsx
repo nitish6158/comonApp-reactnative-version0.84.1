@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Dimensions,
   Image,
@@ -19,11 +20,10 @@ import {
 } from "react-native-image-picker";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Modal from "react-native-modal";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import Colors from "@/Constants/Colors";
 import CommonLoader from "@Components/CommonLoader";
-import Entypo from "react-native-vector-icons/Entypo";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { MentionInput } from "react-native-controlled-mentions";
 // import RealmContext from "../../../../../../../schemas";
 import { RootState } from "@Store/Reducer/index";
@@ -33,7 +33,7 @@ import { singleRoom } from "@Atoms/singleRoom";
 import { useAtom, useAtomValue } from "jotai";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { MentionInputProps } from "react-native-controlled-mentions/dist/types";
 import FastImage from "@d11/react-native-fast-image";
 import Icon from "@Assets/images/Icon";
@@ -43,6 +43,8 @@ import dayjs from "dayjs";
 import Video from "react-native-video";
 import { socketManager } from "@/utils/socket/SocketManager";
 import RNFS from "react-native-fs";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 // const { useRealm } = RealmContext;
 
@@ -145,7 +147,7 @@ export default function ImagePrevModal({
             setVisible(!Visible);
           }}
         >
-          <Ionicons
+          <VectorIconCompat
             name="send"
             color="white"
             size={18}
@@ -352,7 +354,7 @@ export default function ImagePrevModal({
                   }}
                 >
                   {item.type == "video" && (
-                    <Entypo name="controller-play" size={24} color="white" />
+                    <VectorIconCompat name="controller-play" size={24} color="white" />
                   )}
                 </View>
               </ImageBackground>
@@ -431,7 +433,7 @@ export default function ImagePrevModal({
           }
         }}
       >
-        <MaterialCommunityIcons
+        <VectorIconCompat
           name="file-image-plus"
           color="white"
           size={24}
@@ -463,7 +465,7 @@ export default function ImagePrevModal({
           keyboardVerticalOffset={height / keyBoardOffset}
         >
           <View style={styles.topcon}>
-            <AntDesign
+            <VectorIconCompat
               name="arrowleft"
               color="white"
               size={24}

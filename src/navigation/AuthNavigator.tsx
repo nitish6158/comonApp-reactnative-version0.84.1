@@ -46,7 +46,7 @@ export function AuthNavigator() {
               region: params["~tags"][1],
             });
 
-            navigation.navigate("Registration", {
+            (navigation as any).navigate("Registration", {
               phoneNumber: params["~tags"][0],
               region: params["~tags"][1],
             });

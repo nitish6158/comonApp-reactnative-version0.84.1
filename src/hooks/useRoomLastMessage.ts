@@ -1,7 +1,8 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { useAppSelector } from "@/redux/Store";
-import { TFunction, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import {
   RoomData,
   RoomMsgData,
@@ -36,9 +37,9 @@ export default function useRoomLastMessage() {
       }
 
       //If Last Message is a System Message then show system message
-      if (LastMessageType[lastMsg.type ?? ""]) {
+      if ((LastMessageType as Record<string, string>)[lastMsg.type ?? ""]) {
         return (
-          warnMessageHelper(item, comonContact, MyProfile?._id) +
+          warnMessageHelper(item as any, comonContact, MyProfile?._id ?? "") +
           lastMsg.message
         );
       }

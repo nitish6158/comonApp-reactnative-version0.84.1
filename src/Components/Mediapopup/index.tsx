@@ -1,10 +1,11 @@
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import Colors from "@/Constants/Colors";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+
 import React from "react";
 import fonts from "@/Constants/fonts";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 interface IMedia {
   modal: boolean;
@@ -29,7 +30,7 @@ export function MediaPopup(props: IMedia) {
                 onPress={() => onPressCamera()}
                 disabled={disableCamera}
               >
-                <AntDesign name="camera" size={45} color={Colors.light.PrimaryColor} />
+                <VectorIconCompat name="camera" size={45} color={Colors.light.PrimaryColor} />
                 <Text style={[style.textTypo, style.buttonTextStyle]}>Camera</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -38,7 +39,7 @@ export function MediaPopup(props: IMedia) {
                 onPress={() => onPressGallery()}
                 disabled={disableGallery}
               >
-                <FontAwesome5 name="photo-video" size={45} color={Colors.light.PrimaryColor} />
+                <VectorIconCompat name="photo-video" size={45} color={Colors.light.PrimaryColor} />
                 <Text style={[style.textTypo, style.buttonTextStyle]}>Gallery</Text>
               </TouchableOpacity>
             </View>

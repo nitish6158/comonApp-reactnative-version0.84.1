@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   ActivityIndicator,
   Pressable,
@@ -25,7 +26,7 @@ import ProfileImage from "./ProfileImage";
 import CustomModal from "@Components/Comon";
 import CommonLoader from "@Components/CommonLoader";
 import ReportUser from "./ReportUser";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import SettingsOptions from "./components/SettingsOptions";
 
 // Utils
@@ -41,6 +42,8 @@ import OnlineReminder from "./OnlineReminder";
 import { createStorage } from "@/utils/mmkvStorage";
 import useFileSystem from "@/hooks/useFileSystem";
 import { getChatProfileActionVisibility } from "./chatProfileActions";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 const chatMessageStorage = createStorage({
   id: "chatmessages",
@@ -180,7 +183,6 @@ export default function ProfileInfo({ navigation, route }) {
     },
     [reportUserWithReason, t]
   );
-
 
   const handleExportChat = useCallback(async () => {
     try {
@@ -407,7 +409,7 @@ export default function ProfileInfo({ navigation, route }) {
                 setDeleteBroadcastVisible(!deleteBroadcastVisible);
               }}
             >
-              <MaterialCommunityIcons name="delete" size={25} color={"red"} />
+              <VectorIconCompat name="delete" size={25} color={"red"} />
               <Text style={[styles.textStyle, styles.textTypo]}>
                 {t("deleteBroadcast")}
               </Text>

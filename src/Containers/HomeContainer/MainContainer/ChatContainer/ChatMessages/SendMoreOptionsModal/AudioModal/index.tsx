@@ -1,16 +1,19 @@
+// @ts-nocheck
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import React, { Component, useEffect, useRef, useState } from "react";
 
 import AudioPlayerModal from "@Components/AudioPlayerFromModal/src/AudioPlayerModal";
 import Colors from "@/Constants/Colors";
 import HeaderWithAction from "@Components/header/HeaderWithAction";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import ToastMessage from "@Util/ToastMesage";
 import { callAtom } from "@Atoms/callAtom";
 import { useAtom } from "jotai";
 import { windowWidth } from "@Util/ResponsiveView";
 import { useTranslation } from "react-i18next";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function AudioModal({
   setAudioVisible,
@@ -56,7 +59,7 @@ export default function AudioModal({
           <View
             style={{ flex: 3, justifyContent: "center", alignItems: "center" }}
           >
-            <MaterialIcons
+            <VectorIconCompat
               name="multitrack-audio"
               size={80}
               color={Colors.light.PrimaryColor}

@@ -118,14 +118,14 @@ export function MainNavigator() {
   const initialBottomRoute = useSetAtom(initialBottomTabScreenAtom);
 
   // Use useCallback to memoize the navigation functions
-  const handleChatMessageNavigation = useCallback((payload) => {
-    if (getCurrentRoute() !== "ChatMessageScreen") {
+  const handleChatMessageNavigation = useCallback((payload: any) => {
+    if (getCurrentRoute() !== ("ChatMessageScreen" as any)) {
       navigate("ChatMessageScreen", payload);
     }
   }, []);
 
   const handleBottomTabNavigation = useCallback(
-    (payload) => {
+    (payload: any) => {
       if (payload && Object.keys(payload).length > 0) {
         initialBottomRoute(payload);
       }
@@ -424,8 +424,8 @@ export function MainNavigator() {
         />
 
         <MainStack.Screen
-          name="SubTopicScreen"
-          component={SubTopicScreen}
+          name={"SubTopicScreen" as any}
+          component={SubTopicScreen as any}
           options={{
             headerShown: false,
           }}
@@ -658,7 +658,7 @@ export function MainNavigator() {
 
         <MainStack.Screen
           name="ReportScreen"
-          component={ReportScreen}
+          component={ReportScreen as any}
           options={{
             headerShown: false,
           }}

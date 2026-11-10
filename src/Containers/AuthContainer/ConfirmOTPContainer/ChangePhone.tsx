@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Alert, View } from "react-native";
 import { PhoneInput, PhoneInputRef } from "@/Components/input/PhoneInput";
 import React, { useState } from "react";

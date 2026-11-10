@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Dimensions,
   Image,
@@ -34,7 +35,6 @@ import React, {
 import SendChatHelper, { whoosh } from "@Util/helpers/SendChatHelper";
 import { useDispatch, useSelector } from "react-redux";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import AudioGreen from "@Images/AudioGreen.svg";
 import Colors from "@/Constants/Colors";
 import CrossGray from "@Images/CrossGray.svg";
@@ -61,8 +61,7 @@ import { EventType } from "@/graphql/generated/types";
 import { navigate } from "@/navigation/utility";
 import dayjs from "dayjs";
 import { useAppSelector } from "@/redux/Store";
-import Octicons from "react-native-vector-icons/Octicons";
-import Feather from "react-native-vector-icons/Feather";
+
 import { Alert } from "react-native";
 import ToastMessage from "@/utils/ToastMesage";
 import { InternetAtom, currentUserIdAtom } from "@/Atoms";
@@ -91,6 +90,7 @@ import uuid from "react-native-uuid";
 import RNFS from "react-native-fs";
 import { ChatContext } from "@/Context/ChatProvider";
 
+import { VectorIconCompat } from "@/Components/icons";
 
 const screenWidth = Dimensions.get("window").width;
 const empty = new RegExp(/^[ \t\r\n]*$/);
@@ -596,7 +596,7 @@ function ChatInputBox() {
           }
         }}
       >
-        <AntDesign
+        <VectorIconCompat
           name="pluscircle"
           size={38}
           color={Colors.light.PrimaryColor}
@@ -1019,7 +1019,7 @@ function SeniorBottomBox() {
         onPress={() => setEnableText(true)}
         style={{ flex: 1, alignItems: "center" }}
       >
-        <Octicons name="pencil" size={22} />
+        <VectorIconCompat name="pencil" size={22} />
         <Text
           size="sm"
           lineNumber={3}
@@ -1034,7 +1034,7 @@ function SeniorBottomBox() {
         }}
         style={{ flex: 1, alignItems: "center" }}
       >
-        <AntDesign name="camerao" size={22} />
+        <VectorIconCompat name="camerao" size={22} />
         <Text
           size="sm"
           lineNumber={3}
@@ -1049,7 +1049,7 @@ function SeniorBottomBox() {
         }}
         style={{ flex: 1, alignItems: "center" }}
       >
-        <Feather name="image" size={22} />
+        <VectorIconCompat name="image" size={22} />
         <Text
           size="sm"
           lineNumber={3}

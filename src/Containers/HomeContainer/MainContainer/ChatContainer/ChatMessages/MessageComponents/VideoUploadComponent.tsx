@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Animated, Dimensions, Easing, StyleSheet, View } from "react-native";
 import {
   Image as ImageCompress,

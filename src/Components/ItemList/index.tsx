@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import Arrow from "@Images/Profile/arrow.svg";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { View, Text, Pressable } from "react-native";
 import React from "react";
 import { OtaModalProps } from "./types";

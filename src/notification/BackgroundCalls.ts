@@ -30,7 +30,7 @@ const getHeaders = (token?: string | null) => ({
   ...(token && token !== "undefined" && token !== "null" ? { Authorization: `Bearer ${token}` } : {}),
 });
 
-type dataType = Chat & { TYPE: string };
+type dataType = Chat & { TYPE: string; data?: string };
 
 export const updateChat = async (data: dataType, input: string) => {
   const token = await AsyncStorage.getItem(SessionKeys.TOKEN);
@@ -39,7 +39,7 @@ export const updateChat = async (data: dataType, input: string) => {
   let roomId = "";
   let cid = "";
   if (data.myMessage == undefined) {
-    let datap = JSON.parse(data?.data) as Chat;
+    let datap = JSON.parse(data?.data ?? "{}") as Chat;
     roomId = datap.myMessage.roomId;
     cid = datap.myMessage.roomId;
   } else {
@@ -110,10 +110,11 @@ export const changeCallStatus = async (data: CallNotification & { TYPE: string }
 
   //console.log(token,userId)
   if (token != null && userId != null) {
+    const profile = JSON.parse(userId) as { user?: { _id?: string } };
     let requestBody: ChangeCallStatusRequest = {
-      callId: data?.data?._id,
+      callId: (data?.data as any)?.callId ?? (data?.data as any)?._id,
       status: "rejected",
-      userId: userId?.user?._id,
+      userId: profile?.user?._id as string,
     };
 
     const res = await fetch(`${BASE_URL}${CHANGE_CALL_STATUS}`, {

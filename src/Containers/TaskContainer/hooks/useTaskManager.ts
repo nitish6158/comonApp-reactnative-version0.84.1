@@ -327,8 +327,6 @@ export const useTaskManager = (
     dispatch,
     createNewTask,
     navigation,
-    setShowPublishModal,
-    setPublishLoading,
     t,
   };
 };

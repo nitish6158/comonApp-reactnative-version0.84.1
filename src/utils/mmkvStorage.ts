@@ -1,11 +1,18 @@
-import { MMKV, type MMKVConfiguration, type NativeMMKV } from "react-native-mmkv";
+import { createMMKV, type Configuration, type MMKV } from "react-native-mmkv";
 
-type StorageConfig = ConstructorParameters<typeof MMKV>[0];
+/**
+ * App storage surface: MMKV v4 API + legacy `delete` alias used across the codebase.
+ */
+export type AppStorage = MMKV & {
+  delete: (key: string) => boolean;
+};
 
-class MemoryStorage implements NativeMMKV {
-  private readonly values = new Map<string, boolean | string | number | Uint8Array>();
+type MemoryValue = boolean | string | number | ArrayBuffer;
 
-  set(key: string, value: boolean | string | number | Uint8Array) {
+class MemoryStorage {
+  private readonly values = new Map<string, MemoryValue>();
+
+  set(key: string, value: MemoryValue) {
     this.values.set(key, value);
   }
 
@@ -26,15 +33,19 @@ class MemoryStorage implements NativeMMKV {
 
   getBuffer(key: string) {
     const value = this.values.get(key);
-    return value instanceof Uint8Array ? value : undefined;
+    return value instanceof ArrayBuffer ? value : undefined;
   }
 
   contains(key: string) {
     return this.values.has(key);
   }
 
+  remove(key: string) {
+    return this.values.delete(key);
+  }
+
   delete(key: string) {
-    this.values.delete(key);
+    return this.remove(key);
   }
 
   getAllKeys() {
@@ -46,24 +57,30 @@ class MemoryStorage implements NativeMMKV {
   }
 
   recrypt() {}
+  encrypt() {}
+  decrypt() {}
+  trim() {}
+  addOnValueChangedListener() {
+    return { remove: () => undefined };
+  }
 }
 
 const fallbackStores = new Map<string, MemoryStorage>();
 const warnedStoreIds = new Set<string>();
 
-function getStoreId(configuration?: StorageConfig) {
+function getStoreId(configuration?: Configuration) {
   return configuration?.id ?? "mmkv.default";
 }
 
-function getFallbackStore(storeId: string) {
+function getFallbackStore(storeId: string): AppStorage {
   const existingStore = fallbackStores.get(storeId);
   if (existingStore != null) {
-    return existingStore;
+    return existingStore as unknown as AppStorage;
   }
 
   const nextStore = new MemoryStorage();
   fallbackStores.set(storeId, nextStore);
-  return nextStore;
+  return nextStore as unknown as AppStorage;
 }
 
 function warnFallback(error: unknown, storeId: string) {
@@ -81,9 +98,17 @@ function warnFallback(error: unknown, storeId: string) {
   console.warn(`${prefix}\n${message}`);
 }
 
-export function createStorage(configuration?: StorageConfig): NativeMMKV {
+function withDeleteAlias(storage: MMKV): AppStorage {
+  const aliased = storage as AppStorage;
+  if (typeof aliased.delete !== "function") {
+    aliased.delete = (key: string) => storage.remove(key);
+  }
+  return aliased;
+}
+
+export function createStorage(configuration?: Configuration): AppStorage {
   try {
-    return new MMKV(configuration as MMKVConfiguration | undefined);
+    return withDeleteAlias(createMMKV(configuration));
   } catch (error) {
     const storeId = getStoreId(configuration);
     warnFallback(error, storeId);

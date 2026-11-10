@@ -4,18 +4,18 @@ import { Platform, Pressable, StyleSheet, Text, View, useWindowDimensions } from
 import React, { Fragment, useEffect, useMemo, useState } from "react";
 import LiveKitVideoTrack from "./LiveKitVideoTrack";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import CallBackground from "./CallBackground";
 import Colors from "@/Constants/Colors";
 import Icon from "@Images/Icon";
-import Icons from "react-native-vector-icons/MaterialCommunityIcons";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { ShowCallTimeUI } from "./CallTimer";
 import SwitchToVideoPromt from "./SwitchToVideoPromt";
 import VideoDisableBlock from "./VideoDisableBlock";
 import { callAtomType } from "@Atoms/callAtom";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@/redux/Store";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type fullModeProps = {
   callRequest: callAtomType;
@@ -116,7 +116,7 @@ export default function FullCallMode({
           }}
         >
           <Pressable onPress={SwitchToMiniMode} style={{ flexDirection: "row", alignItems: "center" }}>
-            <Icons name="chevron-left" style={{ color: color }} size={26} />
+            <VectorIconCompat name="chevron-left" color={color} size={26} />
             <Text style={{ color: color, fontSize: 16 }}>{t("navigation.back")}</Text>
           </Pressable>
           {/* {callState && (
@@ -127,7 +127,7 @@ export default function FullCallMode({
           {/* {callRequest?.roomType == "contact_group" && callRequest?.callId && ( */}
           {peerIds.length && callRequest?.roomType != "group" ? (
             <Pressable onPress={addParticipants}>
-              <AntDesign name="adduser" size={28} color={color} />
+              <VectorIconCompat name="adduser" size={28} color={color} />
             </Pressable>
           ) : (
             <></>
@@ -145,7 +145,7 @@ export default function FullCallMode({
           </Typography>
           {peerIds.length > 0 && (
             <Pressable onPress={showCallParticipants} style={{ marginLeft: 10 }}>
-              <Ionicons name="information-circle-outline" size={24} color={color} />
+              <VectorIconCompat name="information-circle-outline" size={24} color={color} />
             </Pressable>
           )}
         </HStack>
@@ -216,7 +216,7 @@ export default function FullCallMode({
                           justifyContent: "center",
                         }}
                       >
-                        <Ionicons name="bluetooth" size={50} color={Colors.light.White} />
+                        <VectorIconCompat name="bluetooth" size={50} color={Colors.light.White} />
                       </View>
                     ) : speakerEnabled ? (
                       <Icon.SpeakerOn />

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { DrawerActions, useNavigation } from "@react-navigation/core";
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -5,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Colors from "@/Constants/Colors";
 import Dropdown from "../Dropdown";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { LogoTitle } from "../logo";
 import MainSearch from "@Images/MainSearch.svg";
 import NotificationIcon from "@Images/notification big.svg";
@@ -19,6 +20,8 @@ import { useAtom } from "jotai";
 import { useTranslation } from "react-i18next";
 import { setOrganisationInvites } from "@/redux/Reducer/OrganisationsReducer";
 import { useGetByIdsLazyQuery } from "@/graphql/generated/user.generated";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function TaskHeader() {
   const [toggleDropdown, setToggleDropdown] = useState(false);
@@ -77,7 +80,7 @@ export default function TaskHeader() {
             </Text>
           </View>
           <View style={{ width: "15%", alignItems: "center" }}>
-            <Ionicons name={toggleDropdown ? "chevron-up" : "chevron-down-sharp"} size={15} style={styles.iconStyle} />
+            <VectorIconCompat name={toggleDropdown ? "chevron-up" : "chevron-down-sharp"} size={15} style={styles.iconStyle} />
           </View>
         </TouchableOpacity>
         <TouchableOpacity

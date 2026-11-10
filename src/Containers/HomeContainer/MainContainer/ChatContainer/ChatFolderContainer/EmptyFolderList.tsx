@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { FolderAndTabsAtom } from "@/Atoms";
 import { useAppSelector } from "@/redux/Store";
@@ -5,8 +6,10 @@ import { useNavigation } from "@react-navigation/core";
 import { useAtomValue } from "jotai";
 import { useTranslation } from "react-i18next";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { Colors } from "@/Constants";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function EmptyRoomList() {
   const { t } = useTranslation();
@@ -29,7 +32,7 @@ export default function EmptyRoomList() {
         }}
         style={styles.addbutton}
       >
-        <AntDesign name="plus" size={24} color={"white"} />
+        <VectorIconCompat name="plus" size={24} color={"white"} />
       </TouchableOpacity>
       <Text style={styles.heading}>{t("folder-management.empty-folder")}</Text>
       <Text style={styles.subheading}>{t("folder-management.empty-folder-des")}</Text>

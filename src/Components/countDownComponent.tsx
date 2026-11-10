@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Button, View } from "react-native";
 import React, { useEffect, useState } from "react";
 

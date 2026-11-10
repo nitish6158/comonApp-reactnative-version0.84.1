@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 
 
 export default function SeniorHeader() {
-  const navigation = useNavigation();
+  const navigation = useNavigation() as any;
   const {t} = useTranslation()
 
   return (

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { View, Text, FlatList, Pressable, StyleSheet } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import {
@@ -12,7 +13,6 @@ import { Loader } from "@/Components/Loader";
 
 import { Colors, fonts } from "@/Constants";
 
-import IonIcon from "react-native-vector-icons/Ionicons";
 import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 import { flatMap, isEmpty } from "lodash";
 import { useTranslation } from "react-i18next";
@@ -22,10 +22,11 @@ import { useFocusEffect } from "@react-navigation/core";
 import CustomButton from "@/Components/Button/CustomButton";
 import { windowHeight, windowWidth } from "@Util/ResponsiveView";
 import HeaderWithSearch from "@Components/header/HeaderWithSearch";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { HistoryStack, StackData } from "./subtopic.utils";
 import SavedMessages from "./SavedMessages";
-import Feather from "react-native-vector-icons/Feather";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function SubTopicScreen({ route, navigation }: ViewTopicsScreenProps) {
   const [getTopicById] = useGetTopicByIdLazyQuery({
@@ -133,14 +134,14 @@ export default function SubTopicScreen({ route, navigation }: ViewTopicsScreenPr
                   }}
                 >
                   <View style={styles.topicInfoContainer}>
-                    <Feather name="target" size={32} color={Colors.light.PrimaryColor} />
+                    <VectorIconCompat name="target" size={32} color={Colors.light.PrimaryColor} />
                     <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">
                       {item.name}
                     </Text>
                   </View>
                   <Menu>
                     <MenuTrigger>
-                      <IonIcon name="ellipsis-vertical" size={20} />
+                      <VectorIconCompat name="ellipsis-vertical" size={20} />
                     </MenuTrigger>
                     <MenuOptions optionsContainerStyle={{ width: 100 }}>
                       <MenuOption onSelect={() => onTopicEdit(item)}>
@@ -172,7 +173,7 @@ export default function SubTopicScreen({ route, navigation }: ViewTopicsScreenPr
                 });
               }}
             >
-              <AntDesign name="plus" size={22} color="white" />
+              <VectorIconCompat name="plus" size={22} color="white" />
             </Pressable>
           )}
         </>

@@ -1,3 +1,40 @@
 module.exports = {
   preset: 'react-native',
+  watchman: false,
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/android/',
+    '/ios/',
+  ],
+  transformIgnorePatterns: [
+    'node_modules/(?!(react-native|@react-native|@react-navigation|@react-native-async-storage|react-native-keychain|react-native-permissions)/)',
+  ],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^@Util/(.*)$': '<rootDir>/src/utils/$1',
+    '^@Components/(.*)$': '<rootDir>/src/Components/$1',
+    '^@Store/(.*)$': '<rootDir>/src/redux/$1',
+    '^@Service/(.*)$': '<rootDir>/src/graphql/$1',
+    '^@Atoms/(.*)$': '<rootDir>/src/Atoms/$1',
+    '^@Hooks/(.*)$': '<rootDir>/src/hooks/$1',
+    '^@Navigation/(.*)$': '<rootDir>/src/navigation/$1',
+    '^@Context/(.*)$': '<rootDir>/src/Context/$1',
+    '^@Constants/(.*)$': '<rootDir>/src/Constants/$1',
+    '^@Containers/(.*)$': '<rootDir>/src/Containers/$1',
+    '^@Models/(.*)$': '<rootDir>/src/models/$1',
+    '^@Notification/(.*)$': '<rootDir>/src/notification/$1',
+    '^@Types/(.*)$': '<rootDir>/types/$1',
+    '^@Styles/(.*)$': '<rootDir>/src/styles/$1',
+  },
+  testMatch: [
+    '**/__tests__/**/*.(test|spec).(ts|tsx|js|jsx)',
+    '**/?(*.)+(test|spec).(ts|tsx|js|jsx)',
+  ],
+  collectCoverageFrom: [
+    'src/utils/session.ts',
+    'src/Components/AuthContext.tsx',
+    'src/utils/permissionUtils.ts',
+    'src/redux/Reducer/SocketSlice.ts',
+  ],
 };

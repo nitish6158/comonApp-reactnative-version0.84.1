@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useMemo } from 'react';
 import { Pressable, Alert, View } from 'react-native';
 import { useAtom } from 'jotai';

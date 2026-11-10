@@ -71,7 +71,7 @@ export class ChatRoomSocketHandler extends BaseSocketHandler {
   //   return unsubscribe;
   // }
 
-  public async fetchAndUpdateRooms(callback: RoomCallback) {
+  public async fetchAndUpdateRooms(callback: RoomCallback = () => undefined) {
 
     const oneTimeCallback = (data: any) => {
       if (unsubscribe) {
@@ -82,7 +82,7 @@ export class ChatRoomSocketHandler extends BaseSocketHandler {
 
       // console.log("Updated rooms (deep clone):", updatedRooms);
       // callback({rooms: updatedRooms});
-      callback({ rooms: [...data.rooms] }); // shallow copy 
+      callback({ rooms: [...(data?.rooms ?? [])] }); // shallow copy 
       // callback({ ...data, rooms: updatedRooms });
     };
 
@@ -258,13 +258,13 @@ export class ChatRoomSocketHandler extends BaseSocketHandler {
     await this.socket.emit(ChatRoomEventType.GET_ACTIVE_GROUP_CALLS, {}, callback);
   }
 
-  public async addFolder(data) {
+  public async addFolder(data: any) {
     await this.socket.emit("createFolder", data);
   }
-  public async deleteFolder(data) {
+  public async deleteFolder(data: any) {
     await this.socket.emit("deleteFolder", data);
   }
-  public async editFolder(data) {
+  public async editFolder(data: any) {
     await this.socket.emit("editFolder", data);
   }
 

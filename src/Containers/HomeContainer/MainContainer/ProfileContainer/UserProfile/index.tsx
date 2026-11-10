@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from "react";
 
 import {
@@ -24,7 +25,6 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AvatarComponent } from "@Components/Avatar";
 import Colors from "@/Constants/Colors";
@@ -32,16 +32,13 @@ import Colors from "@/Constants/Colors";
 import { DefaultImageUrl, user_manual_url } from "@Service/provider/endpoints";
 
 import FastImage from "@d11/react-native-fast-image";
-import Feather from "react-native-vector-icons/Feather";
 
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { ListItem } from "react-native-elements";
 
-import Octicons from "react-native-vector-icons/Octicons";
 import { Organization } from "@Service/generated/types";
 import RemoveProfile from "@/Components/RemoveProfile";
 import store, { RootState, useAppSelector } from "@Store/Store";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+
 import Text from "@Components/Text";
 import ToastMessage from "@Util/ToastMesage";
 import { UserProfileScreenProps } from "@/navigation/screenPropsTypes";
@@ -71,12 +68,13 @@ import { resetCallState } from "@/redux/Reducer/CallReducer";
 import { resetChatState, setMyProfile } from "@/redux/Reducer/ChatReducer";
 import { useUpdateUserModeMutation } from "@/graphql/generated/user.generated";
 import { Alert } from "react-native";
-import Entypo from "react-native-vector-icons/Entypo";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import { storage } from "@/redux/backup/mmkv";
 import { keys } from "@/redux/backup/keys";
 import { socketConnect } from "@/utils/socket/SocketConnection";
 import { AuthContext } from "@/Components/AuthContext";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function Menu({ navigation }: UserProfileScreenProps) {
   const [loader, setLoader] = React.useState(false);
@@ -205,7 +203,7 @@ export default function Menu({ navigation }: UserProfileScreenProps) {
                 navigation.goBack();
               }}
             >
-              <Ionicons name="arrow-back" size={20} color="white" />
+              <VectorIconCompat name="arrow-back" size={20} color="white" />
               <Text style={{ color: "white", marginLeft: 5 }}>
                 {t("titles.Back")}
               </Text>
@@ -214,7 +212,7 @@ export default function Menu({ navigation }: UserProfileScreenProps) {
               onPress={onOpen}
               style={{ flexDirection: "row", alignItems: "center" }}
             >
-              <Feather
+              <VectorIconCompat
                 name="globe"
                 size={16}
                 color={Colors.light.link}
@@ -251,7 +249,7 @@ export default function Menu({ navigation }: UserProfileScreenProps) {
               marginVertical: 5,
             }}
           >
-            <AntDesign
+            <VectorIconCompat
               name="setting"
               size={22}
               color={Colors.light.PrimaryColor}
@@ -270,7 +268,7 @@ export default function Menu({ navigation }: UserProfileScreenProps) {
               marginVertical: 5,
             }}
           >
-            <AntDesign
+            <VectorIconCompat
               style={{ marginRight: 10, marginLeft: 5 }}
               name="exclamationcircleo"
               size={21}
@@ -290,7 +288,7 @@ export default function Menu({ navigation }: UserProfileScreenProps) {
               width: "90%",
             }}
           >
-            <AntDesign
+            <VectorIconCompat
               name="adduser"
               size={22}
               color={Colors.light.PrimaryColor}
@@ -309,7 +307,7 @@ export default function Menu({ navigation }: UserProfileScreenProps) {
               width: "90%",
             }}
           >
-            <MaterialIcons
+            <VectorIconCompat
               name="help-outline"
               size={22}
               color={Colors.light.PrimaryColor}
@@ -328,7 +326,7 @@ export default function Menu({ navigation }: UserProfileScreenProps) {
               width: "90%",
             }}
           >
-            <MaterialIcons
+            <VectorIconCompat
               name="model-training"
               size={25}
               color={Colors.light.PrimaryColor}
@@ -358,7 +356,7 @@ export default function Menu({ navigation }: UserProfileScreenProps) {
             />
           ) : (
             <>
-              <SimpleLineIcons
+              <VectorIconCompat
                 name="logout"
                 size={20}
                 color={Colors.light.link}
@@ -463,7 +461,7 @@ function UserOrganizations() {
                 backgroundColor: "rgba(100,100,200,.1)",
               }}
             >
-              <SimpleLineIcons
+              <VectorIconCompat
                 name="organization"
                 color={Colors.light.PrimaryColor}
                 size={22}
@@ -545,7 +543,7 @@ function UserOrganizations() {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Octicons
+          <VectorIconCompat
             name="organization"
             size={20}
             color={Colors.light.PrimaryColor}

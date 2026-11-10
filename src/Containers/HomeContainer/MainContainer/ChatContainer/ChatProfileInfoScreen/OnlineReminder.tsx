@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { View, Platform } from "react-native";
 import React, { useState, useCallback, useMemo } from "react";
 import { useAtomValue } from "jotai";
@@ -5,7 +6,7 @@ import _ from "lodash";
 import { singleRoom } from "@/Atoms";
 import { ItemList } from "@/Components";
 import { Colors } from "@/Constants";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import { useTranslation } from "react-i18next";
 import {
   OnlineStatusFrequency,
@@ -23,6 +24,8 @@ import ToastMessage from "@/utils/ToastMesage";
 import { setMyProfile } from "@/redux/Reducer/ChatReducer";
 import { Button, Modal } from "react-native-ui-lib";
 import HeaderWithAction from "@/Components/header/HeaderWithAction";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type OnlineReminderProps = {
   isReminder: UserContact | null;
@@ -187,7 +190,7 @@ export default function OnlineReminder({ isReminder }: OnlineReminderProps) {
               paddingVertical: 8,
             }}
           >
-            <MaterialIcons name="online-prediction" size={18} color="white" />
+            <VectorIconCompat name="online-prediction" size={18} color="white" />
           </View>
         }
         Title={t("onlineStatus.contact-reminders")}

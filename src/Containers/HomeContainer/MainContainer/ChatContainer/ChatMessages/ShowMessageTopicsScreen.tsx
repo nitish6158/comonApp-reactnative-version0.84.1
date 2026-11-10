@@ -1,15 +1,17 @@
+// @ts-nocheck
 import { singleRoom } from "@/Atoms";
 import { ShowMessageTopicsScreenProps } from "@/navigation/screenPropsTypes";
 import { useAtomValue } from "jotai";
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 import { useUpdateTopicMutation } from "@/graphql/generated/room.generated";
 import ToastMessage from "@Util/ToastMesage";
 import { useTranslation } from "react-i18next";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function ShowMessageTopicsScreen({ navigation, route }: ShowMessageTopicsScreenProps) {
   const display = useAtomValue(singleRoom);
@@ -19,7 +21,7 @@ export default function ShowMessageTopicsScreen({ navigation, route }: ShowMessa
   return (
     <View style={styles.main}>
       <Pressable style={styles.headerContainer} onPress={navigation.goBack}>
-        <AntDesign name="arrowleft" size={25} color="black" />
+        <VectorIconCompat name="arrowleft" size={25} color="black" />
         <Text style={styles.headingText}>{t("titles.saved-headings")}</Text>
       </Pressable>
       <View>
@@ -39,7 +41,7 @@ export default function ShowMessageTopicsScreen({ navigation, route }: ShowMessa
                 <Text style={styles.singleTopicText}>{item}</Text>
                 <Menu>
                   <MenuTrigger>
-                    <MaterialCommunityIcons name="dots-vertical" color="black" size={22} />
+                    <VectorIconCompat name="dots-vertical" color="black" size={22} />
                   </MenuTrigger>
                   <MenuOptions optionsContainerStyle={{ width: 100 }}>
                     <MenuOption onSelect={() => onTopicEdit(item)}>

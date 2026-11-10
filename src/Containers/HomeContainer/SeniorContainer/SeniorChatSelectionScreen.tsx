@@ -7,8 +7,7 @@ import FastImage from "@d11/react-native-fast-image";
 import { DefaultImageUrl } from "@/graphql/provider/endpoints";
 import { useAppSelector } from "@/redux/Store";
 import { RoomData } from "@/redux/Models/ChatModel";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Octicons from "react-native-vector-icons/Octicons";
+
 import { Colors } from "@/Constants";
 import ToastMessage from "@/utils/ToastMesage";
 import { Button, TextField } from "react-native-ui-lib";
@@ -20,6 +19,8 @@ import { useDispatch } from "react-redux";
 import { setMyProfile } from "@/redux/Reducer/ChatReducer";
 import { useTranslation } from "react-i18next";
 import { ContactDetailsDto, SeniorCitizenRoomSchema } from "@/graphql/generated/types";
+import { VectorIconCompat } from "@/Components/icons";
+
 // const { useRealm } = RealmContext;
 
 export default function SeniorChatSelectionScreen({ navigation }: SeniorChatSelectionScreenProps) {
@@ -68,7 +69,7 @@ export default function SeniorChatSelectionScreen({ navigation }: SeniorChatSele
   return (
     <View style={styles.main}>
       <Pressable onPress={onBackPress}>
-        <AntDesign name="arrowleft" size={25} color="black" />
+        <VectorIconCompat name="arrowleft" size={25} color="black" />
       </Pressable>
 
       <View style={{ alignItems: "center", marginTop: 10 }}>
@@ -99,9 +100,9 @@ export default function SeniorChatSelectionScreen({ navigation }: SeniorChatSele
               </View>
               <View>
                 {isSelected ? (
-                  <Octicons name="check-circle-fill" size={25} color={Colors.light.PrimaryColor} />
+                  <VectorIconCompat name="check-circle-fill" size={25} color={Colors.light.PrimaryColor} />
                 ) : (
-                  <Octicons name="circle" size={25} color={Colors.light.PrimaryColor} />
+                  <VectorIconCompat name="circle" size={25} color={Colors.light.PrimaryColor} />
                 )}
               </View>
             </Pressable>
@@ -134,7 +135,9 @@ export default function SeniorChatSelectionScreen({ navigation }: SeniorChatSele
       variables: {
         input: {
           _id: MyProfile?._id,
-          userIds: selectedContact.map((v) => v.userId?._id),
+          userIds: selectedContact
+            .map((v) => v.userId?._id)
+            .filter((id): id is string => Boolean(id)),
         },
       },
     }).then((res) => {

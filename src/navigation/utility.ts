@@ -24,9 +24,10 @@ type newScreens = {
   payload: {};
 };
 
-export const navigate = (name: keyof AllScreenParamList, params: any) => {
+export const navigate = (name: keyof AllScreenParamList, params?: any) => {
   if (navigationRef.isReady()) {
-    navigationRef.navigate(name, params);
+    // Navigation union is too narrow for dynamic screen names used across the app.
+    (navigationRef as any).navigate(name, params);
   }
 };
 

@@ -1,10 +1,16 @@
 import { View, Text } from "react-native";
 import React, { useState } from "react";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import _ from "lodash";
 import { DaysNum } from "@/Containers/HomeContainer/MainContainer/ReminderContainer/CreateReminderScreen/reminder.types";
-var weekOfYear = require('dayjs/plugin/weekOfYear')
-dayjs.extend(weekOfYear)
+import weekOfYear from "dayjs/plugin/weekOfYear";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+dayjs.extend(weekOfYear);
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
+
+type DayjsWithWeek = Dayjs & { week: () => number };
 
 type monthWeekConfig = {
   startDate: string;
@@ -117,8 +123,8 @@ export default function useRecursive() {
   }
 
   function getDateOfOccurrenceOfWeek(config: weeklySingleDayRecurrence) {
-    let startPoint = dayjs(config.startDate);
-    let startWeekCount = startPoint.week()
+    let startPoint = dayjs(config.startDate) as DayjsWithWeek;
+    let startWeekCount = startPoint.week();
     let weekly = [];
 
     let occurrenceCount = 0;
@@ -127,14 +133,14 @@ export default function useRecursive() {
    
       if (config.dayOfWeek.includes(startPoint.day())) {
         occurrenceCount++;
-        let currentWeek = startPoint.week()
+        let currentWeek = startPoint.week();
 
         if ((currentWeek - startWeekCount) % config.weekNumber == 0) {
           weekly.push(startPoint.toISOString());
         }
       }
 
-      startPoint = startPoint.add(1, "day");
+      startPoint = startPoint.add(1, "day") as DayjsWithWeek;
     }
 
     let validate = weekly.filter((occurrenceDate) => {
@@ -155,7 +161,9 @@ export default function useRecursive() {
     let weekday = config.daysOfWeek;
     let weekNumber = config.weekNumber;
     if (weekday && weekNumber) {
-      let w = shortDaysFromStart(config.startDate, weekday).map(v=> DaysNum[v])
+      let w = shortDaysFromStart(config.startDate, weekday).map(
+        (v) => (DaysNum as Record<string, number>)[v]
+      );
       let v = getDateOfOccurrenceOfWeek({
         startDate: config.startDate,
         endDate: config.endDate,
@@ -164,7 +172,7 @@ export default function useRecursive() {
       });
 
       let recurrence = [] as recursiveList[];
-      v.sort((a,b)=> dayjs(b).isBefore(dayjs(a)))
+      v.sort((a, b) => (dayjs(b).isBefore(dayjs(a)) ? 1 : -1));
 
       v.forEach((date) => {
         recurrence.push({ occurrencesDate: date });
@@ -289,9 +297,12 @@ export default function useRecursive() {
         }
       }
     });
-    setRecursiveList(validate);
+    const formatted = validate.map((item) => ({
+      occurrencesDate: dayjs(item.occurrencesDate).toISOString(),
+    }));
+    setRecursiveList(formatted);
 
-    return validate;
+    return formatted;
   }
 
   function getDateOfOccurrenceOfMonth(config: monthDateConfig) {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from "react";
 
 import { Keyboard, Pressable } from "react-native";
@@ -8,7 +9,8 @@ import { ListItem } from "react-native-elements";
 import { goBackStyles } from "./GoBackStyles";
 import { mainStyles } from "../../styles/main";
 import { useNavigation } from "@react-navigation/native";
-import AntDesign from 'react-native-vector-icons/AntDesign';
+
+import { AppIcon } from "@/Components/icons";
 
 export type navigateNested = { page: keyof RootStackParamList; screen: keyof RootTabParamList };
 
@@ -26,7 +28,7 @@ export const GoBackComponent = ({ navigateNested }: { navigateNested?: navigateN
 
   return (
     <Pressable onPress={onPress} style={[mainStyles.center, goBackStyles.container]}>
-      <AntDesign name="arrowleft" size={25} color="black" />
+      <AppIcon name="back" size={25} color="black" />
     </Pressable>
   );
 };

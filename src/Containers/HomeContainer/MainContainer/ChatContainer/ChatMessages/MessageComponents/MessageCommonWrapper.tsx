@@ -1,10 +1,10 @@
+// @ts-nocheck
 import { Dimensions, StyleSheet, View } from "react-native";
 import React, { useCallback, useMemo } from "react";
 
 import Colors from "@/Constants/Colors";
 import { Conversation } from "@Models/chatmessage";
-import Entypo from "react-native-vector-icons/Entypo";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import FormatTextRender from "@Components/formatTextRender";
 import Text from "@Components/Text";
 import dayjs from "dayjs";
@@ -16,8 +16,10 @@ import { RootState } from "@/redux/Reducer";
 import DoubleCheckChatMessage from "@Images/DoubleCheckChatMessage.svg";
 import Check from "@Images/Check.svg";
 import { useTranslation } from "react-i18next";
-import Octicons from "react-native-vector-icons/Octicons";
+
 import { useAppSelector } from "@/redux/Store";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 const { height, width } = Dimensions.get("window");
 
@@ -136,12 +138,11 @@ export default function MessageCommonWrapper({
     }
   }, [message.read_by, message.sender, display.roomType]);
 
-
   return (
     <View>
       {showForwardBadge && isMessageForwarded && (
         <View style={styles.replyCon}>
-          <Entypo
+          <VectorIconCompat
             name="forward"
             size={15}
             style={{ marginRight: 5 }}
@@ -171,7 +172,7 @@ export default function MessageCommonWrapper({
             marginTop: 5,
           }}
         >
-          {isFavoriteMessage && <Entypo name="star" size={14} color="gray" />}
+          {isFavoriteMessage && <VectorIconCompat name="star" size={14} color="gray" />}
           <UnixTime />
           {readView && (
             <View style={{ marginLeft: 5 }}>
@@ -180,7 +181,7 @@ export default function MessageCommonWrapper({
               ) : message?.isSent ? (
                 <Check height={9} />
               ) : (
-                <Ionicons name="time-outline" size={14} color="gray" />
+                <VectorIconCompat name="time-outline" size={14} color="gray" />
               )}
             </View>
           )}

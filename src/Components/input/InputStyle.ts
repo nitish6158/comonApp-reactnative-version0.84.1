@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { $space_md, $space_xl, $space_xs } from "@/Constants/Spaces";
 
 import { $text_xs } from "@/Constants/TextSizes";

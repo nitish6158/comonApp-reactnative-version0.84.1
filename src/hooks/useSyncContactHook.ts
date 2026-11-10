@@ -12,7 +12,7 @@ import Contacts from "react-native-contacts";
 import { uniqBy } from "lodash";
 import { useState } from "react";
 import PermissionHandler from "@Components/PermissionHandler";
-import { TFunction } from "react-i18next";
+import type { TFunction } from "i18next";
 import { countryCodes } from "@/Containers/HomeContainer/MainContainer/ProfileContainer/contacts/countrycodes";
 
 const digitReg = new RegExp(/\D/);
@@ -24,6 +24,7 @@ export type formattedPhoneBook = {
   hasComon: boolean;
   hasInvited: boolean;
   lastName: string;
+  firstName?: string;
 };
 
 function getPhoneBookContactName(display: string, prefix: string | null, suffix: string | null) {
@@ -62,10 +63,23 @@ export function removeDuplicateNumber(numbers: Array<{ number: string; label: st
   return _.uniqBy(numbers, (contact) => contact.number.replace(/[\+\(\)\s-]/g, ""));
 }
 
+/** True if OS already granted contacts — never prompts. */
+export async function hasContactsPermission(): Promise<boolean> {
+  try {
+    if (Platform.OS === "android") {
+      return PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
+    }
+    const status = await Contacts.checkPermission();
+    return status === "authorized";
+  } catch {
+    return false;
+  }
+}
+
 const getAndFormateContact = async () => {
   try {
     const contacts = await Contacts.getAll();
-    const con: contacts[] = [];
+    const con: any[] = [];
     for (let i = 0; i < contacts.length; i++) {
       const item = contacts[i];
 
@@ -85,8 +99,8 @@ const getAndFormateContact = async () => {
 
       if (Platform.OS == "ios") {
         value = {
-          firstName: item.givenName,
-          lastName: item.familyName,
+          firstName: item.givenName ?? "",
+          lastName: item.familyName ?? "",
         };
       }
 
@@ -126,6 +140,18 @@ const getAndFormateContact = async () => {
     return []
   }
 };
+
+/**
+ * Read device contacts only when permission is already granted.
+ * Used on splash so startup is not blocked by Access/Permission alerts.
+ */
+export async function loadContactsIfPermitted(): Promise<Array<formattedPhoneBook>> {
+  const allowed = await hasContactsPermission();
+  if (!allowed) {
+    return [];
+  }
+  return getAndFormateContact();
+}
 
 export async function addContact(t: TFunction<"translation", undefined>): Promise<Array<formattedPhoneBook>> {
   return new Promise(async (resolve, reject) => {

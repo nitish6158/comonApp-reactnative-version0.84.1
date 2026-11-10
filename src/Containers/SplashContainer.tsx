@@ -94,7 +94,7 @@
 //   const [deleteMyContactRequest] = useDeleteMyContactMutation();
 
 //   const [error, setError] = useState<boolean>(false);
-//   const [payload, setPayload] = useState(null);
+//   const [payload, setPayload] = useState<{ region: string; contacts: any[] } | null>(null);
 
 //   const { code } = usePhoneContext();
 //   const userModeRef = useRef<string>("");
@@ -182,7 +182,7 @@
 //         // await tryAutoContactSync();
 //         if (list) {
 //           setPercentage(0.5);
-//           syncContactsToDb(list);
+//           syncContactsToDb(list as any);
 //         }
 //       });
 //     }
@@ -367,7 +367,7 @@ import {
   updateContact,
   updateContactProfile,
 } from "@/redux/Reducer/ContactReducer";
-import { addContact, usePhoneContext } from "@/hooks";
+import { loadContactsIfPermitted, usePhoneContext } from "@/hooks";
 import {
   useAddMyContactMutation,
   useDeleteMyContactMutation,
@@ -403,13 +403,13 @@ const refreshType = z.object({
 });
 
 const internetConnectivity = {
-  isConnected: false,
-  isReachable: false,
+  isConnected: false as boolean,
+  isReachable: false as boolean,
 };
 
 NetInfo.addEventListener((state) => {
-  internetConnectivity.isConnected = state.isConnected;
-  internetConnectivity.isReachable = state.isInternetReachable;
+  internetConnectivity.isConnected = Boolean(state.isConnected);
+  internetConnectivity.isReachable = Boolean(state.isInternetReachable);
 });
 
 async function getOrCreateStoredDevice() {
@@ -464,11 +464,10 @@ export default function SplashContainer() {
   const [deleteMyContactRequest, deleteResponse] = useDeleteMyContactMutation();
   const [error, setError] = useState<boolean>(false);
 
-  const [payload, setPayload] = useState(null);
+  const [payload, setPayload] = useState<{ region: string; contacts: any[] } | null>(null);
   const { code } = usePhoneContext();
   const userModeRef = useRef<string>("");
   const [percentage, setPercentage] = useState<number>(0);
-  const [PermissionModal, setPermissionModal] = useState<boolean>(false);
 
   const [getServerPhonebook, getServerPhonebookResponse] = useGetUserPhoneBookLazyQuery();
 
@@ -498,15 +497,22 @@ export default function SplashContainer() {
   }, [refreshResponse.data?.refreshSession, refreshResponse.error]);
 
 
-  function HandleRefreshSucess(data) {
+  function enterApp() {
+    const mode = userModeRef.current;
+    if (mode == "SENIORCITIZEN") {
+      navigateAndSimpleReset("Senior", {});
+    } else {
+      navigateAndSimpleReset("Main", {});
+    }
+  }
+
+  async function HandleRefreshSucess(data: any) {
     console.log("Splash rerender.");
     const { __typename, isMasterAdmin, user, contacts, ...refreshSession } = data;
 
-    AsyncStorage.setItem("token", refreshSession.token);
-    storage.set(keys.token, JSON.stringify(refreshSession));
-
-    setSession(refreshSession);
-    setTokenLogin(refreshSession.token);
+    // Auth secrets go to Keychain via setSession — do not mirror tokens in AsyncStorage/MMKV
+    await setSession(refreshSession);
+    await setTokenLogin(refreshSession.token);
     console.log("subscribe", `${refreshSession.mode}_user_id_${user?._id}`);
     messaging().subscribeToTopic(`${refreshSession.mode}_user_id_${user?._id}`);
     // dispatch(connectToSocket(refreshSession.token));
@@ -523,24 +529,28 @@ export default function SplashContainer() {
       if (languages) {
         let find = languages.find((v) => v._id == user.language);
         if (find) {
-          dispatch(setLanguage(find.code));
-          onSelect(find);
+          dispatch(setLanguage(find.code ?? "en"));
+          onSelect(find as any);
         }
       }
       dispatch(updateContactProfile(contacts));
       userModeRef.current = user.mode;
-      setPercentage(0.3);
-      ContactSync().then(async (list) => {
-        if (list) {
-          setPercentage(0.5);
-          syncContactsToDb(list);
-        }
-      });
+      setPercentage(0.5);
+      // Enter home immediately — do not block splash on contacts / permission dialogs
+      enterApp();
+      setPercentage(1);
+      // Background sync only if contacts permission already granted (no Access popup)
+      ContactSync()
+        .then(async (list) => {
+          if (list) {
+            await syncContactsToDb(list as any);
+          }
+        })
+        .catch((err) => console.log("Background contact sync skipped", err));
     }
   }
 
   async function logoutUser() {
-    setTokenLogin(null)
     const { mode } = await getSession();
     const id = storage.getString(keys.userId);
 
@@ -557,7 +567,8 @@ export default function SplashContainer() {
     dispatch(resetCallState());
     dispatch(resetChatState());
     // await logoutRequest({ variables: { input: {} } });
-    removeSession();
+    await removeSession();
+    await setTokenLogin(null);
     await AsyncStorage.removeItem("MyProfile");
     storage.clearAll();
     dispatch(setMyProfile(null));
@@ -584,7 +595,7 @@ export default function SplashContainer() {
 
           refreshRequest({
             variables: {
-              input: { ...payload, device: { ...value, webToken: [] } },
+              input: { ...payload, device: { ...value, webToken: [] }, plateform: Platform.OS === "ios" ? "iOS" : "ANDROID" } as any,
             },
           })
             .then((res) => {
@@ -656,7 +667,7 @@ export default function SplashContainer() {
         const contactsRaw = res.data?.getUserPhoneBook?.contacts ?? [];
 
         if (contactsRaw.length > 0) {
-          dispatch(updateContact(contactsRaw));
+          dispatch(updateContact(contactsRaw as any));
           return contactsRaw;
         } else {
           dispatch(updateContact([]));
@@ -673,107 +684,55 @@ export default function SplashContainer() {
   }
 
   async function syncContactsToDb(serverContact: serverContactType[]) {
-    addContact(t)
-      .then((phonebook) => {
-        const RemoveFromServer = serverContact.filter((e: { localId: string }) => {
-          //If contact not found on server then add to the list
-          const isFound = phonebook.find((v) => v.localId === e.localId);
-          if (!isFound) {
-            return true;
-          } else {
-            return false;
-          }
-        });
+    // Silent: only sync when contacts permission already granted — never prompt on splash
+    const phonebook = await loadContactsIfPermitted();
+    if (!phonebook.length) {
+      return;
+    }
 
-        if (RemoveFromServer.length > 0) {
-          deleteContacts(RemoveFromServer);
-        }
+    const RemoveFromServer = serverContact.filter((e: { localId: string }) => {
+      return !phonebook.find((v) => v.localId === e.localId);
+    });
 
-        const AddToServer = phonebook.filter((e: { localId: string }) => {
-          //If contact not found on server then add to the list
-          const isFound = serverContact.find((v) => v.localId === e.localId);
-          if (!isFound) {
-            return true;
-          } else {
-            return false;
-          }
-        });
+    if (RemoveFromServer.length > 0) {
+      deleteContacts(RemoveFromServer);
+    }
 
-        if (AddToServer.length > 0) {
-          const contacts = AddToServer.map((item) => ({
-            id: item?.localId,
-            numbers: item?.phone,
-            firstName: item?.name ? item?.name : item?.firstName ? item?.firstName : "",
-            lastName: item.lastName,
-          }));
+    const AddToServer = phonebook.filter((e: { localId: string }) => {
+      return !serverContact.find((v) => v.localId === e.localId);
+    });
 
-          console.log({
+    if (AddToServer.length === 0) {
+      return;
+    }
+
+    const contacts = AddToServer.map((item) => ({
+      id: item?.localId,
+      numbers: item?.phone,
+      firstName: item?.name ? item?.name : item?.firstName ? item?.firstName : "",
+      lastName: item.lastName,
+    }));
+
+    try {
+      const response = await addMyContactRequest({
+        variables: {
+          input: {
             region: code,
-            contacts: contacts.length,
-          });
-          setPercentage(0.7);
-          addMyContactRequest({
-            variables: {
-              input: {
-                region: code,
-                contacts: contacts,
-              },
-            },
-          })
-            .then((response) => {
-              if (response.data?.addMyContact) {
-                console.log(response.data?.addMyContact.contacts?.length);
-                dispatch(addServerContact(response.data?.addMyContact.contacts));
-              }
-              console.log("userModeRef", userModeRef.current);
-              setPercentage(1);
-              if (userModeRef.current == "CLASSIC") {
-                navigateAndSimpleReset("Main", {});
-              }
-              if (userModeRef.current == "SENIORCITIZEN") {
-                navigateAndSimpleReset("Senior", {});
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-              setPayload({
-                region: code,
-                contacts: contacts,
-              });
-              setError(true);
-              console.log("userModeRef", userModeRef.current);
-              setPercentage(1);
-              if (userModeRef.current == "CLASSIC") {
-                navigateAndSimpleReset("Main", {});
-              }
-              if (userModeRef.current == "SENIORCITIZEN") {
-                navigateAndSimpleReset("Senior", {});
-              }
-            });
-        } else {
-          console.log("userModeRef", userModeRef.current);
-          setPercentage(1);
-          if (userModeRef.current == "CLASSIC") {
-            navigateAndSimpleReset("Main", {});
-          }
-          if (userModeRef.current == "SENIORCITIZEN") {
-            navigateAndSimpleReset("Senior", {});
-          }
-        }
-      })
-      .catch(() => {
-        // ToastMessage("Contact Sync Skipped. You can try manually later.");
-        setPermissionModal(true);
+            contacts: contacts,
+          },
+        },
       });
-  }
-
-  function onGoToSetting() {
-    Linking.openSettings();
-    // ExitApp.exitApp();
-  }
-
-  function onAppClose() {
-    ExitApp.exitApp();
+      if (response.data?.addMyContact) {
+        dispatch(addServerContact((response.data?.addMyContact.contacts ?? []) as any));
+      }
+    } catch (err) {
+      console.log(err);
+      setPayload({
+        region: code,
+        contacts: contacts,
+      } as any);
+      setError(true);
+    }
   }
 
   return (
@@ -792,30 +751,6 @@ export default function SplashContainer() {
         }}
         resizeMode={FastImage.resizeMode.cover}
       />
-      <Dialog
-        visible={PermissionModal}
-        overlayBackgroundColor="white"
-        containerStyle={{ justifyContent: "space-between", paddingVertical: 40 }}
-        ignoreBackgroundPress={true}
-      >
-        <Text style={{ fontSize: 18, textAlign: "center", fontWeight: "500", marginBottom: 150 }}>
-          You cannot use MeetUs app without allowing contact permission. Please allow contact permission in settings.
-        </Text>
-        <View>
-          <Button
-            label={"Go to settings"}
-            style={{ borderRadius: 20, backgroundColor: Colors.light.PrimaryColor }}
-            labelStyle={{ color: "white" }}
-            onPress={onGoToSetting}
-          />
-          <Button
-            label={"Close App"}
-            style={{ borderRadius: 20, marginTop: 30, backgroundColor: Colors.light.PrimaryColor }}
-            labelStyle={{ color: "white" }}
-            onPress={onAppClose}
-          />
-        </View>
-      </Dialog>
     </View>
   );
 }

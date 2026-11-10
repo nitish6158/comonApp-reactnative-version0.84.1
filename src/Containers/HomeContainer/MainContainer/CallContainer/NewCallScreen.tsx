@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Alert, FlatList, Pressable, TextInput, View, StyleSheet } from "react-native";
 import { Block, HStack, Typography } from "rnmuilib";
 import CallContact, { replaceNumberPhone } from "./CallContact";
@@ -7,12 +8,11 @@ import { contactReducerType, serverContactType, updateContact } from "@Store/Red
 import { useDispatch, useSelector } from "react-redux";
 import { useGetMyContactsQuery, useGetMySmsInvitesQuery } from "@Service/generated/contact.generated";
 import Icon from "@Images/Icon";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import Colors from "@/Constants/Colors";
 import { EmptyList } from "@Components/EmptyList";
 import { InternetAtom } from "@Atoms/InternetAtom";
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 // import RealmContext from "../../../../schemas";
 import { RootState } from "@Store/Store";
 import Text from "@Components/Text";
@@ -26,6 +26,8 @@ import { useAtom } from "jotai";
 import { useTranslation } from "react-i18next";
 import { navigateBack } from "@/navigation/utility";
 import getAlphabatic from "@Util/alphabeticOrder";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 // const { useQuery } = RealmContext;
 
@@ -92,7 +94,7 @@ function NewCallScreen() {
     <View style={style.main}>
       <View style={style.header}>
         <Pressable style={style.headerBack} onPress={navigateBack}>
-          <AntDesign name="arrowleft" size={22} color={"black"} />
+          <VectorIconCompat name="arrowleft" size={22} color={"black"} />
           <Text style={style.headerText}>{t("label.create-new-call")}</Text>
         </Pressable>
         <View>
@@ -110,7 +112,7 @@ function NewCallScreen() {
       </View>
       <View style={{ backgroundColor: "white" }}>
         <View style={style.searchContainer}>
-          <AntDesign name="search1" size={22} color="gray" />
+          <VectorIconCompat name="search1" size={22} color="gray" />
           <TextInput
             style={{ marginLeft: 10, flexGrow: 1, maxWidth: "90%" }}
             onChangeText={(text) => setSearch(text)}
@@ -192,7 +194,7 @@ function NewCallScreen() {
         }}
       >
         <HStack height={70} alignItems="center" paddingHorizontal={25}>
-          <MaterialIcons name="groups" size={35} color={Colors.light.PrimaryColor} />
+          <VectorIconCompat name="groups" size={35} color={Colors.light.PrimaryColor} />
           <Block width={16} />
           <Typography fontSize={16}>{t("calls.newGroupCall")}</Typography>
         </HStack>

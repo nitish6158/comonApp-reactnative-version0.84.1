@@ -28,5 +28,6 @@
       "@Styles/*": ["./src/styles/*"],
       "@LocalDB/*": ["./src/local_DB/*"]
     }
-  }
+  },
+  "include": ["**/*.ts", "**/*.tsx", "types/**/*.d.ts"]
 }

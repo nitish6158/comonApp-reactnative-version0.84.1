@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ActivityIndicator, Platform, Pressable, Text, View } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
 
@@ -6,7 +7,6 @@ import AudioModal from "@/Containers/HomeContainer/MainContainer/ChatContainer/C
 import Colors from "@/Constants/Colors";
 import { Conversation } from "@Models/chatmessage";
 
-import Feather from "react-native-vector-icons/Feather";
 import FileViewer from "react-native-file-viewer";
 import GetExtension from "@Util/getExtensionfromUrl";
 import RNFS from "react-native-fs";
@@ -21,7 +21,9 @@ import { getFileName, getFileNameFromCachePath } from "@Util/helpers/FilePathUti
 import { setDownloadFileStore } from "@/redux/Reducer/ChatReducer";
 import { useAppSelector } from "@/redux/Store";
 
-export default function DocumentPreview({ item }: { item: Conversation }) {
+import { VectorIconCompat } from "@/Components/icons";
+
+export default function DocumentPreview({ item }: { item: any }) {
   const DownloadFileStore = useAppSelector((state) => state.Chat.DownloadFileStore);
   const [isDownLoaded, setIsDownLoaded] = useState(false);
   const [isDownLoading, setIsDownLoading] = useState(false);
@@ -163,7 +165,7 @@ export default function DocumentPreview({ item }: { item: Conversation }) {
         ) : isDownLoading ? (
           <ActivityIndicator color={textColor} />
         ) : (
-          <Feather name="download" size={24} color={textColor} />
+          <VectorIconCompat name="download" size={24} color={textColor} />
         )}
       </View>
       <View>

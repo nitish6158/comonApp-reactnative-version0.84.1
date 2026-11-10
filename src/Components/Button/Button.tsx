@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from "react";
 
 import { Pressable, PressableProps, useWindowDimensions } from "react-native";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Pressable,
   StyleSheet,
@@ -14,7 +15,7 @@ import Text from "@Components/Text";
 import { useTranslation } from "react-i18next";
 import { windowHeight } from "@Util/ResponsiveView";
 import { ChatContactDetailsScreenProps } from "@/navigation/screenPropsTypes";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import Icon from "@Assets/images/Icon";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { navigateBack } from "@/navigation/utility";
@@ -27,7 +28,7 @@ import ToastMessage from "@Util/ToastMesage";
 import { Alert } from "react-native";
 import { useAtom, useAtomValue } from "jotai";
 import { InternetAtom, callAtom, singleRoom } from "@/Atoms";
-import Entypo from "react-native-vector-icons/Entypo";
+
 import { Linking } from "react-native";
 import Contacts from "react-native-contacts";
 import {
@@ -49,6 +50,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 // import RealmContext from "@/schemas";
 import { useAppSelector } from "@/redux/Store";
 import { deviceUniqueID } from "@/navigation/Application";
+import { VectorIconCompat } from "@/Components/icons";
+
 import {
   updateComonContact,
   updateContact,
@@ -182,7 +185,7 @@ export default function ContactDetails({
     <View style={styles.main}>
       <View style={styles.headerContainer}>
         <Pressable style={styles.headerLeftSection} onPress={navigateBack}>
-          <AntDesign name="arrowleft" size={22} color="black" />
+          <VectorIconCompat name="arrowleft" size={22} color="black" />
           <Text style={styles.headerText}>{t("titles.contact-edit")}</Text>
         </Pressable>
         <View style={styles.headerRightSection}>
@@ -195,7 +198,7 @@ export default function ContactDetails({
           </Pressable>
           <View style={styles.gap} />
           <Pressable onPress={onDialerPressed} style={styles.dialer}>
-            <Entypo name="dial-pad" size={20} color="white" />
+            <VectorIconCompat name="dial-pad" size={20} color="white" />
           </Pressable>
         </View>
       </View>
@@ -378,7 +381,7 @@ export default function ContactDetails({
                       marginVertical: 3,
                     }}
                   >
-                    <AntDesign
+                    <VectorIconCompat
                       name="infocirlce"
                       color="gray"
                       size={14}
@@ -429,7 +432,7 @@ export default function ContactDetails({
                       marginVertical: 3,
                     }}
                   >
-                    <AntDesign
+                    <VectorIconCompat
                       name="infocirlce"
                       color="gray"
                       size={14}

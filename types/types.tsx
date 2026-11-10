@@ -35,18 +35,18 @@ export interface ReduxChat {
     ContactInUserDevice?: [];
   };
 }
-export interface CommonUserList {
+export type CommonUserList = Array<{
   _id: string;
-  bio: string;
-  firstName: string;
-  lastName: string;
+  bio?: string;
+  firstName?: string;
+  lastName?: string;
   username?: string;
-  lastSeen: string;
-  phone: string;
-  profile_img: string;
-  status: string;
-}
-[];
+  lastSeen?: string;
+  phone?: string;
+  profile_img?: string;
+  status?: string;
+  userId?: { _id?: string };
+}>;
 export interface AllroomsDataType {
   // [index: number]: {
   type?: string;

@@ -33,7 +33,7 @@ interface ChatEvents {
     type: string;
     participants: string[];
   }) => void;
-  joinRoom: (data: { roomId: string; userId: string }) => void;
+  joinRoom: (data: any) => void;
   deleteRoom: (roomId: string) => void;
   undeleteRoom: (roomId: string) => void;
   blockRoom: (roomId: string) => void;
@@ -66,13 +66,13 @@ interface ChatEvents {
 
   // Message Status
   setChatReadBy: (data: { roomId: string; messageIds: string[] }) => void;
-  setChatDelivered: (data: { roomId: string; messageId: string }) => void;
+  setChatDelivered: (data: any) => void;
   markRoomUnread: (roomId: string) => void;
 
   // Favorites
   addChatsToFavourite: (data: { messageIds: string[] }) => void;
   removeChatsFromFavourite: (data: { messageIds: string[] }) => void;
-  getFavouriteChats: () => void;
+  getFavouriteChats: (data?: any) => void;
 
   // Folders
   createFolder: (data: { name: string; roomIds?: string[] }) => void;
@@ -86,10 +86,10 @@ interface ChatEvents {
 
   // Queries
   getChatsByRoomId: (roomId: string) => void;
-  searchChatsByRoomId: (data: { roomId: string; query: string }) => void;
+  searchChatsByRoomId: (data: any) => void;
   getBlockedContact: () => void;
   getRoomInComon: (userId: string) => void;
-  getPinChats: (roomId: string) => void;
+  getPinChats: (data?: any) => void;
   getUserMediaByRoomId: (roomId: string) => void;
   getChatReadBy: (messageId: string) => void;
 
@@ -116,9 +116,9 @@ interface ChatEvents {
 
   // Others
   getProfile: () => void;
-  getFrequentRooms: () => void;
+  getFrequentRooms: (data?: any) => void;
   setBio: (bio: string) => void;
-  GetAllRooms: () => void;
+  GetAllRooms: (data?: any) => void;
   GetRoomById: (roomId: string) => void;
   findUsersByContacts: (contacts: string[]) => void;
   setDownloadMediaChat: (data: { messageId: string; deviceId: string }) => void;
@@ -131,14 +131,17 @@ interface ChatEvents {
   getRemindersById: (userId: string) => void;
   SCREENSHARE: (data: any) => void;
 
-  voipFailed: {
-    userId: string;
-    msg: any;
-  };
-  invited: {
-    msg: any;
-  };
-  logout: void;
+  // Extra / mobile-specific events (payload shapes vary by server)
+  GetAllFormattedRooms: (data?: any) => void;
+  GetFormattedRoomById: (data?: any) => void;
+  getChatMeesagesByDays: (data?: any) => void;
+  getActiveContacts: (data?: any) => void;
+  getActiveGroupCalls: (data?: any) => void;
+  getMediaByChatRoomId: (data?: any) => void;
+  getFavoritesInRoom: (data?: any) => void;
+  voipFailed: (data?: any) => void;
+  invited: (data?: any) => void;
+  logout: (data?: any) => void;
 }
 
 type ConnectionStatus = "connected" | "disconnected" | "connecting" | "error";
@@ -151,7 +154,7 @@ type ReconnectConfig = {
   backoffMultiplier?: number;
 };
 
-type MessageHandler = (type: keyof ChatEvents, data: any) => void;
+type MessageHandler = (type: string, data: any) => void;
 
 class SocketConnection {
   private static instance: SocketConnection;
@@ -487,9 +490,9 @@ class SocketConnection {
     });
   }
 
-  public async emit<T extends keyof ChatEvents>(
-    eventName: T,
-    data: Parameters<ChatEvents[T]>[0],
+  public async emit(
+    eventName: string,
+    data?: any,
     callback?: (response: any) => void
   ): Promise<void> {
     try {

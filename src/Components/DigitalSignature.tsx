@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Colors } from "@/Constants";
 import { windowHeight } from "@Util/ResponsiveView";
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";

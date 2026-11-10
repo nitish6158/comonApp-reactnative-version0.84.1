@@ -81,7 +81,7 @@ export const contactStorage = createStorage();
 export const contactPersister = {
   setItem: (key: string, value: string) => {
     contactStorage.set(key, value);
-    return AsyncStorage.setItem(`contact_${key}`, value).then(() => true);
+    return Promise.resolve(true);
   },
   getItem: async (key: string) => {
     const value = contactStorage.getString(key);

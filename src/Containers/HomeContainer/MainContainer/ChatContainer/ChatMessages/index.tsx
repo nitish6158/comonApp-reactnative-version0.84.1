@@ -16,9 +16,11 @@ import { Text } from "react-native-elements";
 import FastImage from "@d11/react-native-fast-image";
 import { ChatContext } from "@/Context/ChatProvider";
 import { navigateBack } from "@/navigation/utility";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import NetInfo from "@react-native-community/netinfo";
 import { t } from "i18next";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 function ChatMessages({ navigation, route }: any) {
   global.roomId = route.params.RoomId;
@@ -86,7 +88,7 @@ function ChatMessages({ navigation, route }: any) {
         alignItems: "center",
       }}
     >
-      <AntDesign name="arrowleft" size={30} color="black" />
+      <VectorIconCompat name="arrowleft" size={30} color="black" />
     </Pressable>
       <View
         style={[

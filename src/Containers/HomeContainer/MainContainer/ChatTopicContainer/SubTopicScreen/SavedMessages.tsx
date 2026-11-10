@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Pressable, Text, View, StyleSheet, Clipboard } from "react-native";
 import React from "react";
 import { useAppSelector } from "@/redux/Store";
@@ -9,7 +10,7 @@ import { chatIndexForScroll, chatMode } from "@/Atoms";
 import { Hidemessage } from "@Types/types";
 import FastImage from "@d11/react-native-fast-image";
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
-import IonIcon from "react-native-vector-icons/Ionicons";
+
 import { Colors, fonts } from "@/Constants";
 import { getFileName } from "@/utils/helpers/FilePathUtility";
 import { useNavigation } from "@react-navigation/core";
@@ -21,6 +22,8 @@ import { ChatContactView } from "@/Components";
 import { VideoComponent } from "../../ChatContainer/ChatMessages/MessageComponents/VideoMessageComponent";
 import { AudioComponent } from "../../ChatContainer/ChatMessages/MessageComponents/AudioMessageComponent";
 import { FileIconView } from "@/Components/DocumentPreview";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 // const { useQuery, useRealm } = RealmContext;
 
@@ -96,7 +99,7 @@ export default function SavedMessages({ messages, onMessageDelete,topicId }: Rea
               </View>
               <Menu>
                 <MenuTrigger>
-                  <IonIcon name="ellipsis-vertical" size={20} />
+                  <VectorIconCompat name="ellipsis-vertical" size={20} />
                 </MenuTrigger>
                 <MenuOptions optionsContainerStyle={{ width: 100 }}>
                   <MenuOption

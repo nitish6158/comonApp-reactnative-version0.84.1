@@ -1,8 +1,10 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import Colors from "@/Constants/Colors";
-import Entypo from "react-native-vector-icons/Entypo";
+
 import React from "react";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type props = {
   isVisible: boolean;
@@ -17,7 +19,7 @@ export default function ReplyButton({ iconName, onReplyPress, isVisible }: props
     return (
       <Pressable style={styles.root} onPress={onReplyPress}>
         <View style={styles.iconContainer}>
-          <Entypo name={iconName} size={15} style={styles.icon} color={Colors.light.black} />
+          <VectorIconCompat name={iconName} size={15} style={styles.icon} color={Colors.light.black} />
         </View>
       </Pressable>
     );

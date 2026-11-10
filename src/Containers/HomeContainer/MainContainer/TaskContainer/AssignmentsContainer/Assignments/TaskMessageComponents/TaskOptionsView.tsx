@@ -4,7 +4,6 @@ import { Edge, Task, TaskTypes } from "@Service/generated/types";
 import { Dimensions, Image, Modal, StyleSheet, View } from "react-native";
 
 import AudioRecording from "@/Containers/HomeContainer/MainContainer/ChatContainer/ChatMessages/AudioRecording";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 import { TaskOptionButton } from "./TaskOptionButton";
 import { TaskDefaultLoadingButton } from "@Components/TaskDefaultLoadingButton";
@@ -20,6 +19,8 @@ import { RangeSelect } from "./RangeSelect";
 import AttachFile from "./AttachFile";
 import { TaskInput } from "./TaskInput";
 import DigitalSignature from "@Components/DigitalSignature";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 let previousTask = {};
 
@@ -108,7 +109,7 @@ export function TaskOptionsView({ currentTask, onAddTaskResult, addTaskLoading }
                   <View style={{ width: windowWidth - 40 }}>
                     <TaskPermissionView
                       message={t("task.useLocation")}
-                      icon={<FontAwesome name="map-marker" size={24} color="gray" />}
+                      icon={<VectorIconCompat name="map-marker" size={24} color="gray" />}
                     />
                   </View>
                 )}
@@ -171,7 +172,7 @@ export function TaskOptionsView({ currentTask, onAddTaskResult, addTaskLoading }
             if (currentTask?.mediaType == "RECORD") {
               return !addTaskLoading ? (
                 <View key={index}>
-                  <TaskPermissionView message={t("task.useMic")} icon={<FontAwesome name="microphone" />} />
+                  <TaskPermissionView message={t("task.useMic")} icon={<VectorIconCompat name="microphone" />} />
                   <AudioRecording
                     task={currentTask}
                     addTaskLoading={addTaskLoading}
@@ -226,11 +227,11 @@ export function TaskOptionsView({ currentTask, onAddTaskResult, addTaskLoading }
         {selectedEdge && selectedEdge?.media && (
           <AttachFile
             isSignatureDone={signature}
-            task={{ mediaType: selectedEdge?.media }}
+            task={{ mediaType: selectedEdge?.media } as any}
             addTaskLoading={addTaskLoading}
             edge={selectedEdge}
-            onAddTaskResult={(edge, currentTask, undefined, file) => {
-              onAddTaskResult(selectedEdge, currentTask, undefined, file, selectedEdge.location, signature);
+            onAddTaskResult={(_edge, taskArg, _opts, file) => {
+              onAddTaskResult(selectedEdge, taskArg, undefined, file, selectedEdge.location, signature);
             }}
           />
         )}
@@ -239,7 +240,7 @@ export function TaskOptionsView({ currentTask, onAddTaskResult, addTaskLoading }
           <View style={{ width: windowWidth - 40 }}>
             <TaskPermissionView
               message={t("task.useLocation")}
-              icon={<FontAwesome name="map-marker" size={24} color="gray" />}
+              icon={<VectorIconCompat name="map-marker" size={24} color="gray" />}
             />
           </View>
         )}

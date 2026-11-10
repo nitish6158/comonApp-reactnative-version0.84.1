@@ -5,7 +5,7 @@ import Colors from "@/Constants/Colors";
 import { Conversation } from "@Models/chatmessage";
 import { DefaultImageUrl } from "@Service/provider/endpoints";
 import DeleteMessageText from "@Util/chatUtils/deleteMessageText";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import MessageCommonWrapper from "./MessageCommonWrapper";
 import Text from "@Components/Text";
 import VideoDownloadView from "@Components/videoDownloadView";
@@ -17,6 +17,8 @@ import { useSelector } from "react-redux";
 import { MediaPreviewAtom } from "../ChatListItem";
 import { useTranslation } from "react-i18next";
 import FastImage from "@d11/react-native-fast-image";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 const { height, width } = Dimensions.get("window");
 
@@ -68,7 +70,6 @@ export function VideoComponent({ message }: { message: Conversation }) {
     return DownloadFileStore.indexOf(getDownloadfileName(message.fileURL)) !== -1;
   }, [message.fileURL, DownloadFileStore]);
 
-
   if(message.fileURL.length == 0){
     return(
       <View style={[styles.imageContainer,{justifyContent:'center',alignItems:'center'}]}>
@@ -96,7 +97,7 @@ export function VideoComponent({ message }: { message: Conversation }) {
             />
           )}
           <View style={styles.videoPlayButton}>
-            <Ionicons name="play" size={30} color="white" />
+            <VectorIconCompat name="play" size={30} color="white" />
           </View>
         </Pressable>
       ) : (

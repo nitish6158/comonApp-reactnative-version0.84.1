@@ -19,7 +19,7 @@ import { navigate } from "@/navigation/utility";
 import { useTranslation } from "react-i18next";
 import { setAssignments } from "@/redux/Reducer/OrganisationsReducer";
 
-let organisationCopy = [];
+let organisationCopy: any[] = [];
 
 export default function useTaskNotificationHandler() {
   const setActiveAssignment = useSetAtom(activeAssignmentAtom);
@@ -45,19 +45,22 @@ export default function useTaskNotificationHandler() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    organisationCopy = organizations;
+    organisationCopy = organizations ?? [];
   }, [organizations]);
 
   const handleTaskNotificationTap = useCallback(
     async (organisationId: string, assignmentId: string) => {
-      const org = organisationCopy?.length >= organizations?.length ? organisationCopy : organizations;
+      const org =
+        organisationCopy?.length >= (organizations?.length ?? 0)
+          ? organisationCopy
+          : organizations ?? [];
       console.log("Org", org);
-      const checkIfTheOrganisationAlreadyExist = org.find((e) => e._id == organisationId);
+      const checkIfTheOrganisationAlreadyExist = org?.find((e: any) => e._id == organisationId);
       if (checkIfTheOrganisationAlreadyExist) {
         if (global.activeOrg == organisationId) {
           const checkIfTheAssignmentAlreadyExist = assignments.find((e) => e._id == assignmentId);
           if (checkIfTheAssignmentAlreadyExist) {
-            handleScenarioRequest(checkIfTheAssignmentAlreadyExist);
+            handleScenarioRequest(checkIfTheAssignmentAlreadyExist as any);
           } else {
             setTaskNotificationLoader(t("loadingTask"));
             requestAssignment({
@@ -77,9 +80,9 @@ export default function useTaskNotificationHandler() {
                 }
                 const checkForAssignment = response.data?.myAssignments.data?.find((e) => e._id == assignmentId);
                 if (checkForAssignment) {
-                  handleScenarioRequest(checkForAssignment);
+                  handleScenarioRequest(checkForAssignment as any);
                 }
-                dispatch(setAssignments(response.data?.myAssignments.data));
+                dispatch(setAssignments((response.data?.myAssignments.data ?? []) as any));
               })
               .catch((err) => {
                 console.error("Error in requesting assignment", err);
@@ -87,7 +90,7 @@ export default function useTaskNotificationHandler() {
           }
         } else {
           setTaskNotificationLoader(t("switchingOrg"));
-          switchOrganization(organisationId, org)
+          switchOrganization(organisationId, org as any)
             .then((response) => {
               setActiveOrganisation(organisationId);
               setTaskNotificationLoader(t("loadingTask"));
@@ -107,8 +110,8 @@ export default function useTaskNotificationHandler() {
                     return;
                   }
                   const activeAssignment = response.data?.myAssignments.data?.find((e) => e._id == assignmentId);
-                  if (activeAssignment) handleScenarioRequest(activeAssignment);
-                  dispatch(setAssignments(response.data?.myAssignments.data));
+                  if (activeAssignment) handleScenarioRequest(activeAssignment as any);
+                  dispatch(setAssignments((response.data?.myAssignments.data ?? []) as any));
                 })
                 .catch((err) => {
                   console.error("Error in requesting assignment", err);
@@ -130,7 +133,10 @@ export default function useTaskNotificationHandler() {
       setTaskNotificationLoader(t("loadingTaskDetail"));
       scenarioRequest({
         variables: {
-          input: { _id: assignment?.scenario?._id, orgId: global.activeOrg },
+          input: {
+            _id: assignment?.scenario?._id ?? "",
+            orgId: global.activeOrg ?? "",
+          },
         },
       })
         .then((response) => {
@@ -140,7 +146,7 @@ export default function useTaskNotificationHandler() {
             return;
           }
           setActiveAssignment(assignment);
-          if (response.data?.scenario) setActiveScenario(response.data?.scenario);
+          if (response.data?.scenario) setActiveScenario(response.data?.scenario as any);
           const myActiveReportId = assignment.members.find((e) => e.member?.user?._id == MyProfile?._id);
           if (myActiveReportId?.activeReportId) {
             reportRequest({
@@ -156,7 +162,7 @@ export default function useTaskNotificationHandler() {
                   setTaskNotificationLoader(null);
                   return;
                 }
-                if (response?.data?.report) setActiveReport(response?.data?.report);
+                if (response?.data?.report) setActiveReport(response?.data?.report as any);
                 setTaskNotificationLoader(null);
                 navigate("AssignmentChatScreen", {});
               })

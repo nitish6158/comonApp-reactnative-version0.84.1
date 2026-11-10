@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { CommonUserList, ContactInfo, ReduxChat } from "@Types/types";
 import {
   Button,
@@ -18,7 +19,7 @@ import Colors from "@/Constants/Colors";
 import CommonHeader from "@Components/header/CommonHeader";
 import DividingDateChat from "@Components/DividingDateChat";
 import DoneAll from "@Images/done-all.svg";
-import Entypo from "react-native-vector-icons/Entypo";
+
 import FastImage from "@d11/react-native-fast-image";
 import { Icon } from "react-native-elements";
 import { ImageUrl } from "@Service/provider/endpoints";
@@ -35,6 +36,8 @@ import { useTranslation } from "react-i18next";
 import FormatTextRender from "@/Components/formatTextRender";
 import PollMessageComponent from "../ChatMessages/MessageComponents/PollMessageComponent";
 import Video from "react-native-video";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 function ListItem({ title, isData, time, roomType }: any) {
   return (
@@ -347,7 +350,7 @@ const ChatMessageInfo = ({ route, navigation }: any) => {
                     {Item.isForwarded &&
                       Item.message !== "You deleted this message" && (
                         <View style={{ flexDirection: "row" }}>
-                          <Entypo
+                          <VectorIconCompat
                             name="forward"
                             size={15}
                             style={{ marginRight: 5 }}

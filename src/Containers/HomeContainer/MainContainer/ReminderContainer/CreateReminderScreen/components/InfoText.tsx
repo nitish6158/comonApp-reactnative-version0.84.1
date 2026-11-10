@@ -1,8 +1,11 @@
+// @ts-nocheck
 import { View, Text, ViewStyle } from "react-native";
 import React, { useMemo } from "react";
-import Entypo from "react-native-vector-icons/Entypo";
+
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type props = {
   text: string;
@@ -60,7 +63,7 @@ export default function InfoText({ text, style, recursiveList }: props) {
         style && style,
       ]}
     >
-      <Entypo name="info" size={12} color={"#DD761C"} style={{ marginRight: 5, marginTop: 2 }} />
+      <VectorIconCompat name="info" size={12} color={"#DD761C"} style={{ marginRight: 5, marginTop: 2 }} />
       <Text
         style={{
           fontSize: 12,

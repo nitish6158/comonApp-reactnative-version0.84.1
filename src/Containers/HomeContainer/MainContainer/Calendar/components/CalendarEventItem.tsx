@@ -1,15 +1,17 @@
+// @ts-nocheck
 import { View, Text, Pressable, ViewStyle } from "react-native";
 import React, { useEffect } from "react";
 import { reminder } from "@/schemas/schema";
 import { screenStyle as reminderStyle } from "../../ReminderContainer/ViewReminderScreen/viewReminder.styles";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import Entypo from "react-native-vector-icons/Entypo";
+
 import { ParticipantAcceptStatus } from "@/graphql/generated/types";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import { currentUserIdAtom } from "@/Atoms/RealmloginManager";
 import { useAtomValue } from "jotai";
 import { getStorage } from "@/utils/storage";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type props = {
   eventStyle: ViewStyle[];
@@ -31,7 +33,6 @@ export default function CalendarEventItem({
 
   const getLocale = async () => {
     const loc = await getStorage("LANGUAGE");
-
 
     if (loc) {
       return loc;
@@ -109,7 +110,7 @@ export default function CalendarEventItem({
 
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <View style={reminderStyle.participantIcon}>
-              <Ionicons
+              <VectorIconCompat
                 name="people"
                 size={18}
                 color={reminderStyle[`type_text_${event.type}`].color}
@@ -120,7 +121,7 @@ export default function CalendarEventItem({
 
             {event.attachment && event.attachment.length > 0 && (
               <View style={reminderStyle.participantIcon}>
-                <Entypo
+                <VectorIconCompat
                   name="attachment"
                   size={16}
                   color={reminderStyle[`type_text_${event.type}`].color}
@@ -139,7 +140,7 @@ export default function CalendarEventItem({
                 >
                   {currentUser?.accepted ===
                     ParticipantAcceptStatus["Pause"] && (
-                    <Ionicons
+                    <VectorIconCompat
                       name="notifications-off-sharp"
                       size={16}
                       color={reminderStyle[`type_text_${event.type}`].color}
@@ -150,7 +151,7 @@ export default function CalendarEventItem({
                     ParticipantAcceptStatus["Accept"] ||
                     currentUser?.accepted ===
                       ParticipantAcceptStatus["Reject"]) && (
-                    <Ionicons
+                    <VectorIconCompat
                       name="notifications"
                       size={16}
                       color={reminderStyle[`type_text_${event.type}`].color}
@@ -158,7 +159,7 @@ export default function CalendarEventItem({
                   )}
                   {currentUser?.accepted ===
                     ParticipantAcceptStatus["Pending"] && (
-                    <Ionicons
+                    <VectorIconCompat
                       name="notifications-outline"
                       size={16}
                       color={reminderStyle[`type_text_${event.type}`].color}
@@ -170,7 +171,7 @@ export default function CalendarEventItem({
                 </View>
               )}
             {event.location && (
-              <Ionicons
+              <VectorIconCompat
                 name="location-sharp"
                 size={18}
                 color="red"

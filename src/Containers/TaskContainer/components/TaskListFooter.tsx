@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const MaterialCommunityIcons =
-  require("react-native-vector-icons/MaterialCommunityIcons").default;
+import { VectorIconCompat } from "@/Components/icons";
 
 const TaskListFooter = () => {
   const { t } = useTranslation();
@@ -17,14 +16,14 @@ const TaskListFooter = () => {
         onPress={() => setIsExpanded(!isExpanded)}
         activeOpacity={0.7}
       >
-        <MaterialCommunityIcons
+        <VectorIconCompat
           name="help-circle-outline"
           size={24}
           color={Colors.light.PrimaryColor}
           style={styles.headerIcon}
         />
         <Text style={styles.headerText}>{t("task-list-footer.usage-guide-title")}</Text>
-        <MaterialCommunityIcons
+        <VectorIconCompat
           name={isExpanded ? "chevron-up" : "chevron-down"}
           size={24}
           color={Colors.light.grayText}
@@ -33,7 +32,7 @@ const TaskListFooter = () => {
 
       {isExpanded && (
         <View style={styles.contentCard}>
-          <MaterialCommunityIcons
+          <VectorIconCompat
             name="information-outline"
             size={20}
             color={Colors.light.PrimaryColor}

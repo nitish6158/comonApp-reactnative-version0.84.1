@@ -56,7 +56,7 @@ import { getSession } from "@/utils/session";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { socketManager } from "@/utils/socket/SocketManager";
 
-let assignmentCopy = [];
+let assignmentCopy: any[] = [];
 
 export let KillStateTaskAtom = atom<{ orgId: string; assignId: string } | null>(
   null
@@ -114,7 +114,7 @@ export default function PlatformForegroundService() {
   useEffect(() => {
     const unsubscribe = messaging().onMessage((message) => {
       const { data, type } = message.data as Message["data"];
-      handleFirebaseOnMessage(data, type, message);
+      handleFirebaseOnMessage(data, type, message as any);
     });
 
     return unsubscribe;
@@ -167,7 +167,7 @@ export default function PlatformForegroundService() {
               })
                 .then((res) => {
                   res.refetch().then((res) => {
-                    dispatch(setAssignments(res.data?.myAssignments.data));
+                    dispatch(setAssignments((res.data?.myAssignments.data ?? []) as any));
                   });
                 })
                 .catch((err) => {
@@ -200,8 +200,8 @@ export default function PlatformForegroundService() {
               scenarioRequest({
                 variables: {
                   input: {
-                    _id: assignmentAlreadyExist?.scenario?._id,
-                    orgId: global.activeOrg,
+                    _id: assignmentAlreadyExist?.scenario?._id ?? "",
+                    orgId: global.activeOrg ?? "",
                   },
                 },
               }).then((response) => {
@@ -220,7 +220,7 @@ export default function PlatformForegroundService() {
                 })
                   .then((res) => {
                     res.refetch().then((res) => {
-                      dispatch(setAssignments(res.data?.myAssignments.data));
+                      dispatch(setAssignments((res.data?.myAssignments.data ?? []) as any));
                     });
                   })
                   .catch((err) => {
@@ -228,7 +228,7 @@ export default function PlatformForegroundService() {
                     console.log(err);
                   });
                 if (response.data?.scenario) {
-                  setActiveScenario(response.data?.scenario);
+                  setActiveScenario(response.data?.scenario as any);
                 }
               });
             }
@@ -283,7 +283,7 @@ export default function PlatformForegroundService() {
 
       if (type === EventType.PRESS && isMessageTapWithoutCategory) {
         await handleMessageNotification(detail);
-        await notifee.cancelNotification(detail.notification?.id);
+        await notifee.cancelNotification(detail.notification?.id ?? "");
         return;
       }
 
@@ -293,9 +293,9 @@ export default function PlatformForegroundService() {
       });
 
       if (type === EventType.ACTION_PRESS) {
-        await handleActionPress(detail.pressAction.id, detail);
+        await handleActionPress(detail.pressAction?.id ?? "", detail);
       } else if (type === EventType.PRESS) {
-        await handlePress(pressKey, detail);
+        await handlePress(pressKey ?? "", detail);
       }
     });
     return () => {
@@ -312,7 +312,7 @@ export default function PlatformForegroundService() {
     switch (type) {
       case "CHAT":
         if (ProfileRef.current?.mode == "SENIORCITIZEN") {
-          let chatRoom = JSON.parse(data);
+          let chatRoom = JSON.parse(typeof data === "string" ? data : JSON.stringify(data));
           if (global.roomId !== chatRoom.myMessage.roomId) {
             setSeniorChatAlert(chatRoom);
           }
@@ -377,7 +377,7 @@ export default function PlatformForegroundService() {
               case "END_CALL":
                 notificationLog("END_CALL");
                 //if end call receive for any other call excluding current active call then need to handle foreground missed call in this function
-                setMissedCall(dataCall);
+                setMissedCall(dataCall as any);
                 break;
               default:
                 break;
@@ -448,25 +448,25 @@ export default function PlatformForegroundService() {
       case "event-accept":
         await changeEventParticipantStatus(
           detail.notification.data._id,
-          "ACCEPT"
+          "ACCEPT" as any
         );
         break;
       case "event-reject":
         await changeEventParticipantStatus(
           detail.notification.data._id,
-          "REJECT"
+          "REJECT" as any
         );
         break;
       case "approve-message":
         await ChangeScheduleMessageStatus(
           detail.notification.data._id,
-          "ACCEPT"
+          "ACCEPT" as any
         );
         break;
       case "reject-message":
         await ChangeScheduleMessageStatus(
           detail.notification.data._id,
-          "REJECT"
+          "REJECT" as any
         );
         break;
       case "callback":
@@ -475,7 +475,7 @@ export default function PlatformForegroundService() {
       default:
         console.log("Unhandled action press", pressActionId);
     }
-    await notifee.cancelNotification(detail.notification?.id);
+    await notifee.cancelNotification(detail.notification?.id ?? "");
   };
 
   const handlePress = async (keyName: string, detail: any) => {
@@ -508,7 +508,7 @@ export default function PlatformForegroundService() {
       default:
         console.log("Unhandled press", keyName);
     }
-    await notifee.cancelNotification(detail.notification?.id);
+    await notifee.cancelNotification(detail.notification?.id ?? "");
   };
   const handleTryNow = async (detail: any) => {
     let contact = IOSParse(detail);
@@ -601,7 +601,7 @@ export default function PlatformForegroundService() {
         RoomId: contact.roomId,
       });
     }
-    notifee.cancelNotification(detail.notification?.id);
+    notifee.cancelNotification(detail.notification?.id ?? "");
   };
 
   const handleCalendarReminder = async (detail: any) => {
@@ -649,7 +649,7 @@ export default function PlatformForegroundService() {
     if (userMode === "CLASSIC") {
       navigate("ChatMessageScreen", { RoomId: roomID });
     } else if (userMode === "SENIORCITIZEN") {
-      navigate("SeniorChatMessageScreen", { roomId: roomID });
+      navigate("SeniorChatMessageScreen" as any, { roomId: roomID });
     }
   };
 

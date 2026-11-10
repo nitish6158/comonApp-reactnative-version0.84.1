@@ -16,17 +16,16 @@ import { resetCallState } from "@/redux/Reducer/CallReducer";
 import { resetChatState, setMyProfile } from "@/redux/Reducer/ChatReducer";
 import { resetOrganisationState } from "@/redux/Reducer/OrganisationsReducer";
 import { SeniorProfileScreenProps } from "@/navigation/screenPropsTypes";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import Feather from "react-native-vector-icons/Feather";
+
 import { Colors, fonts } from "@/Constants";
 import { Profile, UserDetails } from "../MainContainer/ProfileContainer/UserProfile";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+
 import { useUpdateUserModeMutation } from "@/graphql/generated/user.generated";
 import { navigateAndSimpleReset } from "@/navigation/utility";
-import Entypo from 'react-native-vector-icons/Entypo';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 import { socketConnect } from "@/utils/socket/SocketConnection";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function SeniorProfileScreen({ navigation }: SeniorProfileScreenProps) {
   const [loader, setLoader] = React.useState(false);
@@ -86,11 +85,11 @@ export default function SeniorProfileScreen({ navigation }: SeniorProfileScreenP
   };
 
   const onNavigateToSettings = () => {
-    navigation.navigate("EditProfileScreen", {});
+    (navigation as any).navigate("EditProfileScreen", {});
   };
 
   const onNavigateToContacts = () => {
-    navigation.navigate("ContactListScreen", { ShareContact: false });
+    (navigation as any).navigate("ContactListScreen", { ShareContact: false });
   };
 
   const switchToClassic = () => {
@@ -109,12 +108,12 @@ export default function SeniorProfileScreen({ navigation }: SeniorProfileScreenP
             let res = await updateUserModeRequest({
               variables: {
                 input: {
-                  mode: "CLASSIC",
+                  mode: "CLASSIC" as any,
                 },
               },
             });
             if (res.data?.updateUserMode) {
-              Dispatch(setMyProfile({ ...MyProfile, mode: "CLASSIC" }))
+              Dispatch(setMyProfile({ ...MyProfile, mode: "CLASSIC" } as any))
               navigateAndSimpleReset("Main", {});
             }
           },
@@ -147,19 +146,19 @@ export default function SeniorProfileScreen({ navigation }: SeniorProfileScreenP
                 navigation.goBack();
               }}
             >
-              <Ionicons name="arrow-back" size={20} color="white" />
+              <VectorIconCompat name="arrow-back" size={20} color="white" />
               <Text style={{ color: "white", marginLeft: 5 }}>{t("titles.Back")}</Text>
             </Pressable>
             <Pressable onPress={onOpen} style={{ flexDirection: "row", alignItems: "center" }}>
-              <Feather name="globe" size={16} color={Colors.light.link} style={{ marginRight: 5 }} />
-              <Text size="sm" style={{ color: "white" }}>
+              <VectorIconCompat name="globe" size={16} color={Colors.light.link} style={{ marginRight: 5 }} />
+              <Text style={{ color: "white", fontSize: 14 }}>
                 {t("locales.language")}
               </Text>
             </Pressable>
           </View>
           <Pressable
             onPress={() => {
-              navigation.navigate("EditProfileImageScreen");
+              (navigation as any).navigate("EditProfileImageScreen", {});
             }}
             style={{ justifyContent: "center", alignItems: "center" }}
           >
@@ -175,7 +174,7 @@ export default function SeniorProfileScreen({ navigation }: SeniorProfileScreenP
             onPress={onNavigateToSettings}
             style={{ flexDirection: "row", alignItems: "center", marginVertical: 5 }}
           >
-            <AntDesign
+            <VectorIconCompat
               name="setting"
               size={22}
               color={Colors.light.PrimaryColor}
@@ -186,11 +185,11 @@ export default function SeniorProfileScreen({ navigation }: SeniorProfileScreenP
 
           <Pressable
             onPress={() => {
-              navigation.navigate("AboutContainer");
+              (navigation as any).navigate("AboutContainer", {});
             }}
             style={{ flexDirection: "row", alignItems: "center", marginVertical: 5 }}
           >
-            <AntDesign
+            <VectorIconCompat
               style={{ marginRight: 10, marginLeft: 5 }}
               name="exclamationcircleo"
               size={21}
@@ -203,7 +202,7 @@ export default function SeniorProfileScreen({ navigation }: SeniorProfileScreenP
             onPress={onNavigateToContacts}
             style={{ flexDirection: "row", alignItems: "center", marginVertical: 5, width: "90%" }}
           >
-            <AntDesign
+            <VectorIconCompat
               name="adduser"
               size={22}
               color={Colors.light.PrimaryColor}
@@ -215,7 +214,7 @@ export default function SeniorProfileScreen({ navigation }: SeniorProfileScreenP
             onPress={onUpdateChatList}
             style={{ flexDirection: "row", alignItems: "center", marginVertical: 5, width: "90%" }}
           >
-            <AntDesign
+            <VectorIconCompat
               name="message1"
               size={22}
               color={Colors.light.PrimaryColor}
@@ -227,7 +226,7 @@ export default function SeniorProfileScreen({ navigation }: SeniorProfileScreenP
             onPress={switchToClassic}
             style={{ flexDirection: "row", alignItems: "center", marginVertical: 5, width: "90%" }}
           >
-            <MaterialIcons
+            <VectorIconCompat
               name="model-training"
               size={25}
               color={Colors.light.PrimaryColor}
@@ -239,7 +238,7 @@ export default function SeniorProfileScreen({ navigation }: SeniorProfileScreenP
             onPress={() => navigation.navigate("UserManualScreen", {})}
             style={{ flexDirection: "row", alignItems: "center", marginVertical: 5, width: "90%" }}
           >
-            <MaterialIcons
+            <VectorIconCompat
               name="help-outline"
               size={22}
               color={Colors.light.PrimaryColor}
@@ -260,7 +259,7 @@ export default function SeniorProfileScreen({ navigation }: SeniorProfileScreenP
             <ActivityIndicator color={Colors.light.PrimaryColor} style={{ marginLeft: 20 }} />
           ) : (
             <>
-              <SimpleLineIcons name="logout" size={20} color={Colors.light.link} style={{ marginRight: 10 }} />
+              <VectorIconCompat name="logout" size={20} color={Colors.light.link} style={{ marginRight: 10 }} />
               <Text>{t("navigation.logout")}</Text>
             </>
           )}

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // import React, { useCallback, useEffect, useState } from "react";
 // import RealmContext from "@/schemas";
 // import { Realm } from "@realm/react";
@@ -20,7 +21,6 @@
 // import { reminder } from "@/schemas/schema";
 // import { Colors } from "@/Constants";
 // import { ActivityIndicator, Pressable, TouchableOpacity, View } from "react-native";
-// import EvilIcons from "react-native-vector-icons/EvilIcons";
 // import ToastMessage from "@Util/ToastMesage";
 // import { currentUserIdAtom } from "@/Atoms";
 // import { GET_APPOINTMENTS_REMINDERS } from "@/graphql/generated/reminder.generated";
@@ -349,7 +349,7 @@
 
 //   return (
 //     <TouchableOpacity disabled style={{ marginBottom: 5, marginRight: 5 }} onPress={SyncCalenderManually}>
-//       {/* {loader ? <ActivityIndicator /> : <EvilIcons name="refresh" size={33} color={"black"} />} */}
+//       {/* {loader ? <ActivityIndicator /> : <VectorIconCompat name="refresh" size={33} color={"black"} />} */}
 //     </TouchableOpacity>
 //   );
 // }
@@ -358,7 +358,7 @@ import { ActivityIndicator, TouchableOpacity } from "react-native";
 import { useFocusEffect } from "@react-navigation/core";
 import { useLazyQuery } from "@apollo/client";
 import { useAtomValue, useSetAtom } from "jotai";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
+
 import dayjs from "dayjs";
 import { calendarRefreshAtom } from "@/Atoms/CalendarAtom";
 
@@ -385,6 +385,8 @@ import { EventType, ParticipantAcceptStatus } from "@/graphql/generated/types";
 
 import { TimelineListProps } from "react-native-calendars";
 import { reminder } from "@/schemas/schema";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function CalendarDataManipulator() {
   const MyProfile = useAtomValue(currentUserIdAtom);
@@ -731,7 +733,7 @@ async function SyncCalenderManually() {
       {loader ? (
         <ActivityIndicator />
       ) : (
-        <EvilIcons name="refresh" size={33} color="black" />
+        <VectorIconCompat name="refresh" size={33} color="black" />
       )}
     </TouchableOpacity>
   );

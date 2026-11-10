@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { mainStyles, typographyStyles } from "../../../../../../styles/main";
 

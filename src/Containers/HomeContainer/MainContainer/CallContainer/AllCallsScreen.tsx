@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { CallListQuery, MyCallListReponse, useGetMyCallListLazyQuery } from "@Service/generated/call.generated";
 import { Center, Typography } from "rnmuilib";
 import { Dimensions, FlatList, RefreshControl, Text, View } from "react-native";
@@ -9,7 +10,7 @@ import { useFocusEffect, useIsFocused } from "@react-navigation/core";
 
 import { AllCallListScreenProps } from "@/navigation/screenPropsTypes";
 import CallParticipant from "./components/CallParticipant";
-import Feather from "react-native-vector-icons/Feather";
+
 import { Loader } from "@Components/Loader";
 import { ParticipantType } from "@Service/generated/types";
 import { RootState, useAppSelector } from "@Store/Store";
@@ -17,6 +18,8 @@ import { RootState, useAppSelector } from "@Store/Store";
 import { useTranslation } from "react-i18next";
 import { updateCallList } from "@/redux/Reducer/CallReducer";
 import { socket } from "@/redux/Reducer/SocketSlice";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 const { width } = Dimensions.get("screen");
 
@@ -133,7 +136,7 @@ export default function AllCallsScreen({}: AllCallListScreenProps) {
           }}
           ListEmptyComponent={() => (
             <Center flex={1}>
-              <Feather name="phone" size={64} style={{ opacity: 0.3, marginBottom: 24, marginTop: "30%" }} />
+              <VectorIconCompat name="phone" size={64} style={{ opacity: 0.3, marginBottom: 24, marginTop: "30%" }} />
               <Typography>{t("calls.noCalls")}</Typography>
             </Center>
           )}

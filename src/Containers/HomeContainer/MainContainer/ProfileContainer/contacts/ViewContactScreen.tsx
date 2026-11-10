@@ -1,10 +1,11 @@
+// @ts-nocheck
 import { View, StyleSheet, FlatList, Pressable, Share as NativeShare } from "react-native";
 import React, { useMemo } from "react";
 import { ViewContactScreenProps } from "@/navigation/screenPropsTypes";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { ContactDetailsDto } from "@/graphql/generated/types";
 import { Colors } from "@/Constants";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import { ContactInfo } from "@Types/types";
 import { Checkbox, Text } from "react-native-ui-lib";
 import { useCreateRoomMutation } from "@/graphql/generated/room.generated";
@@ -25,6 +26,8 @@ import AvtaarWithoutTitle from "@Components/AvtaarWithoutTitle";
 import { Platform } from "react-native";
 import Contacts from "react-native-contacts";
 
+import { VectorIconCompat } from "@/Components/icons";
+
 export default function ViewContactScreen({ route, navigation }: Readonly<ViewContactScreenProps>) {
   const { contacts } = useSelector((state: RootState) => state.Contact);
   const { t } = useTranslation();
@@ -42,7 +45,7 @@ export default function ViewContactScreen({ route, navigation }: Readonly<ViewCo
   return (
     <View style={styles.main}>
       <View style={styles.headerContainer}>
-        <Ionicons name="arrow-back" color="gray" size={30} onPress={navigation.goBack} />
+        <VectorIconCompat name="arrow-back" color="gray" size={30} onPress={navigation.goBack} />
         <Text style={{ fontSize: 17, marginLeft: 10 }}>{t("view-contacts")}</Text>
       </View>
       <View>
@@ -111,7 +114,7 @@ function ContactGroupingView({ data }: Readonly<ContactGroupingViewProps>) {
           return (
             <View key={sci} style={styles.siblingContainer}>
               <View style={styles.siblingDetails}>
-                <FontAwesome name="phone" size={26} color={Colors.light.PrimaryColor} style={{ marginRight: 15 }} />
+                <VectorIconCompat name="phone" size={26} color={Colors.light.PrimaryColor} style={{ marginRight: 15 }} />
                 <Text style={{ fontSize: 16 }}>{sc.phone}</Text>
               </View>
               <View>

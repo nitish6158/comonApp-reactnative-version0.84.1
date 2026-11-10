@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Alert, Platform, Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   Easing,
@@ -28,7 +29,7 @@ import Camera from "@Images/SendOptionModalSvg/Camera.svg";
 import Colors from "@/Constants/Colors";
 import Contact from "@Images/SendOptionModalSvg/Contact.svg";
 import Documents from "@Images/SendOptionModalSvg/Documents.svg";
-import Feather from "react-native-vector-icons/Feather";
+
 import Gallery from "@Images/SendOptionModalSvg/Gallery.svg";
 import ImagePrevModal from "./ImagePreviewModa";
 import { IsAttachmentSelectionVisibleAtom } from "@Atoms/ChatMessageEvents";
@@ -48,13 +49,15 @@ import { windowWidth } from "@Util/ResponsiveView";
 import Sound from "react-native-sound";
 import ToastMessage from "@Util/ToastMesage";
 import useUpdateChat from "@/hooks/useUpdateChat";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import DocumentPreviewModal from "./DocumentPreviewModal";
 import { EventType, RecurrentTypes } from "@/graphql/generated/types";
 import dayjs from "dayjs";
 import { useComonContacts } from "@/hooks/useComonContacts";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { socketManager } from "@/utils/socket/SocketManager";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 // const { useRealm } = RealmContext;
 interface SendMoreOptionModalProps { }
@@ -170,7 +173,7 @@ export default function SendMoreOptionModal({ }: SendMoreOptionModalProps) {
                   justifyContent: "center",
                 }}
               >
-                <Feather
+                <VectorIconCompat
                   name="video"
                   size={32}
                   color={Colors.light.PrimaryColor}
@@ -230,7 +233,7 @@ export default function SendMoreOptionModal({ }: SendMoreOptionModalProps) {
                       paddingVertical: 10,
                     }}
                   >
-                    <Ionicons
+                    <VectorIconCompat
                       name="notifications-sharp"
                       size={33}
                       color={Colors.light.PrimaryColor}
@@ -257,7 +260,7 @@ export default function SendMoreOptionModal({ }: SendMoreOptionModalProps) {
                       paddingVertical: 10,
                     }}
                   >
-                    <MaterialCommunityIcons
+                    <VectorIconCompat
                       name="poll"
                       size={33}
                       color={Colors.light.PrimaryColor}

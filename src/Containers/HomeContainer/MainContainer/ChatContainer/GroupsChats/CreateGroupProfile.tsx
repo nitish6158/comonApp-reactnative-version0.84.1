@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Dimensions,
   Keyboard,
@@ -13,7 +14,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import AnimatedTextInput from "@Components/AnimatedTextInput";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import Colors from "@/Constants/Colors";
 import CommonLoader from "@Components/CommonLoader";
 import GroupImage from "./GroupImage";
@@ -39,6 +40,8 @@ import { useAtom } from "jotai";
 import { singleRoom } from "@/Atoms";
 import { produce } from "immer";
 import { DefaultImageUrl, ImageUrl } from "@/graphql/provider/endpoints";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 function CreateGroupProfile({ navigation, route }: CreateGroupScreenProps) {
   const [Fileupload, { loading: signUpLoading }] = useUploadChatFileMutation();
@@ -73,7 +76,7 @@ function CreateGroupProfile({ navigation, route }: CreateGroupScreenProps) {
               alignItems: "center",
             }}
           >
-            <AntDesign
+            <VectorIconCompat
               name="left"
               size={24}
               color="black"

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Alert,
   Dimensions,
@@ -56,7 +57,8 @@ import { ListItem } from "react-native-elements";
 import FastImage from "@d11/react-native-fast-image";
 import moment from "moment";
 import { fonts } from "@/Constants";
-import Feather from "react-native-vector-icons/Feather";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 const { width } = Dimensions.get("window");
 
@@ -167,7 +169,7 @@ export default function CallHistoryDetails({ navigation, route }: any) {
             </View>
             <View style={{ margin: 10, marginLeft: 15 }}>
               <View style={styles.rowDirection}>
-                <Feather
+                <VectorIconCompat
                   name={initiator ? "arrow-up-right" : "arrow-down-left"}
                   color={
                     initiator

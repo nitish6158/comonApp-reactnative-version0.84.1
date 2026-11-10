@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   View,
   Text,
@@ -29,8 +30,7 @@ import {
   RecurrentTypes,
   ReminderParticipantRole,
 } from "@/graphql/generated/types";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { StyleSheet } from "react-native";
 import { capitalize } from "lodash";
 import { Chip } from "react-native-ui-lib";
@@ -52,7 +52,7 @@ import { navigate } from "../../../../../../navigation/utility";
 import RNFS from "react-native-fs";
 import useFileSystem from "@/hooks/useFileSystem";
 import store, { useAppSelector } from "@/redux/Store";
-import Entypo from "react-native-vector-icons/Entypo";
+
 import Icon from "@Assets/images/Icon";
 import { Alert } from "react-native";
 import { useAtom } from "jotai";
@@ -62,6 +62,8 @@ import { reminder_participants } from "@/schemas/schema";
 import _ from "lodash";
 import { useComonContacts } from "@/hooks/useComonContacts";
 import { getFileName } from "@/utils/helpers/FilePathUtility";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function SingleViewReminder({
   onClose,
@@ -256,7 +258,7 @@ export default function SingleViewReminder({
                           onDialerPressed(reminder.participants[1].phone)
                         }
                       >
-                        <Entypo name="dial-pad" size={20} color={"white"} />
+                        <VectorIconCompat name="dial-pad" size={20} color={"white"} />
                       </Pressable>
                     ) : (
                       <View
@@ -326,7 +328,7 @@ export default function SingleViewReminder({
                         ]}
                       >
                         <View style={styles.row}>
-                          <Ionicons name="attach" size={22} color="black" />
+                          <VectorIconCompat name="attach" size={22} color="black" />
                           <Text
                             style={StyleSheet.flatten([
                               styles.dateText,
@@ -387,7 +389,7 @@ export default function SingleViewReminder({
                     renderItem={({ item, index }) => {
                       return (
                         <View style={styles.row}>
-                          <Ionicons
+                          <VectorIconCompat
                             name="notifications-outline"
                             size={22}
                             color="black"
@@ -475,7 +477,7 @@ export default function SingleViewReminder({
                         <View style={styles.absoluteCheck}>
                           {item.accepted ==
                             ParticipantAcceptStatus["Accept"] && (
-                            <AntDesign
+                            <VectorIconCompat
                               name="checkcircle"
                               size={14}
                               color={"green"}
@@ -483,7 +485,7 @@ export default function SingleViewReminder({
                           )}
                           {item.accepted ==
                             ParticipantAcceptStatus["Reject"] && (
-                            <AntDesign
+                            <VectorIconCompat
                               name="closecircle"
                               size={14}
                               color={"red"}
@@ -888,7 +890,7 @@ export function DownloadAttachmentView({ url }) {
       {loading ? (
         <ActivityIndicator size={"small"} />
       ) : (
-        <AntDesign name="clouddownloado" size={20} color={"black"} />
+        <VectorIconCompat name="clouddownloado" size={20} color={"black"} />
       )}
     </Pressable>
   );

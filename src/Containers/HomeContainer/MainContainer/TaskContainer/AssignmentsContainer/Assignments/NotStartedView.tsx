@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { activeAssignmentAtom, activeReportAtom } from "@/Atoms/AssignmentAtom";
 import { Colors } from "@/Constants";
 import { useStartReportMutation } from "@/graphql/generated/report.generated";

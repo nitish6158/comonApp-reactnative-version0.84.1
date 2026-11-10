@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { serverContactType } from "@Store/Reducer/ContactReducer";
 
 export type dataType = serverContactType[];

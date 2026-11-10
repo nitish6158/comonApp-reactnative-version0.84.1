@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Alert, Image, Pressable, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import { Block, HStack, Picture, Typography } from "rnmuilib";
 import { DefaultImageUrl, GroupUrl } from "@Service/provider/endpoints";

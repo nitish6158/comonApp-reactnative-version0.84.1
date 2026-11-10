@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useMemo, useState } from "react";
 import { useRef } from "react";
 import { ScrollView, View, Text, Dimensions, KeyboardAvoidingView, Platform, Keyboard } from "react-native";

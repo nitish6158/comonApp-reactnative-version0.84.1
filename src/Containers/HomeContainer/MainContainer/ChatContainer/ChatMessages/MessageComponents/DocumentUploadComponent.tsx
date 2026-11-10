@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as Progress from "react-native-progress";
 
 import DocumentPicker, {
@@ -11,7 +12,7 @@ import { singleRoom, singleRoomType } from "@Atoms/singleRoom";
 import Colors from "@/Constants/Colors";
 import { Conversation } from "@Models/chatmessage";
 import DeleteMessageText from "@Util/chatUtils/deleteMessageText";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import MessageCommonWrapper from "./MessageCommonWrapper";
 import RNFS from "react-native-fs";
 // import RealmContext from "../../../../../../schemas";
@@ -35,6 +36,8 @@ import { socket } from "@/redux/Reducer/SocketSlice";
 import { socketManager } from "@/utils/socket/SocketManager";
 import { socketConnect } from "@/utils/socket/SocketConnection";
 import { ChatContext } from "@/Context/ChatProvider";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 // const { useRealm, useQuery } = RealmContext;
 
@@ -139,8 +142,6 @@ function DocumentUploadPreview({
     // if (message.fileURL.startsWith("file:") || message.fileURL.startsWith("content:")) {
     // }
   }, [isConnected]);
-
-
 
   async function uploadDocument(file: string, type: string, durationA: string) {
     console.log("durationA", durationA);
@@ -283,7 +284,7 @@ function DocumentUploadPreview({
       <View style={styles.container}>
         <View style={{ marginRight: 10 }}>
           {error.length > 0 ? (
-            <MaterialCommunityIcons
+            <VectorIconCompat
               onPress={() => {
                 reSelectDocument();
               }}

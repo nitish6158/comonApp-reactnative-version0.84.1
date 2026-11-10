@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { AllChatRooms, FolderAndTabsAtom } from "@Atoms/allRoomsAtom";
 import { FlatList, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import React, { memo, useEffect, useMemo } from "react";

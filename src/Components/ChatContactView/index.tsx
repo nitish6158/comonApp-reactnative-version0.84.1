@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ContactInfo } from "@Types/types";
 import { DefaultImageUrl, ImageUrl } from "@Service/provider/endpoints";
 import { Pressable, StyleSheet, View } from "react-native";

@@ -70,15 +70,16 @@ export default chatSlice.reducer;
 export const chatStorage = createStorage() 
 
 export const chatPersister = {
-  setItem: (key:string, value:string) => {
+  setItem: (key: string, value: string) => {
+    // MMKV only on write — dual AsyncStorage writes caused UI jank
     chatStorage.set(key, value);
-    return AsyncStorage.setItem(`chat_${key}`, value).then(() => true);
+    return Promise.resolve(true);
   },
-  getItem: async (key:string) => {
+  getItem: async (key: string) => {
     const value = chatStorage.getString(key);
     return value ?? (await AsyncStorage.getItem(`chat_${key}`));
   },
-  removeItem: (key:string) => {
+  removeItem: (key: string) => {
     chatStorage.delete(key);
     return AsyncStorage.removeItem(`chat_${key}`);
   },

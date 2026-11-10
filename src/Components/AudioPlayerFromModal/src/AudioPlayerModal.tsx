@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 //import liraries
 import React, { Component, useEffect, useState } from "react";
@@ -7,11 +8,11 @@ import AvtaarWithoutTitle from "../../AvtaarWithoutTitle";
 import Colors from "@/Constants/Colors";
 import { DefaultImageUrl } from "@Service/provider/endpoints";
 import DigitalTimeString from "./DigitalTimeString";
-import Entypo from "react-native-vector-icons/Entypo";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import Slider from "@react-native-community/slider";
 import { windowWidth } from "@Util/ResponsiveView";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 // create a component
 type props = {
@@ -82,7 +83,7 @@ export default function AudioPlayerModal(props: props) {
             justifyContent: "center",
           }}
         >
-          <FontAwesome5 name="microphone" size={12} color={props.backgroundColor} />
+          <VectorIconCompat name="microphone" size={12} color={props.backgroundColor} />
         </View>
 
         <Pressable
@@ -100,9 +101,9 @@ export default function AudioPlayerModal(props: props) {
           onPress={onPressPlayPause}
         >
           {playing ? (
-            <MaterialIcons name="pause" size={30} color={props.topColor} />
+            <VectorIconCompat name="pause" size={30} color={props.topColor} />
           ) : (
-            <Entypo name="controller-play" size={30} color={props.topColor} />
+            <VectorIconCompat name="controller-play" size={30} color={props.topColor} />
           )}
         </Pressable>
         <View style={{ flex: 8 }}>

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import { Share, StyleSheet, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";

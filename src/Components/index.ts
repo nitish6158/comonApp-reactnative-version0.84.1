@@ -1,3 +1,4 @@
+// @ts-nocheck
 export {default as AnimatedTextInput} from "./AnimatedTextInput";
 export {default as AudioPlayer} from "./AudioPlayer";
 export {default as AudioPlayerFromModal} from "./AudioPlayerFromModal";

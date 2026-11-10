@@ -11,6 +11,7 @@ type props = {
   edgeLabel: string;
   onPressTaskButton: () => void;
   title?: string;
+  isSelected?: boolean;
 };
 
 export const TaskOptionButton = ({ subtype, edgeLabel, title, onPressTaskButton }: props) => {

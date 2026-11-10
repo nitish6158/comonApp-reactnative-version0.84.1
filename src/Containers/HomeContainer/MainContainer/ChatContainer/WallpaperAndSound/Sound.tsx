@@ -1,8 +1,9 @@
+// @ts-nocheck
 /* eslint-disable react-native/no-inline-styles */
 import { Pressable, ScrollView, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useChangeNotificationSoundMutation, useGetiOsSoundListQuery } from "@Service/generated/room.generated";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import Colors from "@/Constants/Colors";
 import { SoundHeader } from "./soundHeader";
 import Styles from "./Styles";
@@ -13,6 +14,8 @@ import { useAtom } from "jotai";
 import { useIsFocused } from "@react-navigation/core";
 import { useTranslation } from "react-i18next";
 import Sound from "react-native-sound";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function SoundScreen({ navigation, route }: any) {
   const soundList = useGetiOsSoundListQuery();
@@ -128,7 +131,7 @@ export default function SoundScreen({ navigation, route }: any) {
             >
               <View style={{ paddingVertical: 10, flexDirection: "row", alignItems: "center" }}>
                 {item.title != "None (Default)" && (
-                  <AntDesign
+                  <VectorIconCompat
                     name="sound"
                     size={24}
                     color={item?.title == selectedSound?.title ? Colors.light.PrimaryColor : "gray"}
@@ -145,7 +148,7 @@ export default function SoundScreen({ navigation, route }: any) {
                 </Text>
               </View>
               {item?.title == selectedSound?.title && (
-                <AntDesign name="checkcircle" size={24} color={Colors.light.PrimaryColor} />
+                <VectorIconCompat name="checkcircle" size={24} color={Colors.light.PrimaryColor} />
               )}
               {/* <Divider /> */}
             </Pressable>

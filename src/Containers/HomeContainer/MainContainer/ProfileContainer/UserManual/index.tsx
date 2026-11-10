@@ -3,13 +3,15 @@ import React from "react";
 import { UserManualScreenProps } from "@/navigation/screenPropsTypes";
 import { navigate } from "../../../../../navigation/utility";
 import HeaderWithBack from "@Components/header/HeaderWithBack";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import { HeaderWithScreenName } from "@/Components/header";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import Color from "@/Constants/Colors";
 import styles from "@/Components/input/CodeInputStyles";
 import { useTranslation } from "react-i18next";
 import { user_manual_url } from "@/graphql/provider/endpoints";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 let userManualList = [
   {
@@ -54,7 +56,7 @@ export default function UserManualScreen({
               >
                 <Text style={{ fontSize: 16 }}>{item.language}</Text>
                 <View>
-                  <MaterialCommunityIcons
+                  <VectorIconCompat
                     name="web"
                     size={32}
                     color={Color.light.PrimaryColor}

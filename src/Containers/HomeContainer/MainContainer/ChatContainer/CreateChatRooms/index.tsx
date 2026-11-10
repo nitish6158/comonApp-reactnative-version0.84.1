@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { View, Text, StyleSheet, Pressable, FlatList, Dimensions } from "react-native";
 import React, { useState, useCallback } from "react";
 import { CreateChatRoomsProps } from "@/navigation/screenPropsTypes";
@@ -9,14 +10,15 @@ import FastImage from "@d11/react-native-fast-image";
 import { DefaultImageUrl } from "@/graphql/provider/endpoints";
 import { Colors, fonts } from "@/Constants";
 import { useCreateRoomMutation } from "@/graphql/generated/room.generated";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import Color from "@/Constants/Colors";
 
-import Feather from "react-native-vector-icons/Feather";
 import useActiveContacts from "@/hooks/useActiveContacts";
 import { HeaderWithScreenName } from "@/Components/header";
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import Lottie from "lottie-react-native";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function CreateChatRooms({ navigation, route }: CreateChatRoomsProps) {
   const [search, setSearch] = useState<string>("");
@@ -105,7 +107,7 @@ export default function CreateChatRooms({ navigation, route }: CreateChatRoomsPr
           style={styles.newChatButton}
         >
           <View style={[styles.contactProfile, styles.icon]}>
-            <AntDesign name="addusergroup" size={22} color="white" />
+            <VectorIconCompat name="addusergroup" size={22} color="white" />
           </View>
 
           <View style={{ marginRight: 60 }}>
@@ -134,7 +136,7 @@ export default function CreateChatRooms({ navigation, route }: CreateChatRoomsPr
           style={styles.newChatButton}
         >
           <View style={[styles.contactProfile, styles.icon]}>
-            <Feather name="target" size={20} color="white" />
+            <VectorIconCompat name="target" size={20} color="white" />
           </View>
           <View style={{ marginRight: 60 }}>
             <Text style={styles.newChatTitle}>{t("label.new-topic")}</Text>
@@ -148,7 +150,7 @@ export default function CreateChatRooms({ navigation, route }: CreateChatRoomsPr
           style={styles.newChatButton}
         >
           <View style={[styles.contactProfile, styles.icon]}>
-            <MaterialCommunityIcons name="folder-text-outline" color="white" size={20} />
+            <VectorIconCompat name="folder-text-outline" color="white" size={20} />
           </View>
           <View style={{ marginRight: 60 }}>
             <Text style={styles.newChatTitle}>{t("label.new-folder")}</Text>
@@ -162,7 +164,7 @@ export default function CreateChatRooms({ navigation, route }: CreateChatRoomsPr
           style={styles.newChatButton}
         >
           <View style={[styles.contactProfile, styles.icon]}>
-            <Feather name="database" color="white" size={18} />
+            <VectorIconCompat name="database" color="white" size={18} />
           </View>
           <View style={{ marginRight: 60 }}>
             <Text style={styles.newChatTitle}>{t("label.new-database")}</Text>

@@ -33,20 +33,20 @@ function useStartCall() {
       try {
         const { roomId, participants, callType, roomType } = CallSender;
         let channelName = Date.now().toString();
-        let data = {
+        let data: any = {
           type: callType,
           roomType,
           channelName: channelName,
-          origin: MyProfile?._id,
+          origin: MyProfile?._id ?? "",
         };
         if (roomType === "contact" || roomType === "contact_group") {
-          data["participants"] = participants;
+          data.participants = participants;
         } else {
-          data["roomId"] = roomId;
+          data.roomId = roomId;
           if (roomId) {
-            data["participants"] = [];
+            data.participants = [];
           } else {
-            data["participants"] = participants;
+            data.participants = participants;
           }
         }
         console.log("[useStartCall] create call data payload:", JSON.stringify(data));
@@ -77,7 +77,7 @@ function useStartCall() {
             };
           } else {
             console.warn("[useStartCall] callId is missing from response!");
-            ToastMessage(response?.errors?.[0]?.message);
+            ToastMessage(response?.errors?.[0]?.message ?? "");
           }
         } else {
           console.warn("[useStartCall] token missing in createNewCall response! errors:", response?.errors);
@@ -109,7 +109,7 @@ function useStartCall() {
         let agoraRes = await AgoraTokenRequest({
           variables: {
             input: {
-              uid: uid ? parseInt(uid.uid, 10) || 1 : 1,
+              uid: uid ? parseInt(String(uid.uid), 10) || 1 : 1,
               channelName: channelName,
               type: "publisher",
             },

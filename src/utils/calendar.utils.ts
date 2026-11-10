@@ -48,8 +48,8 @@ export function getWeeklyFormattedData(data: IAllCalendarData[], selectedDate: s
       continue;
     for (let i = startDate; i <= endDate; startDate.add(1, "day")) {
       const formattedDate = moment(i).format("YYYY-MM-DD");
-      console.log("frequencyAnalyzer", frequencyAnalyzer(item, i));
-      if (!frequencyAnalyzer(item, i)) continue;
+      console.log("frequencyAnalyzer", frequencyAnalyzer(item, i.format("YYYY-MM-DD")));
+      if (!frequencyAnalyzer(item, i.format("YYYY-MM-DD"))) continue;
       if (uniqueDatesData[formattedDate]) {
         const clonedDateData = [...uniqueDatesData[formattedDate]];
         clonedDateData.push(item);
@@ -99,7 +99,7 @@ export function getDailyFormattedData(data: IAllCalendarData[], selectedDate: st
     } else {
       if (item?.recurrent == "WEEKLY") {
         for (let i = startDate; i <= endDate; startDate.add(item?.daylyParams?.everyWeek, "week")) {
-          for (let day of item?.daylyParams?.dayOfWeeks) {
+          for (let day of item?.daylyParams?.dayOfWeeks ?? []) {
             const index = daysOfWeek.indexOf(day, 0);
             const diff = index - startDate.day();
             const date = diff >= 0 ? moment(i).add(diff, "day") : moment(i).subtract(-diff, "day");
@@ -143,7 +143,7 @@ export function getDailyFormattedData(data: IAllCalendarData[], selectedDate: st
         }
       } else if (item?.recurrent == "MONTHLY") {
         for (let i = startDate; i <= endDate; startDate.add(1, "year")) {
-          for (let month of item?.montlyParams?.months) {
+          for (let month of item?.montlyParams?.months ?? []) {
             const index = months.indexOf(month);
             const startMonthIndex = moment(i).month();
             const diff = index - startMonthIndex;
@@ -165,7 +165,7 @@ export function getDailyFormattedData(data: IAllCalendarData[], selectedDate: st
                 clonedData.push(formattedData);
                 dailyFormattedData[dateFormatted] = clonedData;
               } else {
-                dailyFormattedData[dateFormatted] = formattedData;
+                dailyFormattedData[dateFormatted] = [formattedData];
               }
             } else {
               continue;
@@ -233,7 +233,7 @@ function frequencyAnalyzer(assignment: IAllCalendarData, selectedDate: string) {
         if (moment(selectedDate).isSame(moment(startDate))) return true;
         const weekToCheck = moment(selectedDate).week();
         const startingOfMonthWeek =
-          moment(selectedDate).startOf("month").week() + assignment?.daylyParams?.everyWeek - 1;
+          moment(selectedDate).startOf("month").week() + (assignment?.daylyParams?.everyWeek ?? 1) - 1;
         console.log(moment(selectedDate).day(), startingOfMonthWeek, weekToCheck);
 
         if (startingOfMonthWeek == weekToCheck) {
@@ -245,7 +245,7 @@ function frequencyAnalyzer(assignment: IAllCalendarData, selectedDate: string) {
       return false;
     case "MONTHLY":
       if (majorCondition) {
-        if (assignment.montlyParams?.months.includes(months[moment(selectedDate).month()])) {
+        if ((assignment.montlyParams?.months ?? []).includes(months[moment(selectedDate).month()])) {
           const start = moment(startDate);
           const end = moment(endDate);
           for (let i = start; i <= end; start.add(1, "month")) {

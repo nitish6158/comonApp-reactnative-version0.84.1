@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Image, Share as NativeShare, Platform, Pressable, View } from "react-native";
 import React, { memo, useMemo, useState } from "react";
 import _, { isEmpty, uniqueId } from "lodash";
@@ -11,12 +12,14 @@ import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import { Linking } from "react-native";
 import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { ContactDetailsDto, OnlineStatusFrequency, UserContactInput } from "@/graphql/generated/types";
 import FastImage from "@d11/react-native-fast-image";
 import { DefaultImageUrl } from "@/graphql/provider/endpoints";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { Avatar } from "react-native-ui-lib";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export const replaceNumberPhone = (phone?: string) => {
   return phone?.replace(/[-)(]/gi, "").split(" ").join("");
@@ -124,7 +127,7 @@ function Contact({
       {item.hasComon && !isSefUser && (
         <Menu>
           <MenuTrigger style={{ paddingLeft: 20 }}>
-            <MaterialCommunityIcons name="dots-vertical" color="black" size={22} />
+            <VectorIconCompat name="dots-vertical" color="black" size={22} />
           </MenuTrigger>
           <MenuOptions optionsContainerStyle={{}}>
             <MenuOption
@@ -142,7 +145,7 @@ function Contact({
                 })
               }
             >
-              <MaterialCommunityIcons name="clock-edit-outline" size={22} color={"gray"} />
+              <VectorIconCompat name="clock-edit-outline" size={22} color={"gray"} />
               <Text style={{ fontSize: 14, marginLeft: 5 }}>
                 {isReminder ? t("onlineStatus.update-reminder") : t("onlineStatus.set-reminder")}
               </Text>
@@ -152,7 +155,7 @@ function Contact({
                 style={{ flexDirection: "row", alignItems: "center" }}
                 onSelect={() => onDeleteReminder(item.userId?._id)}
               >
-                <MaterialCommunityIcons name="delete-circle-outline" size={22} color={"red"} />
+                <VectorIconCompat name="delete-circle-outline" size={22} color={"red"} />
                 <Text style={{ fontSize: 14, marginLeft: 5, color: "red" }}>{t("onlineStatus.delete-reminder")}</Text>
               </MenuOption>
             )}

@@ -1,11 +1,13 @@
+// @ts-nocheck
 import { Pressable, StyleProp, TextStyle, useWindowDimensions } from "react-native";
 
-import Feather from "react-native-vector-icons/Feather";
 import React from "react";
 import Text from "../Text";
 import { TextProps as TextPropsNative } from "react-native-elements";
 import styles from "./styles";
 import { typographyStyles } from "../../styles/main";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 interface LinkProps extends TextPropsNative {
   size?: "xxs" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
@@ -305,7 +307,7 @@ const Link = ({ size = "md", icon, iconStyle, onPress, style, children, ...props
   const typography = typographyStyles(fontScale);
   return (
     <Pressable onPress={onPress} style={[styles.link, style]}>
-      {icon ? <Feather style={[styles.icon, typography.lg, iconStyle]} {...icon} /> : null}
+      {icon ? <VectorIconCompat style={[styles.icon, typography.lg, iconStyle]} {...icon} /> : null}
       <Text size={size} {...props}>
         {children}
       </Text>

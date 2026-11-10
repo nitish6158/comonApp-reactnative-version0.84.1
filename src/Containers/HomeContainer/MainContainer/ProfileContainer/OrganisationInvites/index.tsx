@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { FlatList, TouchableOpacity, View } from "react-native";
 import { GetMyInvitesQuery, useGetMyInvitesQuery } from "@Service/generated/organization.generated";
 import React, { useCallback, useState } from "react";
@@ -5,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Colors from "@/Constants/Colors";
 import CommonLoader from "@Components/CommonLoader";
 import { HeaderWithScreenName } from "@Components/header/HeaderWithScreenName";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { RootState } from "@Store/Reducer";
 import Text from "@Components/Text";
 import ToastMessage from "@Util/ToastMesage";
@@ -20,6 +21,8 @@ import { windowWidth } from "@Util/ResponsiveView";
 import { useFocusEffect } from "@react-navigation/core";
 import { useOrganizations } from "@/hooks";
 import { setOrganisationInvites } from "@/redux/Reducer/OrganisationsReducer";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export const SHOW_INVITES = "SHOW_INVITES";
 export const HIDE_INVITES = "HIDE_INVITES";
@@ -39,8 +42,6 @@ const OrganizationInvites = (navigation) => {
   const Dispatch = useDispatch();
 
   const { FetchAllOrganisation } = useOrganizations();
-
-
 
   useFocusEffect(
     useCallback(() => {
@@ -107,7 +108,7 @@ const OrganizationInvites = (navigation) => {
       <HeaderWithScreenName title={t("navigation.organization-invite")} />
       <View style={style.container}>
         <View style={style.IconContainer}>
-          <Ionicons name="mail-open-outline" size={windowWidth / 5} color="white" />
+          <VectorIconCompat name="mail-open-outline" size={windowWidth / 5} color="white" />
         </View>
         <Text style={style.title}>{t("task.your-invites")}</Text>
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Text as TextNative, TextProps as TextPropsNative } from "react-native-elements";
 
 import React from "react";

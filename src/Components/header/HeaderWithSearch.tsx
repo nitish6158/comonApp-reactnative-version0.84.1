@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { KeyboardTypeOptions, Pressable, Text, View } from "react-native";
 import { TextField } from "react-native-ui-lib";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Octicons from "react-native-vector-icons/Octicons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Feather from 'react-native-vector-icons/Feather';
+
+import { AppIcon } from "@/Components/icons";
 
 type headerWithSearchProps = {
   onBackPressed: () => void;
@@ -41,7 +39,7 @@ export default function HeaderWithSearch({
       >
         <View style={{flexDirection:'row',alignItems:'center'}}>
           <Pressable onPress={disableSearch} style={{ paddingRight: 10 }}>
-            <Feather name="arrow-left" size={25} color="black" />
+            <AppIcon name="back" size={25} color="black" />
           </Pressable>
 
           <TextField
@@ -58,8 +56,8 @@ export default function HeaderWithSearch({
             style={{ paddingHorizontal: 10 }}
             onPress={keyboardType == "default" ? enableDialPad : enableDefaultPad}
           >
-            <MaterialCommunityIcons
-              name={keyboardType == "default" ? "dialpad" : "keyboard-outline"}
+            <AppIcon
+              name={keyboardType == "default" ? "dialpad" : "keyboard"}
               size={22}
               color="black"
             />
@@ -81,7 +79,7 @@ export default function HeaderWithSearch({
     >
       <View style={{ flexDirection: "row", alignItems: "center", flex: 1, minWidth: 0, marginRight: 8 }}>
         <Pressable onPress={onBackPressed} style={{ paddingRight: 10 }}>
-          <AntDesign name="arrowleft" size={25} color="black" />
+          <AppIcon name="back" size={25} color="black" />
         </Pressable>
         <Text style={{ fontSize: 16, flexShrink: 1 }} numberOfLines={1} ellipsizeMode="tail">
           {title}
@@ -93,7 +91,7 @@ export default function HeaderWithSearch({
           setIsSearchEnabled(true);
         }}
       >
-        <Octicons name="search" size={22} color="black" />
+        <AppIcon name="search" size={22} color="black" />
       </Pressable>
     </View>
   );

@@ -15,8 +15,7 @@ import { Colors } from "@/Constants";
 import CustomTextInput from "@/Components/TextInput/CustomTextInput";
 import { taskManagerStyles } from "../styles/TaskManagerStyles";
 
-const MaterialCommunityIcons =
-  require("react-native-vector-icons/MaterialCommunityIcons").default;
+import { VectorIconCompat } from "@/Components/icons";
 
 type EndNodeFormValues = {
   title: string;
@@ -83,7 +82,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
           <ScrollView>
             <View>
               <View style={taskManagerStyles.publishModalHeader}>
-                <MaterialCommunityIcons
+                <VectorIconCompat
                   name="flag-checkered"
                   size={32}
                   color={Colors.light.PrimaryColor}
@@ -102,7 +101,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
 
                 <View style={taskManagerStyles.publishModalStats}>
                   <View style={taskManagerStyles.publishModalStat}>
-                    <MaterialCommunityIcons
+                    <VectorIconCompat
                       name="check-circle"
                       size={20}
                       color={Colors.light.alertSuccess}
@@ -175,7 +174,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
                     <ActivityIndicator color={Colors.light.White} size={20} />
                   ) : (
                     <>
-                      <MaterialCommunityIcons
+                      <VectorIconCompat
                         name="rocket-launch"
                         size={18}
                         color={Colors.light.White}

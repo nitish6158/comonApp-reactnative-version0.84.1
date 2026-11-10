@@ -11,12 +11,13 @@ import { useTaskReport } from "@Hooks/useTaskReport";
 import { Assignment } from "@/graphql/generated/types";
 import ItemSeparator from "@/Components/FlatList/ItemSeparator";
 import { useFocusEffect } from "@react-navigation/core";
-const MaterialCommunityIcons =
-  require("react-native-vector-icons/MaterialCommunityIcons").default;
+
 import { TouchableOpacity, StyleSheet } from "react-native";
 import { navigate } from "@/navigation/utility";
 import { useAtom } from "jotai";
 import { currentUserIdAtom } from "@/Atoms";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function AssignmentsHomeScreen() {
   const { currentOrganization, assignments } = useSelector(
@@ -86,7 +87,7 @@ export default function AssignmentsHomeScreen() {
             // navigate("TaskList", {})
           }}
         >
-          <MaterialCommunityIcons
+          <VectorIconCompat
             name="plus"
             size={40}
             color={Colors.light.PrimaryColor}

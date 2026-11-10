@@ -8,10 +8,10 @@ import { reduxMMKVStorage } from "./backup/mmkv";
 
 const logger = createLogger({
   duration:true,
-  predicate: (getState, action) => {
-    console.log("REDUX-TOOLKIT:- ",action.type)
-    return false
-  }
+  predicate: (_getState: unknown, action: { type?: string }) => {
+    console.log("REDUX-TOOLKIT:- ", action.type);
+    return false;
+  },
 });
 
 

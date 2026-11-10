@@ -23,12 +23,13 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import Colors from "@/Constants/Colors";
 // import RealmContext from "../../../../../../schemas";
 import { singleRoom } from "@Atoms/singleRoom";
 import { useTranslation } from "react-i18next";
 import { socketManager } from "@/utils/socket/SocketManager";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 // const { useQuery, useRealm } = RealmContext;
 
@@ -86,7 +87,7 @@ export default function ChatSearchTopBar() {
   return (
     <View style={styles.chatsearchheader}>
       <Pressable onPress={closeSearchBar} style={{ marginLeft: 5 }}>
-        <AntDesign name="left" size={23} />
+        <VectorIconCompat name="left" size={23} />
       </Pressable>
 
       <TextInput

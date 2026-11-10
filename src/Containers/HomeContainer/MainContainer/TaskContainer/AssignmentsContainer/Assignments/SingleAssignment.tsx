@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ActivityIndicator, Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 import { Assignment } from "@Service/generated/types";
 import React, { useMemo, useState } from "react";

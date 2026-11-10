@@ -44,7 +44,7 @@ export default function MyReportsScreen() {
     React.useCallback(() => {
       refetch().then((response) => {
         if (response?.data?.myReports?.data?.length) {
-          setMyReports(response?.data?.myReports?.data);
+          setMyReports((response?.data?.myReports?.data ?? []) as any);
         } else {
           setMyReports([]);
         }
@@ -71,7 +71,7 @@ export default function MyReportsScreen() {
               .then((response) => {
                 console.log("After refetcg", response?.data?.myReports?.data?.length);
                 if (response?.data?.myReports?.data?.length) {
-                  setMyReports(response?.data?.myReports?.data);
+                  setMyReports((response?.data?.myReports?.data ?? []) as any);
                 } else {
                   setMyReports([]);
                 }

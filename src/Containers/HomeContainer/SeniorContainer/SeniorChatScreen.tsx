@@ -16,8 +16,10 @@ import ToastMessage from "@/utils/ToastMesage";
 import { checkCallPermissions } from "@/utils/permission";
 import ModalTextInput from "./components/ModalTextInput";
 import { ChatRoom } from "@/models/chatrooms";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import Modal from "react-native-modal";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function SeniorChatScreen({ navigation }: SeniorChatScreenProps) {
   const { MyProfile } = useAppSelector((state) => state.Chat);
@@ -26,7 +28,7 @@ export default function SeniorChatScreen({ navigation }: SeniorChatScreenProps) 
   const [sendChat] = useSendChatMutation();
   const [callRequest, setCallRequest] = useAtom(callAtom);
   const internet = useAtomValue(InternetAtom);
-  const [selectedRoom, setSelectedRoom] = useState<ChatRoom | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<any>(null);
   const [selectedCall, setSelectedCall] = useState<RoomData | null>(null);
 
   const seniorChatRoom = useMemo(() => {
@@ -95,7 +97,7 @@ export default function SeniorChatScreen({ navigation }: SeniorChatScreenProps) 
         onClose={() => {
           setSelectedRoom(null);
         }}
-        room={selectedRoom}
+        room={selectedRoom as any}
       />
       <Modal
         isVisible={selectedCall !== null}
@@ -116,10 +118,10 @@ export default function SeniorChatScreen({ navigation }: SeniorChatScreenProps) 
                     if (callRequest == null) {
                       setCallRequest({
                         callType: "audio",
-                        roomType: selectedCall?.type,
-                        roomId: selectedCall?._id,
-                        callBackground: selectedCall?.display.UserImage,
-                        roomName: selectedCall?.display.UserName,
+                        roomType: selectedCall?.type ?? "",
+                        roomId: selectedCall?._id ?? "",
+                        callBackground: selectedCall?.display.UserImage ?? "",
+                        roomName: selectedCall?.display.UserName ?? "",
                         participants: [],
                         isReceiver: false,
                       });
@@ -149,10 +151,10 @@ export default function SeniorChatScreen({ navigation }: SeniorChatScreenProps) 
                     if (callRequest == null) {
                       setCallRequest({
                         callType: "video",
-                        roomType: selectedCall?.type,
-                        roomId: selectedCall?._id,
-                        callBackground: selectedCall?.display.UserImage,
-                        roomName: selectedCall?.display.UserName,
+                        roomType: selectedCall?.type ?? "",
+                        roomId: selectedCall?._id ?? "",
+                        callBackground: selectedCall?.display.UserImage ?? "",
+                        roomName: selectedCall?.display.UserName ?? "",
                         participants: [],
                         isReceiver: false,
                       });
@@ -191,7 +193,7 @@ export default function SeniorChatScreen({ navigation }: SeniorChatScreenProps) 
       },
       {
         text: t("seniorMode.send-text"),
-        onPress: (text) => {
+        onPress: (text: string | undefined) => {
           if (!internet) {
             ToastMessage(t("others.No internet connection, try again"));
             return;

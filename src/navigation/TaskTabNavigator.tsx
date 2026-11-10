@@ -26,6 +26,7 @@ const TaskTabNavigator = ({ navigation }: any) => {
           input: {
             skip: 0,
             limit: 50,
+            masterOrg: "",
           },
         },
         fetchPolicy: "no-cache",
@@ -33,7 +34,7 @@ const TaskTabNavigator = ({ navigation }: any) => {
         .then((res) => {
           // console.log("res.data?.myReports?.data?.length", res.data?.myReports?.data?.length);
           if (res.data?.myReports?.data?.length) {
-            setMyReports(res.data.myReports.data);
+            setMyReports(res.data.myReports.data as any);
           } else {
             setMyReports([]);
           }

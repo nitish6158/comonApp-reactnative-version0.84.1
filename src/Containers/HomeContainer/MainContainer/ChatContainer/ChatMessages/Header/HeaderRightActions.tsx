@@ -14,7 +14,6 @@ import { Keyboard, Pressable, StyleSheet, Text, TouchableOpacity, View } from "r
 import React, { useCallback, useEffect, useState } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import AudioVideoContainer from "./AudioVideoContainer";
 import Colors from "@/Constants/Colors";
 import JoinContainer from "./JoinContainer";
@@ -25,6 +24,8 @@ import { useTranslation } from "react-i18next";
 import { socket } from "@/redux/Reducer/SocketSlice";
 import { useAppSelector } from "@/redux/Store";
 import { socketConnect } from "@/utils/socket/SocketConnection";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type props = {
   isCalling: boolean;
@@ -74,7 +75,7 @@ export default function HeaderRightActions({ isCalling, isSetting }: props) {
       >
         <View style={{ flexDirection: "row", alignItems: "center", marginRight: 10 }}>
           {MyProfile?.mode == "CLASSIC" && (
-            <AntDesign
+            <VectorIconCompat
               name="search1"
               size={20}
               color="black"

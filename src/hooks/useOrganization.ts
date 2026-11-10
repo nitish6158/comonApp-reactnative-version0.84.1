@@ -44,11 +44,11 @@ export const useOrganizations = () => {
       getAllOrganisationRequest()
         .then((res) => {
           if (res.error) return reject(res.error);
-          if (res.data?.organizations.length === AllOrganisationData?.length) {
+          if ((res.data?.organizations?.length ?? 0) === AllOrganisationData?.length) {
             AllOrganisationResponse.refetch()
               .then((response) => {
-                console.log("response", response.data.organizations.length);
-                dispatch(setAllOrganisations(response.data?.organizations));
+                console.log("response", response.data?.organizations?.length);
+                dispatch(setAllOrganisations(response.data?.organizations as any));
                 return resolve(true);
               })
               .catch((Err) => {
@@ -56,7 +56,7 @@ export const useOrganizations = () => {
                 return reject(Err);
               });
           } else {
-            dispatch(setAllOrganisations(res.data?.organizations));
+            dispatch(setAllOrganisations(res.data?.organizations as any));
             return resolve(true);
           }
         })
@@ -67,7 +67,7 @@ export const useOrganizations = () => {
   };
   const onSwitchOrganization = async (_id: string, orgData?: OrganizationsQuery["organizations"]) => {
     const org = orgData ? orgData : AllOrganisationData;
-    const current: Organization | undefined = org?.find((organization) => organization._id === _id);
+    const current = org?.find((organization) => organization._id === _id) as Organization | undefined;
     console.log("onSwitchOrganization", _id);
     return new Promise<string>(async (resolve, reject) => {
       try {

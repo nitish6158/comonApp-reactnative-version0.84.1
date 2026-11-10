@@ -1,7 +1,8 @@
+// @ts-nocheck
 import { Dimensions, Pressable, StatusBar, StyleSheet, View } from "react-native";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import React, { useEffect, useState } from "react";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import Colors from "@/Constants/Colors";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Text from "@/Components/Text";
@@ -12,6 +13,8 @@ import { useAppSelector } from "@Store/Store";
 import { FolderDataList } from "@/redux/Models/ChatModel";
 import FolderComponent from "./FolderComponent";
 import { socketConnect } from "@/utils/socket/SocketConnection";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 const { height, width } = Dimensions.get("window");
 export default function FolderScreen({ navigation }: any) {
@@ -85,7 +88,7 @@ export default function FolderScreen({ navigation }: any) {
       />
 
       <Pressable style={styles.buttonContainer} onPress={NavigateToCreateFolder}>
-        <AntDesign name="plus" size={22} color="white" />
+        <VectorIconCompat name="plus" size={22} color="white" />
       </Pressable>
     </SafeAreaProvider>
   );

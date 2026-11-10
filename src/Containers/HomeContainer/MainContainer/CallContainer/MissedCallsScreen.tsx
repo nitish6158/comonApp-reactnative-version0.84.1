@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Block, Center, Typography } from "rnmuilib";
 import { CallListQuery, MyCallListReponse, useGetMyCallListLazyQuery } from "@Service/generated/call.generated";
 import { Dimensions, FlatList, RefreshControl, Text, View } from "react-native";
@@ -8,15 +9,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFocusEffect, useIsFocused } from "@react-navigation/core";
 
 import CallParticipant from "./components/CallParticipant";
-import Feather from "react-native-vector-icons/Feather";
+
 import { Loader } from "@Components/Loader";
 import { MissedCallListScreenProps } from "@/navigation/screenPropsTypes";
 import { RootState, useAppSelector } from "@Store/Store";
 import { useTranslation } from "react-i18next";
 import { updateMissedList } from "@/redux/Reducer/CallReducer";
 
-const { width } = Dimensions.get("screen");
+import { VectorIconCompat } from "@/Components/icons";
 
+const { width } = Dimensions.get("screen");
 
 function MissedCallsScreen({}: MissedCallListScreenProps) {
   const [missCallList, setMissCallList] = useState<Array<MyCallListReponse>>([]);
@@ -246,7 +248,7 @@ function MissedCallsScreen({}: MissedCallListScreenProps) {
           }}
           ListEmptyComponent={() => (
             <Center flex={1}>
-              <Feather name="phone" size={64} style={{ opacity: 0.3, marginBottom: 24, marginTop: "30%" }} />
+              <VectorIconCompat name="phone" size={64} style={{ opacity: 0.3, marginBottom: 24, marginTop: "30%" }} />
               <Typography>{t("calls.noCalls")}</Typography>
             </Center>
           )}

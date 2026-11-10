@@ -16,7 +16,9 @@ type props = {
 };
 
 export default function RealmErrorScreen({ message }: props) {
-  const versionData = useGetVersionDetailsQuery({ variables: { input: { type: Platform.OS.toUpperCase() } } });
+  const versionData = useGetVersionDetailsQuery({
+    variables: { input: { type: Platform.OS.toUpperCase() as any } },
+  });
   const { t } = useTranslation();
 
   return (

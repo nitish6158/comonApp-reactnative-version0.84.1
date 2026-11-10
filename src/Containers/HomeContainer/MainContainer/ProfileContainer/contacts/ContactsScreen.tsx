@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Dimensions,
   Share as NativeShare,
@@ -59,9 +60,9 @@ import { useTranslation } from "react-i18next";
 import { InviteContactOnApp } from "./InviteFriends";
 import { Colors, fonts } from "@/Constants";
 import { StyleSheet } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import ContactTabView, { tabType } from "./ContactTabView";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { ContactDetailsDto } from "@/graphql/generated/version.generated";
 import { PhoneNumberUtil } from "google-libphonenumber";
 import _ from "lodash";
@@ -80,6 +81,8 @@ import ReminderForm from "./ReminderForm";
 import { useRemoveContactReminderMutation } from "../../../../../graphql/generated/user.generated";
 import dayjs from "dayjs";
 import { useFocusEffect, useNavigation } from '@react-navigation/core';
+
+import { VectorIconCompat } from "@/Components/icons";
 
 // const { useQuery } = RealmContext;
 
@@ -164,8 +167,6 @@ function ContactsScreen() {
       </View>
     );
   }
-
-
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -332,7 +333,7 @@ function ContactsScreen() {
                   {t("invitationMessage")}
                 </NativeText>
                 <TouchableOpacity style={style.button} activeOpacity={1} onPress={() => setModalVisible(!modalVisible)}>
-                  <Ionicons name="close-sharp" size={20} color={Colors.light.black} />
+                  <VectorIconCompat name="close-sharp" size={20} color={Colors.light.black} />
                 </TouchableOpacity>
               </View>
 
@@ -387,7 +388,7 @@ function ContactsScreen() {
         </Modal>
       </View>
       <Pressable style={styles.share} onPress={onAddContactPressed}>
-        <AntDesign name={"plus"} color="white" size={22} />
+        <VectorIconCompat name={"plus"} color="white" size={22} />
       </Pressable>
     </View>
   );

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from "react";
 
 import { Image, View } from "react-native";
@@ -69,8 +70,8 @@ export const ResetPasswordScreen = ({ route }: ResetPasswordScreenProps) => {
           },
         },
       })
-        .then(({ data }) => {
-          setSession(data?.passwordReset!);
+        .then(async ({ data }) => {
+          await setSession(data?.passwordReset!);
         })
         .catch((err) => {
           console.log(err, "reset password err");

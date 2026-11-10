@@ -2,10 +2,11 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { Text, View } from "react-native";
 
 import Colors from "@/Constants/Colors";
-import Entypo from "react-native-vector-icons/Entypo";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import React from "react";
 import fonts from "@/Constants/fonts";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 interface IPickAndDropButton {
   buttonName: "Decline" | "Answer";
@@ -25,9 +26,9 @@ export default function PickAndDropCall(props: IPickAndDropButton) {
         onPress={() => buttonAction(buttonName)}
       >
         {buttonName === "Decline" ? (
-          <Entypo name="cross" size={50} color={Colors.light.White} />
+          <VectorIconCompat name="cross" size={50} color={Colors.light.White} />
         ) : (
-          <FontAwesome name="phone" size={40} color={Colors.light.White} />
+          <VectorIconCompat name="phone" size={40} color={Colors.light.White} />
         )}
       </TouchableOpacity>
       <Text style={styles.textStyle}>{buttonName}</Text>

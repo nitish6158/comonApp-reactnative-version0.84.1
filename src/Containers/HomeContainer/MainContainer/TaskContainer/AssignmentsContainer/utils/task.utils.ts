@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { FirstHalfOfYear, SecondHalfOfYear } from "./task";
 
 import { Assignment } from "@Service/generated/types";

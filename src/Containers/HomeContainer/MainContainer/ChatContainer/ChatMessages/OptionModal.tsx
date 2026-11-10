@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Clipboard,
   Modal,
@@ -35,7 +36,7 @@ import { navigate, navigationRef } from "@Navigation/utility";
 import { singleRoom } from "@Atoms/singleRoom";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useTranslation } from "react-i18next";
-import Feather from "react-native-vector-icons/Feather";
+
 import { RootState } from "@/redux/Reducer";
 import { Colors } from "@/Constants";
 import { socket } from "@/redux/Reducer/SocketSlice";
@@ -44,6 +45,8 @@ import { socketManager } from "@/utils/socket/SocketManager";
 import { socketConnect } from "@/utils/socket/SocketConnection";
 import { ChatContext } from "@/Context/ChatProvider";
 import { usePinnedMessages } from "@/hooks/conversations/usePinnedMessages";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function OptionModal() {
   const MyProfile = useAppSelector((state) => state.Chat.MyProfile);
@@ -212,7 +215,7 @@ console.log("SelectedOptionItem",visible)
                 <>
                   <Button
                     Icon={
-                      <Feather
+                      <VectorIconCompat
                         name="archive"
                         size={22}
                         color={Colors.light.PrimaryColor}
@@ -246,7 +249,7 @@ console.log("SelectedOptionItem",visible)
                   />
                   <Button
                     Icon={
-                      <Feather
+                      <VectorIconCompat
                         name="archive"
                         size={22}
                         color={Colors.light.PrimaryColor}

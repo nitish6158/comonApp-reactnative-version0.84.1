@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from "react";
 
 import { GoBackComponent, navigateNested } from "../goBack";

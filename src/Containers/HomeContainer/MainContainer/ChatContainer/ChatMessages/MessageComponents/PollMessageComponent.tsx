@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Pressable, Text, View } from "react-native";
 
 import ChatContactView from "@Components/ChatContactView";

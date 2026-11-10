@@ -128,14 +128,14 @@ export default function ModalCaptionInput({
                         isForwarded: false,
                         message: conversation?.message ?? "",
                         fontStyle: "",
-                        thumbnail: conversation?.thumbnail ?? "",
-                        duration: conversation?.duration ?? 0,
+                        thumbnail: (conversation as any)?.thumbnail ?? "",
+                        duration: (conversation as any)?.duration ?? 0,
                       },
                       reply_msg: null,
                     };
 
                     console.log("conversation====>", payload);
-                    socketManager.conversation.sendChat(payload);
+                    socketManager.conversation.sendChat(payload as any);
 
                     onClose();
                   }

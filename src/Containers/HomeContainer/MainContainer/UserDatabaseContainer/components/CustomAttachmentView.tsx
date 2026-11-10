@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Chip } from "react-native-ui-lib";
 import FastImage from "@d11/react-native-fast-image";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import FileViewer from "react-native-file-viewer";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
@@ -17,6 +17,8 @@ import { useAppSelector } from "@/redux/Store";
 import { uploadResultType } from "../../ReminderContainer/CreateReminderScreen/components/UploadAttachmentView";
 import docIcon from "@Assets/images/docs";
 import { DefaultImageUrl } from "@/graphql/provider/endpoints";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type ViewAttachmentProps = {
   attachment: uploadResultType;
@@ -80,7 +82,7 @@ export default function CustomAttachmentView({ attachment }: ViewAttachmentProps
     return (
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons name="attach" size={22} color="black" />
+          <VectorIconCompat name="attach" size={22} color="black" />
           <Text style={{ marginLeft: 5 }}>{getFileName(displayName ?? "")}</Text>
         </View>
         <DownloadAttachmentView url={attachment.url} />

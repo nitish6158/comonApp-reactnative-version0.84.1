@@ -12,7 +12,6 @@ import NetInfo from "@react-native-community/netinfo";
 import {
   ComonSyncStatus,
   GlobalContainer,
-  HomeContainer,
 } from "@/Containers/HomeContainer";
 import Lottie from "lottie-react-native";
 
@@ -42,7 +41,7 @@ import { MainNavigatorParamList, SeniorNavigatorParamList } from "./screenPropsT
 import { LanguageProvider } from "@/Context";
 import ToastMessage from "@/utils/ToastMesage";
 import { useTranslation } from "react-i18next";
-import RBSheet, { RBSheetProps } from "react-native-raw-bottom-sheet";
+import RBSheet from "react-native-raw-bottom-sheet";
 import OtaModal from "react-native-ota-modal";
 import RNExitApp, { exitApp } from "react-native-exit-app";
 import { versionmanagement } from "@/schemas/schema";
@@ -80,18 +79,6 @@ global.roomId = null;
 const openRealmBehaviorConfig = {
   type: "openImmediately",
 };
-
-import {
-  callSchema,
-  deviceSchema,
-  memberSchema,
-  assignmentSchema,
-  scenarioSchema,
-  reminderSchema,
-  versionmanagementSchema,
-  organizationSchema,
-  userSchema,
-} from "@/schemas/schema";
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -139,7 +126,8 @@ export default function Application() {
       return;
     }
 
-    RNVoipPushKit.requestPermissions();
+    // Typings mark this as static; runtime module exposes it on the instance.
+    RNVoipPushKit.requestPermissions({ alert: true, badge: true, sound: true });
     RNVoipPushKit.getPushKitDeviceToken(async (res) => {
       if (res.platform === "ios") {
         const deviceToken = await AsyncStorage.getItem(
@@ -212,7 +200,6 @@ export default function Application() {
 
         <ChatProvider roomId={global.roomId || ""}>
           <LanguageProvider>
-
             <View style={{ flex: 1 }}>
               <GlobalContainer />
 
@@ -371,7 +358,7 @@ function CheckAppVersion() {
   const { t } = useTranslation();
 
   const [versionText, setVersionText] = useState<string>("");
-  const RBSheetRef = useRef<RBSheetProps>(null);
+  const RBSheetRef = useRef<any>(null);
   const dispatch = useDispatch();
   const [logoutRequest, { }] = useLogoutLazyQuery();
   // const user = useUser();
@@ -404,17 +391,19 @@ function CheckAppVersion() {
     <View>
       <RBSheet
         height={350}
-        closeOnDragDown={false}
-        dragFromTopOnly={false}
-        closeOnPressMask={false}
-        closeOnPressBack={false}
+        {...({
+          closeOnDragDown: false,
+          dragFromTopOnly: false,
+          closeOnPressMask: false,
+          closeOnPressBack: false,
+        } as object)}
         customStyles={{
           container: {
             borderTopRightRadius: 30,
             borderTopLeftRadius: 30,
           },
         }}
-        ref={RBSheetRef}
+        ref={RBSheetRef as any}
       >
         <OtaModal
           title="New comon app version available"
@@ -522,7 +511,6 @@ function SessionInvalidationGuard() {
     loggedOutRef.current = true;
 
     console.log("Force logout:", reason);
-    setTokenLogin(null);
 
     const { mode } = await getSession();
     const id = storage.getString(keys.userId);
@@ -537,6 +525,7 @@ function SessionInvalidationGuard() {
     await AsyncStorage.removeItem("roomDataCache");
     await AsyncStorage.removeItem("MyProfile");
     await removeSession();
+    await setTokenLogin(null);
 
     dispatch(resetOrganisationState());
     dispatch(resetContactState());

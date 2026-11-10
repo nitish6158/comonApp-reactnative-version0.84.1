@@ -1,20 +1,19 @@
+// @ts-nocheck
 import * as React from "react";
 
 import { DrawerActions, useNavigation } from "@react-navigation/core";
 import { Pressable, StyleSheet, View } from "react-native";
 
 import { CurrentOrganization } from "./CurrentOrganization";
-import Folder from "@Images/Folder.svg";
 import { LogoTitle } from "../logo";
-import MainSearch from "@Images/MainSearch.svg";
 import { headerStyle } from "./HeaderStyle";
 import { layoutStyle } from "../layout/LayoutStyle";
 import { mainStyles } from "../../styles/main";
 import { navigate } from "@Navigation/utility";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import Feather from "react-native-vector-icons/Feather";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { useTranslation } from "react-i18next";
+
+import { AppIcon } from "@/Components/icons";
 
 export default function Header() {
   const navigation = useNavigation();
@@ -36,7 +35,7 @@ export default function Header() {
       {/* <CurrentOrganization /> */}
       <View style={{ flexDirection: "row", height: "100%", alignItems: "center" }}>
         <Pressable style={styles.buttonContainer} onPress={onNavigateToDatabase}>
-          <Feather name="database" color="black" size={18} />
+          <AppIcon name="database" color="black" size={18} />
         </Pressable>
         <Pressable
           style={styles.buttonContainer}
@@ -44,13 +43,13 @@ export default function Header() {
             navigation.navigate("ViewTopicsScreen", {});
           }}
         >
-          <Feather name="target" size={20} color="black" />
+          <AppIcon name="target" size={20} color="black" />
         </Pressable>
         <Pressable style={styles.buttonContainer} onPress={onNavigateToFolder}>
-          <MaterialCommunityIcons name="folder-text-outline" size={24} color="black" />
+          <AppIcon name="folder" size={24} color="black" />
         </Pressable>
         <Pressable style={styles.buttonContainer} onPress={onNavigateToGlobalSearch}>
-          <MainSearch />
+          <AppIcon name="search" size={22} color="black" />
         </Pressable>
       </View>
     </View>

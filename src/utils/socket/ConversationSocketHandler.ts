@@ -14,8 +14,8 @@ import { keys } from "@/redux/backup/keys";
 type ConversationCallback<T = any> = SocketCallback<T>;
 
 type chatdata = {
-    roomId: string;
-    type: string;
+    roomId?: string;
+    type?: string;
     message?: string;
     fileURL?: string;
     isForwarded?: boolean;
@@ -25,9 +25,19 @@ type chatdata = {
     sender?: string;
     created_at?: number;
     updated_at?: number;
+    reply_msg?: any;
     data?: {
-        sender?: string;
+        roomId?: string;
         type?: string;
+        sender?: string;
+        fileURL?: string;
+        message?: string;
+        fontStyle?: string;
+        thumbnail?: string;
+        duration?: number;
+        isForwarded?: boolean;
+        id_local?: string;
+        [key: string]: any;
     };
 };
 
@@ -299,7 +309,7 @@ export class ConversationSocketHandler extends BaseSocketHandler {
                     // Keep a local retry copy, then try to send immediately if the socket can reconnect.
                     this.enqueueOutbox({
                         id_local: idLocal,
-                        roomId: payload?.data?.roomId,
+                        roomId: (payload as any)?.data?.roomId,
                         created_at: now,
                         payload,
                     });
@@ -719,10 +729,7 @@ export class ConversationSocketHandler extends BaseSocketHandler {
     }
 
     public onNewMessage(
-        callback: ConversationCallback<{
-            roomId: string;
-            messageId: string;
-        }>
+        callback: ConversationCallback<any>
     ) {
         const oneTimeCallback = (data: any) => {
             callback(data);
@@ -851,20 +858,21 @@ export class ConversationSocketHandler extends BaseSocketHandler {
                 };
 
                 if (!isSelf || newMessage?.refId) {
-                    await this.sendChat(payload);
+                    await this.sendChat(payload as any);
                     return;
                 }
 
                 if (isSelf && !newMessage?.id_local) {
-                    await this.sendChat(payload);
+                    await this.sendChat(payload as any);
                     return;
                 }
 
                 if (isSelf) {
                     this.socket.emit("setChatDelivered", {
                         roomId: newMessage?.roomId,
+                        messageId: newMessage?._id,
                         cid: newMessage?._id,
-                    });
+                    } as any);
 
                     await this.updateMessage(newMessage?.id_local, {
                         isSent: true,

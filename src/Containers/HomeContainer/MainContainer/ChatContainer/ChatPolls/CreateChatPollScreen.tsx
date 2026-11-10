@@ -14,9 +14,9 @@ import { uuidv4 } from "react-native-compressor";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { windowHeight, windowWidth } from "@/utils/ResponsiveView";
 import { Checkbox, TextField } from "react-native-ui-lib";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { Colors } from "@/Constants";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import ToastMessage from "@/utils/ToastMesage";
 import { useAtomValue } from "jotai";
 import { singleRoom } from "@/Atoms";
@@ -25,6 +25,8 @@ import { whoosh } from "@/utils/helpers/SendChatHelper";
 import { useSendChatMutation } from "@/graphql/generated/room.generated";
 import { useTranslation } from "react-i18next";
 import { socketManager } from "@/utils/socket/SocketManager";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type option = {
   _id: string;
@@ -129,7 +131,7 @@ export default function CreateChatPollScreen({
                                 field.onChange(newValue);
                               }}
                             >
-                              <AntDesign
+                              <VectorIconCompat
                                 name="closecircle"
                                 size={22}
                                 color={Colors.light.PrimaryColor}
@@ -216,7 +218,7 @@ export default function CreateChatPollScreen({
                                         field.onChange(newValue);
                                       }}
                                     >
-                                      <AntDesign
+                                      <VectorIconCompat
                                         name="closecircle"
                                         size={22}
                                         color={Colors.light.PrimaryColor}
@@ -323,7 +325,7 @@ export default function CreateChatPollScreen({
           {sentChatResponse.loading ? (
             <ActivityIndicator />
           ) : (
-            <Ionicons name={"send"} size={22} color="white" />
+            <VectorIconCompat name={"send"} size={22} color="white" />
           )}
         </Pressable>
       </View>

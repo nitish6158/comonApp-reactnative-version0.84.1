@@ -6,13 +6,15 @@ import { AttachmentType, Record } from "@/graphql/generated/types";
 import { customFieldType } from "./CreateRecordScreen";
 import dayjs from "dayjs";
 import { Colors } from "@/Constants";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { capitalize } from "lodash";
 import HeaderWithAction from "@Components/header/HeaderWithAction";
 import { useFocusEffect } from "@react-navigation/core";
 import { useTranslation } from "react-i18next";
 
 import CustomAttachmentView from "./components/CustomAttachmentView";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function ViewRecordScreen({ navigation, route }: ViewRecordScreenProps) {
   const [getRecordRequest, getRecordResponse] = useGetRecordByIdMutation();
@@ -30,7 +32,10 @@ export default function ViewRecordScreen({ navigation, route }: ViewRecordScreen
       }).then((res) => {
         if (res.data?.getRecordById) {
           // console.log(res.data?.getRecordById)
-          setUserRecord({ ...res.data?.getRecordById, customFields: JSON.parse(res.data?.getRecordById.customFields) });
+          setUserRecord({
+            ...res.data?.getRecordById,
+            customFields: JSON.parse(res.data?.getRecordById.customFields ?? "[]"),
+          } as any);
         }
       });
     }, [])
@@ -57,7 +62,7 @@ export default function ViewRecordScreen({ navigation, route }: ViewRecordScreen
                 navigation.navigate("CreateRecordScreen", {
                   mode: "update",
                   recordId: userRecord._id,
-                  parentId: userRecord.parent,
+                  parentId: userRecord.parent ?? "",
                 });
               }}
             >
@@ -129,7 +134,9 @@ export default function ViewRecordScreen({ navigation, route }: ViewRecordScreen
     if (!userRecord?.customFields) return <></>;
 
     //userRecord.customFields is already parsed in useEffect
-    let data = userRecord.customFields ?? [];
+    let data: any[] = Array.isArray(userRecord.customFields)
+      ? userRecord.customFields
+      : [];
     return data.map((item: customFieldType, index: number) => {
       return (
         <View key={index}>
@@ -138,7 +145,7 @@ export default function ViewRecordScreen({ navigation, route }: ViewRecordScreen
             <View>
               {item.type == "date" && (
                 <View style={{ flexDirection: "row", marginBottom: 20 }}>
-                  <AntDesign name="calendar" size={18} color={Colors.light.PrimaryColor} />
+                  <VectorIconCompat name="calendar" size={18} color={Colors.light.PrimaryColor} />
                   <View style={{ marginLeft: 10 }}>
                     <Text>{dayjs(item.value).format("DD MMM YYYY")}</Text>
                     {item.remind_at && (

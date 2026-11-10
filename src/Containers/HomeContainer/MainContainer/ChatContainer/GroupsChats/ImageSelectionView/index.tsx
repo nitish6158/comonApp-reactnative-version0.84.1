@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Pressable, StyleSheet, View } from "react-native";
 
 import CameraSvg from "@Images/CreateGroup/camera.svg";

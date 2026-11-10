@@ -10,8 +10,9 @@ import {
 import { useDispatch } from "react-redux";
 
 import { Asset } from "react-native-image-picker";
-import { Edge } from "react-native-safe-area-context";
+import { Edge } from "@Service/generated/types";
 import { TaskDetailsFragment } from "@Service/generated/fragments.generated";
+import { Alert } from "react-native";
 import { assignmentsType } from "@/redux/constants";
 import { generateRNFile } from "@Util/chatUtils/generateRNFile";
 import { navigate } from "../navigation/utility";
@@ -30,12 +31,12 @@ import { useTranslation } from "react-i18next";
 import { requestLastKnownLocation } from "@/utils/permission/requestLocation";
 
 export type onAddTaskResultType = (
-  edge: Edge,
-  task: TaskDetailsFragment,
-  options?: string[],
-  file?: Asset,
-  userLocationRequired?: boolean,
-  signature?: string
+  edge: any,
+  task: any,
+  options?: any,
+  file?: any,
+  userLocationRequired?: any,
+  signature?: any
 ) => void;
 
 let previousStartId: Array<{ reportId: string; taskId: string }> = [];
@@ -71,7 +72,7 @@ const useTaskReport = () => {
 
   useEffect(() => {
     const setupTaskForEmptyReport = () => {
-      let localTasks = [...activeScenario?.tasks] as Task[];
+      let localTasks = [...(activeScenario?.tasks ?? [])] as Task[];
       const findTask = localTasks.reverse().find((e) => e.type === "INPUT");
       const targetTaskId = findTask?.edges[0].targetTaskID;
       const task = localTasks.find((item) => item?._id === targetTaskId);
@@ -81,13 +82,13 @@ const useTaskReport = () => {
       } else {
         setIsExecutable(false);
       }
-      setCurrentTask(task);
+      setCurrentTask(task ?? null);
       // onStartTask(activeReport?._id, activeScenario?.tasks[0]?._id);
       // onStartTask(activeReport?._id, targetTaskId);
     };
 
     const setupTaskForNonEmptyReport = () => {
-      let localTasks = [...activeScenario?.tasks] as Task[];
+      let localTasks = [...(activeScenario?.tasks ?? [])] as Task[];
       const targetTaskId = activeReport?.tasksData[activeReport?.tasksData.length - 1]?.targetTaskId;
       const task = localTasks.find((item) => item?._id === targetTaskId);
 
@@ -106,7 +107,7 @@ const useTaskReport = () => {
         }
       }
 
-      setCurrentTask(task);
+      setCurrentTask(task ?? null);
 
       if (executable?.user?._id === me?._id || task?.assignTo?.length == 0) {
         setIsExecutable(true);
@@ -145,6 +146,7 @@ const useTaskReport = () => {
             input: {
               taskId,
               reportId,
+              orgId: activeAssignment?.organizationId ?? global.activeOrg ?? "",
             },
           },
         });
@@ -160,7 +162,11 @@ const useTaskReport = () => {
 
       await completeReport({
         variables: {
-          input: { _id: activeReport?._id, signature: signature ?? "", orgId: activeAssignment?.organizationId },
+          input: {
+            _id: activeReport?._id ?? "",
+            signature: signature ?? "",
+            orgId: activeAssignment?.organizationId ?? global.activeOrg ?? "",
+          },
         },
       });
 
@@ -173,7 +179,7 @@ const useTaskReport = () => {
       const refetchReports = await myReportsResponse.refetch();
 
       if (refetchReports.data?.myReports?.data?.length) {
-        setMyReports(refetchReports.data.myReports.data);
+        setMyReports(refetchReports.data.myReports.data as any);
       }
 
       setCompleteReportResponse(false);
@@ -208,14 +214,14 @@ const useTaskReport = () => {
       const assignmentResponse = await requestAssignment({
         variables: {
           input: {
-            organizationId: global.activeOrg,
+            organizationId: global.activeOrg ?? currentOrganization?._id ?? "",
             skip: 0,
             limit: 1000,
           },
         },
       });
 
-      Dispatch(setAssignments(assignmentResponse.data?.myAssignments.data));
+      Dispatch(setAssignments((assignmentResponse.data?.myAssignments.data ?? []) as any));
       if (pullToRefreshRequired) setLoader(false);
     } catch (error) {
       handleRequestAssignmentError(error);
@@ -235,12 +241,18 @@ const useTaskReport = () => {
 
       const convertedOptions = convertOptionsToString(options);
 
-      const RNFile = file ? getRNFile(file) : false;
+      const RNFile = file ? getRNFile(file as any) : false;
       // console.log("RNFile", RNFile);
 
       let uploadedAttachment = RNFile
         ? await uploadFile({
-            variables: { file: RNFile, input: { orgId: activeAssignment?.organizationId, attachments: false } },
+            variables: {
+              file: RNFile,
+              input: {
+                orgId: activeAssignment?.organizationId ?? global.activeOrg ?? "",
+                attachments: false,
+              },
+            },
           })
         : null;
 
@@ -248,7 +260,7 @@ const useTaskReport = () => {
 
       const input = {
         reportId: activeReport?._id,
-        label: CurrentTask?.label,
+        label: CurrentTask?.label ?? "",
         content: CurrentTask?.content!,
         result: convertedOptions || edge.label!,
         type: CurrentTask?.type,
@@ -260,12 +272,12 @@ const useTaskReport = () => {
         targetTaskId: edge?.targetTaskID,
         lat: latitude?.toString() || null,
         long: longitude?.toString() || null,
-        orgId: activeAssignment?.organizationId,
+        orgId: activeAssignment?.organizationId ?? global.activeOrg ?? "",
       };
 
       // console.log("Input is ", JSON.stringify(input));
 
-      const res = await addTaskResultRequest({ variables: { input } });
+      const res = await addTaskResultRequest({ variables: { input: input as any } });
 
       handleAddTaskResultSuccess(res);
     } catch (error) {
@@ -279,13 +291,13 @@ const useTaskReport = () => {
       if (userLocationRequired) {
         setGettingCurrentLocation(true);
 
-        const lastLocation = await requestLastKnownLocation();
+        const lastLocation: any = await requestLastKnownLocation();
         console.log("lastLocation", lastLocation);
         if (lastLocation?.coords) {
           setGettingCurrentLocation(false);
           return lastLocation?.coords;
         } else {
-          const liveLocation = await requestLastKnownLocation();
+          const liveLocation: any = await requestLastKnownLocation();
           console.log("liveLocation", liveLocation);
           setGettingCurrentLocation(false);
           return liveLocation?.coords;
@@ -301,7 +313,13 @@ const useTaskReport = () => {
 
   async function uploadFileRequest(file: any) {
     return await uploadFile({
-      variables: { file: file, input: { orgId: activeAssignment?.organizationId, attachments: false } },
+      variables: {
+        file: file,
+        input: {
+          orgId: activeAssignment?.organizationId ?? global.activeOrg ?? "",
+          attachments: false,
+        },
+      },
     });
   }
 
@@ -317,13 +335,13 @@ const useTaskReport = () => {
         },
       })
         .then((res) => {
-          Dispatch(setAssignments(res.data?.myAssignments.data));
+          Dispatch(setAssignments((res.data?.myAssignments.data ?? []) as any));
           return resolve(res);
         })
         .catch((err) => {
           Dispatch(setAssignments([]));
           console.error(err);
-          alert("something went wrong");
+          Alert.alert("something went wrong");
           return reject(err);
         });
     });
@@ -333,13 +351,18 @@ const useTaskReport = () => {
     return options ? (typeof options === "object" ? JSON.stringify(options) : options.toString()) : undefined;
   }
 
-  function getRNFile(file: { assets: Asset[] } | Asset) {
-    if (file.assets?.[0] !== undefined) {
-      const fileStructure = { name: file?.assets[0].fileName, uri: file.assets[0].uri };
+  function getRNFile(file: any) {
+    if (file?.assets?.[0] !== undefined) {
+      const fileStructure = {
+        name: file?.assets[0].fileName ?? "file",
+        uri: file.assets[0].uri,
+      };
       console.log("File structure is", fileStructure);
       return fileStructure.uri ? generateRNFile(fileStructure) : undefined;
     } else {
-      return file?.uri ? generateRNFile({ name: file?.fileName, uri: file?.uri }) : undefined;
+      return file?.uri
+        ? generateRNFile({ name: file?.fileName ?? "file", uri: file?.uri })
+        : undefined;
     }
   }
 
@@ -361,7 +384,7 @@ const useTaskReport = () => {
 
     const task = activeScenario?.tasks?.find((item: any) => item?._id === targetId);
     console.log(targetId, task);
-    setCurrentTask(task);
+    setCurrentTask(task ?? null);
     setActiveReport(res?.data?.addTaskResult);
   }
 

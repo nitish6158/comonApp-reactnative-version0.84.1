@@ -4,7 +4,7 @@ import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
 import React, { useEffect, useState } from "react";
 
 import Colors from "@/Constants/Colors";
-import Feather from "react-native-vector-icons/Feather";
+
 import { Pressable } from "react-native";
 import Text from "./Text";
 import ToastMessage from "@Util/ToastMesage";
@@ -12,6 +12,8 @@ import useFileSystem from "@Hooks/useFileSystem";
 import { useAtomValue } from "jotai";
 import { singleRoom } from "@/Atoms";
 import { useTranslation } from "react-i18next";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 // create a component
 const AudioDownloadView = ({ item, TextColor }: any) => {
@@ -44,7 +46,7 @@ const AudioDownloadView = ({ item, TextColor }: any) => {
   return (
     <Pressable style={styles.container} onPress={downloadAudio}>
       <View style={styles.indicatorContainer}>
-        {!loading ? <Feather name="download" size={25} color={TextColor} /> : <ActivityIndicator color={TextColor} />}
+        {!loading ? <VectorIconCompat name="download" size={25} color={TextColor} /> : <ActivityIndicator color={TextColor} />}
       </View>
       <View style={styles.contentContainer}>
         <Text style={{ color: TextColor, fontSize: 14, fontWeight: "700" }}>Audio File</Text>

@@ -78,8 +78,8 @@ export default function useRoomActions({
       })
         .then((res) => {
           if (res.data?.muteRoom?.success) {
-            ToastMessage(res?.data?.muteRoom.message);
-            socketManager.chatRoom.fetchAndUpdateRooms();
+            ToastMessage(res?.data?.muteRoom.message ?? "");
+            socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
 
             setDisplay((currentDisplay) =>
               produce(currentDisplay, (draftDisplay) => {
@@ -118,13 +118,13 @@ export default function useRoomActions({
     })
       .then((res) => {
         if (res.data?.unmuteRoom?.success) {
-          socketManager.chatRoom.fetchAndUpdateRooms();
-          ToastMessage(res?.data?.unmuteRoom.message);
+          socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
+          ToastMessage(res?.data?.unmuteRoom.message ?? "");
 
           setDisplay((currentDisplay) =>
             produce(currentDisplay, (draftDisplay) => {
               draftDisplay.mutedBy = Array.isArray(draftDisplay.mutedBy)
-                ? draftDisplay.mutedBy.filter((e) => e.user_id !== profileId)
+                ? draftDisplay.mutedBy.filter((e: { user_id: string }) => e.user_id !== profileId)
                 : [];
               draftDisplay.isCurrentRoomMuted = false;
             })
@@ -243,8 +243,8 @@ export default function useRoomActions({
             ...myProfileData,
             blockedRooms: [
               ...(myProfileData?.blockedRooms || []),
-              { room_Id: roomId, pid: blockedUserId },
-            ],
+              { room_Id: roomId, pid: blockedUserId, blocked_at: Date.now() },
+            ] as any,
           })
         );
       }
@@ -263,7 +263,7 @@ export default function useRoomActions({
     applyLocalBlockState();
 
     socketConnect.emit("blockRoom", { roomId });
-    socketManager.chatRoom.fetchAndUpdateRooms();
+    socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
 
     setBlockVisible(false);
   }, [roomId, applyLocalBlockState]);
@@ -272,9 +272,9 @@ export default function useRoomActions({
    * Unblock user functionality
    */
   const unblockUser = useCallback(
-    (myProfileData) => {
+    (myProfileData: any) => {
       const blockedRooms = myProfileData?.blockedRooms?.filter(
-        (item) => item.room_Id !== roomId
+        (item: any) => item.room_Id !== roomId
       );
       dispatch(setMyProfile({ ...myProfileData, blockedRooms }));
       setDisplay((currentDisplay) =>
@@ -293,7 +293,7 @@ export default function useRoomActions({
         socketConnect.emit("unblockRoom", { roomId });
       }, 300);
       setTimeout(() => {
-        socketManager.chatRoom.fetchAndUpdateRooms();
+        socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
       }, 2000);
     },
     [roomId, dispatch, setDisplay]
@@ -307,7 +307,7 @@ export default function useRoomActions({
       // Keep UI in sync immediately (same behavior as block contact).
       applyLocalBlockState();
       socketConnect.emit("reportRoom", { roomId, reason });
-      socketManager.chatRoom.fetchAndUpdateRooms();
+      socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
     },
     [roomId, applyLocalBlockState]
   );
@@ -357,7 +357,7 @@ export default function useRoomActions({
       .then((res) => {
         if (res.data?.deleteRoom?.success) {
           navigate("ChatListScreen", {});
-          ToastMessage(res.data?.deleteRoom.message);
+          ToastMessage(res.data?.deleteRoom.message ?? "");
         }
       })
       .catch((err) => {

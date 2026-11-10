@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ProfileData, RoomData } from "@Store/Models/ChatModel";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";

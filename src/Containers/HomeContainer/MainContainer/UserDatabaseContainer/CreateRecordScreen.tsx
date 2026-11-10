@@ -33,11 +33,11 @@ import Modal from "react-native-modal";
 import { windowHeight } from "@/utils/ResponsiveView";
 import _, { capitalize } from "lodash";
 import dayjs from "dayjs";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { useTranslation } from "react-i18next";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { CustomNotification } from "../ReminderContainer/CreateReminderScreen/components/CustomNotification";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import DocumentPicker, {
   DocumentPickerResponse,
 } from "react-native-document-picker";
@@ -63,13 +63,17 @@ import { universalEmail } from "@/utils/regExp";
 import { DefaultImageUrl } from "@/graphql/provider/endpoints";
 import ReminderAttachment from "../ReminderContainer/CreateReminderScreen/components/ReminderAttachment";
 
+import { VectorIconCompat } from "@/Components/icons";
+
 export type customFieldType = {
-  type: "text" | "number" | "attachment" | "date";
+  type: "text" | "number" | "attachment" | "date" | string;
   label: string;
-  value: string;
+  value: any;
   remind_at: null | { Count: number; Unit: string };
   attachments: Array<uploadResultType>;
   on_calender: boolean;
+  index?: number;
+  item?: any;
 };
 
 type recordFormType = {
@@ -114,12 +118,12 @@ export default function CreateRecordScreen({
   const [predefined, setPredefined] = useState(predefinedList);
   const [draftPredefined, setDraftPredefined] = useState(predefinedList);
   const [PreNotification, setPreNotification] =
-    useState<customFieldType | null>(null);
+    useState<{ index?: number; item?: customFieldType } | customFieldType | null>(null);
 
   const [customNotification, setCustomNotification] =
-    useState<customFieldType | null>(null);
+    useState<any>(null);
   const [attachmentModel, setAttachmentModel] = useState<number | null>(null);
-  const [toBeUploadFiles, setToBeUploadFiles] = useState<[]>([]);
+  const [toBeUploadFiles, setToBeUploadFiles] = useState<any[]>([]);
   const { t } = useTranslation();
   const { checkDownloadFileFolder, saveFileToDownloads } = useFileSystem();
   const [loading, setLoading] = useState(false);
@@ -146,7 +150,7 @@ export default function CreateRecordScreen({
       getRecordRequest({
         variables: {
           input: {
-            _id: route.params.recordId,
+            _id: route.params.recordId ?? "",
           },
         },
       })
@@ -154,7 +158,7 @@ export default function CreateRecordScreen({
           if (res.data?.getRecordById) {
             console.log("update----.", res.data?.getRecordById);
             let data = res.data?.getRecordById;
-            let customField = JSON.parse(data.customFields);
+            let customField = JSON.parse(data.customFields ?? "[]");
             setValue("title", data.title ?? "");
             setValue("address", data.address ?? "");
             setValue("company", data.company ?? "");
@@ -796,7 +800,7 @@ export default function CreateRecordScreen({
                                     },
                                   ]}
                                 >
-                                  <Ionicons
+                                  <VectorIconCompat
                                     name="notifications-outline"
                                     size={24}
                                     color="black"
@@ -819,7 +823,7 @@ export default function CreateRecordScreen({
                                         } ${t(
                                           `reminders.${item.remind_at.Unit?.toLowerCase()}s`,
                                         )} ${t("reminders.before")}`}</Text>
-                                        <FontAwesome
+                                        <VectorIconCompat
                                           onPress={() => {
                                             if (item.remind_at) {
                                               setPreNotification({
@@ -1023,10 +1027,10 @@ export default function CreateRecordScreen({
             }}
             optionsStyle={{ width: "100%", paddingHorizontal: 20 }}
             options={preNotificationList(
-              PreNotification?.item?.value,
+              (PreNotification as any)?.item?.value,
               (Count, Unit) => {
-                updateCustomField(PreNotification?.index, {
-                  ...PreNotification?.item,
+                updateCustomField((PreNotification as any)?.index ?? 0, {
+                  ...(PreNotification as any)?.item,
                   remind_at: { Count, Unit },
                 });
               },
@@ -1077,7 +1081,7 @@ export default function CreateRecordScreen({
                   SelectAttachment(
                     DocumentPicker.types.images,
                     MediaType["Photo"],
-                    attachmentModel,
+                    attachmentModel ?? 0,
                   ),
               },
               {
@@ -1086,7 +1090,7 @@ export default function CreateRecordScreen({
                   SelectAttachment(
                     DocumentPicker.types.video,
                     MediaType["Video"],
-                    attachmentModel,
+                    attachmentModel ?? 0,
                   ),
               },
               {
@@ -1095,7 +1099,7 @@ export default function CreateRecordScreen({
                   SelectAttachment(
                     DocumentPicker.types.allFiles,
                     MediaType["Document"],
-                    attachmentModel,
+                    attachmentModel ?? 0,
                   ),
               },
               {
@@ -1104,7 +1108,7 @@ export default function CreateRecordScreen({
                   SelectAttachment(
                     DocumentPicker.types.audio,
                     MediaType["Audio"],
-                    attachmentModel,
+                    attachmentModel ?? 0,
                   ),
               },
               {
@@ -1133,7 +1137,7 @@ export default function CreateRecordScreen({
               }}
             >
               {Object.entries(predefinedList).map(([key, _], vi) => {
-                let value = draftPredefined[`${key}`];
+                let value = (draftPredefined as Record<string, boolean>)[key];
                 return (
                   <Pressable
                     key={vi}
@@ -1149,7 +1153,7 @@ export default function CreateRecordScreen({
                     onPress={() => {
                       setDraftPredefined((prev) => ({
                         ...prev,
-                        [key]: !prev[`${key}`],
+                        [key]: !(prev as Record<string, boolean>)[key],
                       }));
                     }}
                   >
@@ -1161,7 +1165,7 @@ export default function CreateRecordScreen({
                       onValueChange={() => {
                         setDraftPredefined((prev) => ({
                           ...prev,
-                          [key]: !prev[`${key}`],
+                          [key]: !(prev as Record<string, boolean>)[key],
                         }));
                       }}
                     />
@@ -1223,7 +1227,7 @@ export default function CreateRecordScreen({
     setValue("customFields", updated);
   }
 
-  function updateCustomField(index: number, value: customFieldType) {
+  function updateCustomField(index: number, value: any) {
     let custom = getValues("customFields");
     let updated = custom.map((_, i) => {
       if (i === index) {

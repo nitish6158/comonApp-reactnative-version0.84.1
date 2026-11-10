@@ -63,13 +63,11 @@ const saveCachedRooms = (rooms: any[], userId: string) => {
   const cacheKey = getChatRoomsCacheKey(userId);
   const serializedRooms = JSON.stringify(rooms);
   try {
+    // MMKV only — avoid dual-write jank on room list updates
     CHATlIST.set(cacheKey, serializedRooms);
   } catch (error) {
     console.warn("Unable to save chat rooms in MMKV:", error);
   }
-  AsyncStorage.setItem(cacheKey, serializedRooms).catch((error) => {
-    console.warn("Unable to save chat rooms in AsyncStorage:", error);
-  });
 };
 
 export default function ChatStackNavigator() {

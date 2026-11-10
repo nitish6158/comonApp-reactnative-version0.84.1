@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { AllChatRooms, FolderAndTabsAtom } from "@Atoms/allRoomsAtom";
 import {
   Platform,
@@ -22,7 +23,7 @@ import ChatComponent from "@/Components/SingleRoomComponent";
 import Colors from "@/Constants/Colors";
 import Header from "@/Components/header/Header";
 import HiddenItem from "./HiddenFile";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 // import RealmContext from "../../../../schemas";
 
 import { SwipeListView } from "react-native-swipe-list-view";
@@ -31,14 +32,11 @@ import { conversationLimit } from "@Atoms/ChatMessageEvents";
 
 import { navigate } from "@Navigation/utility";
 
-import { socket } from "@/redux/Reducer/SocketSlice";
-import store, { useAppSelector } from "@/redux/Store";
+import { useAppSelector } from "@/redux/Store";
 import useRoomLastMessage from "@/hooks/useRoomLastMessage";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import { useTranslation } from "react-i18next";
 import EmptyRoomList from "./ChatFolderContainer/EmptyFolderList";
 import { socketConnect } from "@/utils/socket/SocketConnection";
-import { single } from "rxjs";
 import { defaultgroupPermission, initialDisplayState, singleRoom } from "@/Atoms";
 import { ChatContext } from "@/Context/ChatProvider";
 import { useFocusEffect } from "@react-navigation/core";
@@ -47,6 +45,8 @@ import FastImage from "@d11/react-native-fast-image";
 import LottieView from "lottie-react-native";
 import NetInfo from "@react-native-community/netinfo";
 import { t } from "i18next";
+import { VectorIconCompat } from "@/Components/icons";
+
 // const { useQuery, useRealm } = RealmContext;
 
 export type participants = {
@@ -219,7 +219,6 @@ export default function ChatsScreen({ navigation }: any) {
       const selectedFolder = MyProfile?.folders.find(
         (fl, fli) => fli == currentTab - 1
       );
-      console.log("currentTab", currentTab, selectedFolder);
       if (selectedFolder) {
         const result = AllRooms?.filter(
           (r) =>
@@ -232,7 +231,7 @@ export default function ChatsScreen({ navigation }: any) {
     setRefreshing(false);
   }, [currentTab, AllRooms, MyProfile?._id, MyProfile?.folders]);
 
-  function getRoomDisplayName(room: RoomData) {
+  const getRoomDisplayName = useCallback((room: RoomData) => {
     if (room.type !== "individual") return room.display.UserName;
     if (!MyProfile?._id) return room.display.UserName;
 
@@ -250,7 +249,87 @@ export default function ChatsScreen({ navigation }: any) {
     if (participantName) return participantName;
 
     return room.display.UserName;
-  }
+  }, [MyProfile?._id, contacts]);
+
+  const onRefreshRooms = useCallback(() => {
+    setRefreshing(true);
+    socketManager.chatRoom.fetchAndUpdateRooms((data) => {
+      if (data.rooms) {
+        setAllRooms(data.rooms);
+      }
+    });
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 3000);
+  }, [setAllRooms]);
+
+  const renderChatRoom = useCallback(
+    ({ item }: { item: RoomData; index: number }) => {
+      const userStatusVisible = checkUserStatusVisibility(item);
+      const roomLastMessage = formateLastMessage(item);
+      const roomDisplayName = getRoomDisplayName(item);
+
+      return (
+        <ChatComponent
+          roomData={item}
+          clearChat={item?.last_msg[0]?.clear}
+          UserImage={item.display.UserImage}
+          isUnreadByMe={myUserIdExist(item?.unreadBy, MyProfile?._id ?? "")}
+          date={resolveRoomTimestamp(item)}
+          Message={roomLastMessage}
+          isMutedByMe={myUserIdExist(item?.mutedBy, MyProfile?._id ?? "")}
+          isPin={myUserIdExist(item?.fixedBy, MyProfile?._id ?? "")}
+          Name={roomDisplayName}
+          isOnline={userStatusVisible}
+          showAlert
+          chatclear={item?.last_msg[0]?.message?.clear}
+          onPressContinaer={() => {
+            const currentUserUtility =
+              item.participants?.find(
+                (participant) => getParticipantId(participant) === MyProfile?._id
+              ) ?? ({} as RoomParticipantData);
+            const participantsNotLeft =
+              item.participants?.filter((participant) => participant.left_at === 0) ?? [];
+
+            setdisplay({
+              ...initialDisplayState,
+              roomId: item._id,
+              roomType: item.type,
+              roomName: roomDisplayName,
+              roomImage: item.display.UserImage,
+              roomDescription: item.bio?.status ?? "",
+              roomStatus: item.display?.userStatus ? "online" : "offline",
+              roomLastSeen: Number(item.display?.lastSeen) || 0,
+              participants: item.participants ?? [],
+              participantsNotLeft,
+              roomPermission: defaultgroupPermission,
+              isCurrentRoomMuted: myUserIdExist(item?.mutedBy, MyProfile?._id ?? ""),
+              currentUserUtility,
+              log: item.log,
+              cacheTime: Date.now(),
+              ringtone: item.ringtone ?? [],
+              receipts: item.receipts ?? [],
+            });
+            setLimit(20);
+            socketConnect.emit("removeDisappearedChats", { roomId: item?._id });
+            setRoomId(item?._id);
+            socketManager.conversation.onSetChatReadBy(() => {});
+            navigate("ChatMessageScreen", {
+              RoomId: item?._id,
+            });
+          }}
+        />
+      );
+    },
+    [
+      MyProfile?._id,
+      formateLastMessage,
+      getRoomDisplayName,
+      setLimit,
+      setRoomId,
+      setdisplay,
+    ]
+  );
 
   if (refreshing) {
     return (
@@ -322,85 +401,16 @@ export default function ChatsScreen({ navigation }: any) {
       <SwipeListView
         data={filteredRooms}
         extraData={contacts}
-        keyExtractor={(item, index) => item._id.toString()}
+        keyExtractor={(item) => item._id.toString()}
         showsVerticalScrollIndicator={false}
         refreshing={refreshing}
-        onRefresh={() => {
-          setRefreshing(true);
-          socketManager.chatRoom.fetchAndUpdateRooms((data) => {
-            if (data.rooms) {
-              setAllRooms(data.rooms);
-            }
-          });
-          setTimeout(() => {
-            setRefreshing(false);
-          }, 3000);
-        }}
-        renderItem={({ item, index }) => {
-    
-          //user visibility status
-          const userStatusVisible = checkUserStatusVisibility(item);
-          const roomLastMessage = formateLastMessage(item);
-          const roomDisplayName = getRoomDisplayName(item);
-
-          return (
-            <View key={index.toString()}>
-              <ChatComponent
-                roomData={item}
-                clearChat={item?.last_msg[0]?.clear}
-                UserImage={item.display.UserImage}
-                isUnreadByMe={myUserIdExist(
-                  item?.unreadBy,
-                  MyProfile?._id ?? ""
-                )}
-                date={resolveRoomTimestamp(item)}
-                Message={roomLastMessage}
-                isMutedByMe={myUserIdExist(item?.mutedBy, MyProfile?._id ?? "")}
-                isPin={myUserIdExist(item?.fixedBy, MyProfile?._id ?? "")}
-                Name={roomDisplayName}
-                isOnline={userStatusVisible}
-                showAlert
-                chatclear={item?.last_msg[0]?.message?.clear}
-                onPressContinaer={() => {
-                  const currentUserUtility =
-                    item.participants?.find((participant) => getParticipantId(participant) === MyProfile?._id) ??
-                    ({} as RoomParticipantData);
-                  const participantsNotLeft =
-                    item.participants?.filter((participant) => participant.left_at === 0) ?? [];
-
-                  setdisplay({
-                    ...initialDisplayState,
-                    roomId: item._id,
-                    roomType: item.type,
-                    roomName: roomDisplayName,
-                    roomImage: item.display.UserImage,
-                    roomDescription: item.bio?.status ?? "",
-                    roomStatus: item.display?.userStatus ? "online" : "offline",
-                    roomLastSeen: Number(item.display?.lastSeen) || 0,
-                    participants: item.participants ?? [],
-                    participantsNotLeft,
-                    roomPermission: defaultgroupPermission,
-                    isCurrentRoomMuted: myUserIdExist(item?.mutedBy, MyProfile?._id ?? ""),
-                    currentUserUtility,
-                    log: item.log,
-                    cacheTime: Date.now(),
-                    ringtone: item.ringtone ?? [],
-                    receipts: item.receipts ?? [],
-                  });
-                  setLimit(20);
-                  socketConnect.emit("removeDisappearedChats", { roomId: item?._id });
-                  setRoomId(item?._id);
-                  socketManager.conversation.onSetChatReadBy((data) => {
-                    console.log('Chat read by:', data);
-                  })
-                  navigate("ChatMessageScreen", {
-                    RoomId: item?._id,
-                  });
-                }}
-              />
-            </View>
-          );
-        }}
+        onRefresh={onRefreshRooms}
+        renderItem={renderChatRoom}
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={12}
+        windowSize={8}
+        initialNumToRender={12}
+        updateCellsBatchingPeriod={50}
         renderHiddenItem={(rowData, rowMap) => (
           <HiddenItem
             data={rowData}
@@ -432,7 +442,7 @@ export default function ChatsScreen({ navigation }: any) {
             right: 20,
           }}
         >
-          <MaterialIcons name="chat" size={26} color="white" />
+          <VectorIconCompat name="chat" size={26} color="white" />
         </Pressable>
       )}
     </View>

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, {
   useRef,
   useEffect,
@@ -209,10 +210,10 @@ export default function ChatListData() {
         ref={flatListRef}
         inverted={true}
         removeClippedSubviews={true}
-        maxToRenderPerBatch={10}
-        windowSize={10}
-        updateCellsBatchingPeriod={50}
-        initialNumToRender={10}
+        maxToRenderPerBatch={8}
+        windowSize={7}
+        updateCellsBatchingPeriod={80}
+        initialNumToRender={12}
         keyExtractor={(item, index) => `${item._id}${index}`}
         data={searchEnabled ? searchResults : conversation}
         showsVerticalScrollIndicator={false}

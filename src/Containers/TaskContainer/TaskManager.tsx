@@ -36,8 +36,7 @@ import { taskManagerStyles } from "./styles/TaskManagerStyles";
 import { useTaskLogic } from "./utils/taskLogic";
 import { useTaskModals } from "./utils/taskModals";
 
-const MaterialCommunityIcons =
-  require("react-native-vector-icons/MaterialCommunityIcons").default;
+import { VectorIconCompat } from "@/Components/icons";
 
 const TaskManager: React.FC<Partial<TaskManagerProps>> = ({
   route: {
@@ -45,7 +44,7 @@ const TaskManager: React.FC<Partial<TaskManagerProps>> = ({
   } = {},
   navigation,
 }) => {
-  const taskManager = useTaskManager(SelectedNode, multiType, navigation);
+  const taskManager = useTaskManager(SelectedNode ?? "", multiType, navigation);
   const taskLogic = useTaskLogic(taskManager);
   const taskModals = useTaskModals(taskManager);
 
@@ -116,7 +115,7 @@ const TaskManager: React.FC<Partial<TaskManagerProps>> = ({
                 style={taskManagerStyles.collapseButton}
                 onPress={() => collapseRow(index)}
               >
-                <MaterialCommunityIcons
+                <VectorIconCompat
                   name="chevron-up"
                   size={24}
                   color={Colors.light.grayText}
@@ -209,7 +208,7 @@ const TaskManager: React.FC<Partial<TaskManagerProps>> = ({
                           {selectedOption?.label ||
                             t("taskManager.select-task-type")}
                         </Text>
-                        <MaterialCommunityIcons
+                        <VectorIconCompat
                           name="chevron-down"
                           size={20}
                           color={Colors.light.grayText}
@@ -262,7 +261,7 @@ const TaskManager: React.FC<Partial<TaskManagerProps>> = ({
               >
                 {t("taskManager.who-will-execute-task")}
               </Text>
-              <MaterialCommunityIcons
+              <VectorIconCompat
                 name="alert-circle-outline"
                 size={26}
                 color="#bbb"

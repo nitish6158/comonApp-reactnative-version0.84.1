@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Text } from "react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Divider, ListItem } from "react-native-elements";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { CalendarModes } from "./CalendarResources";
 import { useAtom, useSetAtom } from "jotai";
 import { CalendarLoader, CalendarMode } from "@/Atoms/CalendarAtom";
@@ -17,6 +17,8 @@ import CalendarDataManipulator from "./CalendarDataManipulator";
 import CalendarLocale from "./CalendarLocale";
 import { LogoTitle } from "@Components/logo";
 import { CurrentOrganization } from "@/Components/header";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function CalendarHeader() {
   const [expandList, setExpandList] = useState(false);
@@ -46,7 +48,7 @@ export default function CalendarHeader() {
               visible={expandList}
               anchor={
                 <Pressable onPress={() => setExpandList(!expandList)}>
-                  <Ionicons name="reorder-three-outline" size={30} />
+                  <VectorIconCompat name="reorder-three-outline" size={30} />
                 </Pressable>
               }
               onRequestClose={() => setExpandList(!expandList)}

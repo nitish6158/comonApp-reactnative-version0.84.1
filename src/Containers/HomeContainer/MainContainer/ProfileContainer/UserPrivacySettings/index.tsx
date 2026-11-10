@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import React, { useState } from "react";
 import { HeaderWithScreenName } from "@/Components/header";

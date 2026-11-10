@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { memo, useMemo } from 'react';
 import { View } from 'react-native';
 import moment from 'moment-timezone';

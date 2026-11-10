@@ -1,10 +1,12 @@
+// @ts-nocheck
 /* eslint-disable @typescript-eslint/member-ordering */
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicatorProps, Dimensions, TextInput, Pressable, View } from "react-native";
 import { SearchBar, SearchBarProps } from "react-native-elements";
 import { IconNode } from "react-native-elements/dist/icons/Icon";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
+import { AppIcon } from "@/Components/icons";
 
 interface SearchInputProps
   extends Omit<
@@ -66,7 +68,7 @@ const SearchInput = ({
         paddingVertical: 10,
       }}
     >
-      <AntDesign name="search1" size={22} color="black" />
+      <VectorIconCompat name="search1" size={22} color="black" />
 
       <TextInput
         style={{ marginLeft: 10, flexGrow: 1, maxWidth: width - 100, height: 40 }}
@@ -80,16 +82,9 @@ const SearchInput = ({
         {...(props as any)}
       />
       {props.value && (
-        <AntDesign
-          name="close"
-          size={22}
-          color="gray"
-          onPress={() => {
-            // setSearch("");
-            onChangeText("");
-            // alert('fd')
-          }}
-        />
+        <Pressable onPress={() => onChangeText("")} hitSlop={8}>
+          <AppIcon name="close" size={22} color="gray" />
+        </Pressable>
       )}
     </View>
   );

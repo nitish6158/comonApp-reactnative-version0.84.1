@@ -5,12 +5,14 @@ import React, { useState } from "react";
 import AttachFile from "./AttachFile";
 import { Button } from "react-native-elements";
 import { Edge, Task } from "@Service/generated/types";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import TaskPermissionView from "./TaskPermissionView";
 import { checkPermission } from "@Util/comon.functions.utils";
 import { isEmpty } from "lodash";
 import { t } from "i18next";
 import CustomRadioButton from "@Components/CustomRadioButton";
+import { VectorIconCompat } from "@/Components/icons";
+
 interface Option {
   label: string;
   value: string;
@@ -27,17 +29,17 @@ export const RadioSelect = ({
   addTaskLoading: boolean;
   onAddTaskResult: onAddTaskResultType;
 }) => {
-  const [selected, setselected] = useState("");
-  const [media, setMedia] = useState();
+  const [selected, setselected] = useState<any>("");
+  const [media, setMedia] = useState<any>();
 
   const onSendChecked = async () => {
     if (edge?.location) {
       await checkPermission();
     }
-    onAddTaskResult(edge, task, selected?.label, media ? media : undefined, edge?.location ? true : false)();
+    onAddTaskResult(edge, task, selected?.label, media ? media : undefined, edge?.location ? true : false);
   };
 
-  const handleOptionChange = (option: Option) => {
+  const handleOptionChange = (option: any) => {
     setselected(option);
     console.log(option);
   };
@@ -45,26 +47,26 @@ export const RadioSelect = ({
   return (
     <View style={{ flex: 1 }}>
       <CustomRadioButton
-        options={edge.options}
+        options={edge.options ?? []}
         onChange={handleOptionChange}
         containerStyle={{ marginHorizontal: 40, marginBottom: 8 }}
       />
       {edge?.location && (
         <TaskPermissionView
           message={t("task.useLocation")}
-          icon={<FontAwesome name="map-marker" size={24} color="gray" />}
+          icon={<VectorIconCompat name="map-marker" size={24} color="gray" />}
         />
       )}
 
       {edge?.media && (
         <AttachFile
-          task={{ mediaType: edge?.media }}
+          task={{ mediaType: edge?.media } as any}
           addTaskLoading={addTaskLoading}
           edge={edge}
-          onAddTaskResult={(edge, task, undefined, file) => {
+          onAddTaskResult={(_edge, _task, _opts, file) => {
             setMedia(file);
           }}
-          mediaRequiredOnOptions={edge?.media}
+          mediaRequiredOnOptions={edge?.media as any}
         />
       )}
       <Button

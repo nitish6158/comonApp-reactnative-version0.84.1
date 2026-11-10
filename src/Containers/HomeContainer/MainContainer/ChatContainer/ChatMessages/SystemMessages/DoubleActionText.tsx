@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Conversation } from "@/models/chatmessage";

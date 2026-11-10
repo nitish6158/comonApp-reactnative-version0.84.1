@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Dimensions, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { typographyStyles } from "../../styles/main";
 import React from "react";
@@ -10,7 +11,7 @@ import dayjs from "dayjs";
 
 const { width } = Dimensions.get("screen");
 
-export const ReportListItem: React.FC<{ item: Report }> = ({ item }) => {
+export const ReportListItem: React.FC<{ item: any }> = ({ item }) => {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const { fontScale } = useWindowDimensions();

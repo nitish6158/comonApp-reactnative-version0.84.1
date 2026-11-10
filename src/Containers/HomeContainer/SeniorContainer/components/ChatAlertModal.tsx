@@ -6,7 +6,7 @@ import { navigate } from "@/navigation/utility";
 import { Colors } from "@/Constants";
 
 type props = {
-  event: RoomData;
+  event: any;
   onClose: () => void;
 };
 
@@ -24,7 +24,7 @@ export default function ChatAlertModal({ event, onClose }: props) {
     >
       <Text
         style={{ fontSize: 17, marginBottom: 50, fontWeight: "500",textAlign:'center' }}
-      >{`You have received message from ${event.notification.title}`}</Text>
+      >{`You have received message from ${event.notification?.title ?? ""}`}</Text>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
         <Pressable onPress={onClose} style={{ flex: 1, alignItems: "center" }}>
           <Text style={{ fontSize: 16,color:'red' }}>Do not read</Text>
@@ -32,7 +32,9 @@ export default function ChatAlertModal({ event, onClose }: props) {
         <Pressable
           style={{ flex: 1, alignItems: "center" }}
           onPress={() => {
-            navigate("SeniorChatMessageScreen", { roomId: event.myMessage.roomId });
+            navigate("SeniorChatMessageScreen" as any, {
+              roomId: event.myMessage?.roomId,
+            });
             onClose();
           }}
         >

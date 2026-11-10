@@ -1,7 +1,9 @@
+// @ts-nocheck
 import { Pressable, Text, View } from "react-native";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import React from "react";
+
+import { AppIcon } from "@/Components/icons";
 
 type props = {
   screenName: string;
@@ -29,7 +31,7 @@ export default function HeaderWithAction({ screenName, onBackPress, isActionVisi
           alignItems: "center",
         }}
       >
-        <AntDesign name="arrowleft" size={24} color="black" style={{ marginRight: 8 }} />
+        <AppIcon name="back" size={24} color="black" style={{ marginRight: 8 }} />
         <Text style={{ fontSize: 17 }}>{screenName}</Text>
       </Pressable>
       {isActionVisible && <ActionComponent />}

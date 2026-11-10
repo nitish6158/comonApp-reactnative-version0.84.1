@@ -1,8 +1,10 @@
 import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
 import Colors from "@/Constants/Colors";
-import Feather from "react-native-vector-icons/Feather";
+
 import React from "react";
+import { AppIcon } from "@/Components/icons";
+
 interface CheckMarkProps {
   checkStyle?: ViewStyle;
   size?: number;
@@ -10,7 +12,7 @@ interface CheckMarkProps {
 export const CheckMark = ({ checkStyle, size }: CheckMarkProps) => {
   return (
     <View style={[styles.checked, checkStyle]}>
-      <Feather name="check" size={size ?? 13} color="white" />
+      <AppIcon name="check" size={size ?? 13} color="white" />
     </View>
   );
 };

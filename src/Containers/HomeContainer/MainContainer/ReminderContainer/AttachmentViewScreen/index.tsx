@@ -6,13 +6,15 @@ import { MediaType } from "@/graphql/generated/types";
 import Modal from "react-native-modal";
 import { DefaultImageUrl } from "@Service/provider/endpoints";
 import { AttachmentViewScreenProps } from "@/navigation/screenPropsTypes";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import VideoPreviewComponent from "../../ChatContainer/ChatMessages/VideoPreviewComponent";
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import { Colors } from "@/Constants";
 import ToastMessage from "@Util/ToastMesage";
 import useFileSystem from "@/hooks/useFileSystem";
 import { useTranslation } from "react-i18next";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function AttachmentViewScreen({ navigation, route }: AttachmentViewScreenProps) {
   const { getFileLocationByFilename } = useFileSystem();
@@ -21,7 +23,7 @@ export default function AttachmentViewScreen({ navigation, route }: AttachmentVi
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <View style={{ justifyContent: "space-between", flexDirection: "row", alignItems: "center",marginHorizontal:10 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons name="arrow-back" color="gray" size={30} onPress={navigation.goBack} />
+          <VectorIconCompat name="arrow-back" color="gray" size={30} onPress={navigation.goBack} />
         </View>
         <TouchableOpacity
           style={{

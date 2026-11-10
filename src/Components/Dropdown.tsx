@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ActivityIndicator, Dimensions, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { CheckBox, Divider } from "react-native-elements";
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";

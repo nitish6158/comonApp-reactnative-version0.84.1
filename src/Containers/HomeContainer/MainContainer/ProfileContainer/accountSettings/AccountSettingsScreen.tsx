@@ -9,14 +9,15 @@ import { useAtomValue } from "jotai";
 import { currentUserIdAtom } from "@/Atoms";
 import { DefaultImageUrl } from "@Service/provider/endpoints";
 import { HeaderWithScreenName } from "@Components/header/HeaderWithScreenName";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { Colors, fonts } from "@/Constants";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { useTranslation } from "react-i18next";
 import { ProfileScreenProps } from "@/navigation/screenPropsTypes";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import { useAppSelector } from "@/redux/Store";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function AccountSettingsScreen({ navigation }: ProfileScreenProps) {
   const {MyProfile} = useAppSelector(state=> state.Chat)
@@ -53,7 +54,7 @@ export default function AccountSettingsScreen({ navigation }: ProfileScreenProps
       <View style={{ marginLeft: 20, marginTop: 20 }}>
         <Pressable style={styles.settingContainer} onPress={() => navigate("UserPrivacySettings", {})}>
           <View style={{ marginRight: 20 }}>
-            <MaterialIcons name="lock-outline" size={24} color={"gray"} />
+            <VectorIconCompat name="lock-outline" size={24} color={"gray"} />
           </View>
           <View>
             <Text style={styles.settingTitle}>{t("privacy")}</Text>
@@ -67,7 +68,7 @@ export default function AccountSettingsScreen({ navigation }: ProfileScreenProps
           style={styles.settingContainer}
         >
           <View style={{ marginRight: 20 }}>
-            <Ionicons name="key-outline" size={22} color="gray" />
+            <VectorIconCompat name="key-outline" size={22} color="gray" />
           </View>
           <Text style={styles.settingTitle}>{t("titles.change-password")}</Text>
         </Pressable>

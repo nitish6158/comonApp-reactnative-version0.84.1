@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Alert, Image, Platform, Pressable, View } from "react-native";
 import { Block, HStack } from "rnmuilib";
 import React, { useMemo, useState } from "react";

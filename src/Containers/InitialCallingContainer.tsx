@@ -466,18 +466,18 @@ export default function InitialCallingContainer() {
         payload: { RoomId: roomID },
       });
       setTimeout(() => {
-        if (getCurrentRoute() !== "ChatMessageScreen") {
+        if (getCurrentRoute() !== ("ChatMessageScreen" as any)) {
           navigate("ChatMessageScreen", { RoomId: roomID });
         }
       }, 1400);
     } else if (userMode === "SENIORCITIZEN") {
       setInitialRoute({
-        name: "SeniorChatMessageScreen",
+        name: "SeniorChatMessageScreen" as any,
         payload: { roomId: roomID },
       });
       setTimeout(() => {
-        if (getCurrentRoute() !== "SeniorChatMessageScreen") {
-          navigate("SeniorChatMessageScreen", { roomId: roomID });
+        if (getCurrentRoute() !== ("SeniorChatMessageScreen" as any)) {
+          navigate("SeniorChatMessageScreen" as any, { roomId: roomID });
         }
       }, 1400);
     }
@@ -582,7 +582,7 @@ export default function InitialCallingContainer() {
                       roomType: res?.data.roomType,
                       participants: res?.data.callParticipants,
                       callBackground: res?.data.callBackground,
-                    });
+                    } as any);
 
                     if (Platform.OS == "android") {
                       RNVoipCall.endAllCalls();
@@ -670,7 +670,7 @@ export default function InitialCallingContainer() {
               },
             };
             console.log("channel exist payload", payload);
-            setCallRequest(payload);
+            setCallRequest(payload as any);
           } else {
             dispatch(removeActiveCall());
             AsyncStorage.removeItem("backgroundCallReject");

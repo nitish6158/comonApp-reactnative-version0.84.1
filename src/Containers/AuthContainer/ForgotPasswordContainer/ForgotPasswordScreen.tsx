@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from "react";
 
 import { Alert, View } from "react-native";

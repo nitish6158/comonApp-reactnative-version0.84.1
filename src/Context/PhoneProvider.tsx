@@ -1,6 +1,8 @@
 import { DefaultStorageKeys, getStorage, setStorage } from "@Util/storage";
 import React, { createContext, useEffect, useState } from "react";
 
+export type SettingsType = Record<string, unknown>;
+
 export interface PhoneContextState {
   settings?: SettingsType;
   phone?: PhoneType;

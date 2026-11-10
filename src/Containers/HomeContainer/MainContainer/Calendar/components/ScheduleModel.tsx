@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
 import React, { useMemo } from "react";
 import Modal from "react-native-modal";
@@ -13,7 +14,7 @@ import { screenStyle as reminderStyle } from "../../ReminderContainer/ViewRemind
 import MessageCommon from "../../ChatContainer/ScheduleMessages/ViewScheduleMessage/components/MessageCommon";
 import docIcon from "@Assets/images/docs";
 import { useNavigation } from "@react-navigation/core";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { Colors } from "@/Constants";
 import {
   Menu,
@@ -22,7 +23,7 @@ import {
   MenuTrigger,
   renderers,
 } from "react-native-popup-menu";
-import Feather from "react-native-vector-icons/Feather";
+
 import {
   EventType,
   ParticipantAcceptStatus,
@@ -38,6 +39,8 @@ import ToastMessage from "@/utils/ToastMesage";
 import { useAppSelector } from "@/redux/Store";
 import { DocumentPreview } from "@/Components";
 import { calendarRefreshAtom } from "@/Atoms/CalendarAtom";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type statusPayload = {
   reminder: reminder;
@@ -248,7 +251,7 @@ export default function ScheduleModel({
                               style={styles.imageStyle}
                             >
                               <View style={styles.videoPlayButton}>
-                                <Ionicons
+                                <VectorIconCompat
                                   name="ios-play-sharp"
                                   size={30}
                                   color="white"

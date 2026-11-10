@@ -3,7 +3,6 @@ import React from "react";
 import { CalenderNotificationsProps } from "@/navigation/screenPropsTypes";
 
 import { screenStyle as styles } from "../ReminderContainer/ViewReminderScreen/viewReminder.styles";
-import Ionicons from "react-native-vector-icons/Ionicons";
 
 import EventRequests from "./components/EventRequests";
 import ScheduleRequests from "./components/ScheduleRequests";
@@ -11,13 +10,15 @@ import { TabController } from "react-native-ui-lib";
 import { useTranslation } from "react-i18next";
 import CalendarDataManipulator from "./CalendarDataManipulator";
 
+import { VectorIconCompat } from "@/Components/icons";
+
 export default function CalenderNotifications({ route, navigation }: Readonly<CalenderNotificationsProps>) {
   const {t} = useTranslation()
   return (
     <View style={styles.main}>
       <View style={styles.header}>
         <View style={{flexDirection:'row',alignItems:'center'}}>
-          <Ionicons name="arrow-back" color="gray" size={30} onPress={navigation.goBack} />
+          <VectorIconCompat name="arrow-back" color="gray" size={30} onPress={navigation.goBack} />
           <Text style={styles.headingText}>{t("reminders.notification")}</Text>
         </View>
         <CalendarDataManipulator/>

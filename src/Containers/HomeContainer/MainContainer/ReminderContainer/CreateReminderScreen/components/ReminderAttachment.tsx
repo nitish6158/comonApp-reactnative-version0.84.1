@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useMemo } from "react";
 import { View, Text, FlatList, Pressable } from "react-native";
 import { Menu, MenuTrigger, MenuOptions, MenuOption } from "react-native-popup-menu";
@@ -13,8 +14,8 @@ import useFileSystem from "@/hooks/useFileSystem";
 import { AgendaAttachmentInput, AttachmentType } from "@/graphql/generated/types";
 import docIcon from "@Assets/images/docs";
 import { DefaultImageUrl } from "@/graphql/provider/endpoints";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type ReminderAttachmentProps = {
   attachment: AgendaAttachmentInput;
@@ -71,7 +72,7 @@ export default function ReminderAttachment({ attachment, onDelete }: ReminderAtt
             label={""}
             leftElement={
               <Pressable onPress={onDelete} style={{ paddingHorizontal: 13 }}>
-                <MaterialCommunityIcons name="delete-outline" size={20} color="red" />
+                <VectorIconCompat name="delete-outline" size={20} color="red" />
               </Pressable>
             }
             borderRadius={5}

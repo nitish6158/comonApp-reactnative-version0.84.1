@@ -1,5 +1,14 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
+## Agent / module docs
+
+- Cursor rules: `.cursor/rules/comon-rn-standards.mdc` (SOLID, KISS, YAGNI, perf, socket/storage)
+- Module docs index: `src/docs/README.md`
+- Per-module docs: `src/**/docs/README.md` (update when that module changes)
+
+Realtime: use `socketConnect` only (legacy `socket` from `SocketSlice` bridges to it — never open a second `io()` client).
+Chat/room cache writes: MMKV primary (avoid dual AsyncStorage writes on hot paths).
+
 # Getting Started
 
 > **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.

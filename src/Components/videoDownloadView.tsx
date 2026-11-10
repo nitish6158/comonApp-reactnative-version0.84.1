@@ -3,11 +3,12 @@ import React, { useEffect, useState } from "react";
 
 import Colors from "@/Constants/Colors";
 import { Conversation } from "@Models/chatmessage";
-import Feather from "react-native-vector-icons/Feather";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import useFileSystem from "@Hooks/useFileSystem";
 import { useAtomValue } from "jotai";
 import { singleRoom } from "../Atoms/singleRoom";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type props = {
   item: Conversation;
@@ -52,7 +53,7 @@ export default function VideoDownloadView({ item }: props) {
           alignItems: "center",
         }}
       >
-        <Ionicons name="ios-play-sharp" size={30} color="white" />
+        <VectorIconCompat name="ios-play-sharp" size={30} color="white" />
       </View>
       <View
         style={{
@@ -67,7 +68,7 @@ export default function VideoDownloadView({ item }: props) {
           justifyContent: "center",
         }}
       >
-        {!loading ? <Feather name="download" size={17} color="white" /> : <ActivityIndicator color="white" />}
+        {!loading ? <VectorIconCompat name="download" size={17} color="white" /> : <ActivityIndicator color="white" />}
       </View>
     </Pressable>
   );

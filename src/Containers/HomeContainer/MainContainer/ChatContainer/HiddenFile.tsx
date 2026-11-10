@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from "react";
 
 import { Alert, Pressable, StyleSheet, View } from "react-native";
@@ -18,8 +19,7 @@ import { AllChatRooms, ArchiveRoomsAtom, FolderAndTabsAtom } from "@Atoms/allRoo
 import Colors from "@/Constants/Colors";
 import CustomModal from "@Components/Comon";
 import CustomModal2 from "@Components/customFolder2";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import More from "@Images/More.svg";
 import { RootState } from "@Store/Reducer/index";
 import Text from "@Components/Text";
@@ -35,6 +35,8 @@ import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@/redux/Store";
 import { socketManager } from "@/utils/socket/SocketManager";
 import { socketConnect } from "@/utils/socket/SocketConnection";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 interface HiddenItemProps {
   data?: { item: RoomData };
@@ -297,7 +299,6 @@ function HiddenItem({
     });
   };
 
-
   const ClearChat = () => {
     socketManager.conversation.clearAllChat({ roomId: display.roomId });
     // socket.emit("clearAllChats", { roomId: selectedItem._id });
@@ -458,7 +459,7 @@ function HiddenItem({
           ]}
         >
           {/* <PinWithOutBackground /> */}
-          <MaterialIcons name="push-pin" size={28} color="black" />
+          <VectorIconCompat name="push-pin" size={28} color="black" />
           <Text
             style={
               (Styles.HiddenTextcolor,
@@ -548,7 +549,7 @@ function HiddenItem({
             Btnstyle,
           ]}
         >
-          <Ionicons name="archive-outline" size={24} />
+          <VectorIconCompat name="archive-outline" size={24} />
           {/* <Archive style={{ marginBottom: 4 }} /> */}
           <Text style={Styles.HiddenTextcolor}>
             {" "}

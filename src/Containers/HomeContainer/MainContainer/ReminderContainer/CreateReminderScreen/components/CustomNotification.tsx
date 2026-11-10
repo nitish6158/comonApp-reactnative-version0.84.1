@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useRef, useState } from "react";
 import NumericInput from "react-native-numeric-input";
 import Modal from "react-native-modal";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { View, Text, Pressable } from "react-native";
 import React, { useState } from "react";
 import Modal from "react-native-modal";

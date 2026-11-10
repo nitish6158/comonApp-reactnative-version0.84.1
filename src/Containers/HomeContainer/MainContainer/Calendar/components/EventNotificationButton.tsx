@@ -1,10 +1,12 @@
 import { View, Text, Pressable } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import { navigate } from "@/navigation/utility";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { Badge } from "react-native-ui-lib";
 import { useAtomValue } from "jotai";
 import { CalendarNotifications, CalendarScheduleMessage, notificationCount, ReminderEventData } from "@/Atoms/CalendarAtom";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function EventNotificationButton() {
   const count = useAtomValue(notificationCount);
@@ -16,7 +18,7 @@ export default function EventNotificationButton() {
         navigate("CalenderNotifications", {});
       }}
     >
-      <Ionicons name="notifications-outline" size={22} />
+      <VectorIconCompat name="notifications-outline" size={22} />
       {count > 0 && (
         <Badge
           style={{ position: "absolute", zIndex: 5, top: -5, right: 0 }}

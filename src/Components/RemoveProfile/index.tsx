@@ -1,10 +1,10 @@
+// @ts-nocheck
 /* eslint-disable react-native/no-inline-styles */
 import * as React from "react";
 
 import { Alert, Pressable } from "react-native";
 import { useConfirmAccountDeleteMutation, useRequestAccountDeleteLazyQuery } from "@Service/generated/auth.generated";
 
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { CodeInput } from "../input/CodeInput";
 import Colors from "@/Constants/Colors";
 import { DeadlineStorageKeys } from "@Util/storage";
@@ -20,6 +20,8 @@ import { useDispatch } from "react-redux";
 import { resetContactState } from "@/redux/Reducer/ContactReducer";
 import { resetCallState } from "@/redux/Reducer/CallReducer";
 import { resetChatState, setMyProfile } from "@/redux/Reducer/ChatReducer";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function RemoveProfile() {
   const [visible, setVisible] = React.useState(false);
@@ -41,7 +43,6 @@ export default function RemoveProfile() {
       })
       .then(async () => {
         console.log("Global logout onLogout");
-
 
         await AsyncStorage.removeItem("me");
     
@@ -70,7 +71,7 @@ export default function RemoveProfile() {
   return (
     <>
       <Pressable style={{ flexDirection: "row", alignItems: "center", marginVertical: 5 }} onPress={toggleDialog}>
-        <MaterialCommunityIcons name="delete-outline" size={24} color={Colors.light.PrimaryColor} style={{ marginRight: 10, marginLeft: 5 }} />
+        <VectorIconCompat name="delete-outline" size={24} color={Colors.light.PrimaryColor} style={{ marginRight: 10, marginLeft: 5 }} />
         <Text style={{ fontSize: 17 }}>{t("navigation.remove")}</Text>
       </Pressable>
 

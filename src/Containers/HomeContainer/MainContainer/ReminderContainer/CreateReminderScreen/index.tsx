@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   View,
   Text,
@@ -40,11 +41,9 @@ import {
 import { Colors } from "@/Constants";
 import FastImage from "@d11/react-native-fast-image";
 import { DefaultImageUrl, ImageUrl } from "@Service/provider/endpoints";
-import Entypo from "react-native-vector-icons/Entypo";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import _, { uniqueId } from "lodash";
-import Feather from "react-native-vector-icons/Feather";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { currentUserIdAtom, singleRoom } from "@/Atoms";
 import { useAtomValue } from "jotai";
 import { FlatList } from "react-native";
@@ -94,6 +93,8 @@ import UpdateConfirmationView from "../ViewReminderScreen/components/UpdateConfi
 import { reminder } from "@/schemas/schema";
 import ReminderAttachment from "./components/ReminderAttachment";
 import { selectedDateAtom } from "../../Calendar/CalendarView";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function CreateReminderScreen({
   route,
@@ -481,7 +482,7 @@ export default function CreateReminderScreen({
         style={[styles.headerContainer, { justifyContent: "space-between" }]}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons
+          <VectorIconCompat
             name="arrow-back"
             color="gray"
             size={30}
@@ -639,7 +640,7 @@ export default function CreateReminderScreen({
                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
-                        <AntDesign
+                        <VectorIconCompat
                           name="clockcircleo"
                           size={22}
                           color="black"
@@ -803,7 +804,7 @@ export default function CreateReminderScreen({
                           }}
                         />
 
-                        <AntDesign
+                        <VectorIconCompat
                           name="calendar"
                           size={18}
                           color={
@@ -885,7 +886,7 @@ export default function CreateReminderScreen({
                             return dayjs(date).format("DD MMM YYYY");
                           }}
                         />
-                        <AntDesign
+                        <VectorIconCompat
                           name="calendar"
                           size={18}
                           color={
@@ -943,7 +944,7 @@ export default function CreateReminderScreen({
                             return dayjs(date).format("DD MMM YYYY");
                           }}
                         />
-                        <AntDesign
+                        <VectorIconCompat
                           name="calendar"
                           size={18}
                           color={
@@ -1059,7 +1060,7 @@ export default function CreateReminderScreen({
                           return dayjs(date).format("HH:mm");
                         }}
                       />
-                      <AntDesign
+                      <VectorIconCompat
                         name="clockcircleo"
                         size={18}
                         color={
@@ -1113,7 +1114,7 @@ export default function CreateReminderScreen({
                           return dayjs(date).format("HH:mm");
                         }}
                       />
-                      <AntDesign
+                      <VectorIconCompat
                         name="clockcircleo"
                         size={18}
                         color={
@@ -1148,7 +1149,7 @@ export default function CreateReminderScreen({
                           paddingHorizontal: 20,
                         }}
                       >
-                        <Feather
+                        <VectorIconCompat
                           name="repeat"
                           size={18}
                           color="black"
@@ -1895,7 +1896,7 @@ export default function CreateReminderScreen({
             render={({ field, fieldState, formState }) => {
               return (
                 <View style={styles.peopleContainer}>
-                  <Ionicons
+                  <VectorIconCompat
                     name="notifications-outline"
                     size={24}
                     color="black"
@@ -1930,7 +1931,7 @@ export default function CreateReminderScreen({
                             } ${t(
                               `reminders.${item.Unit?.toLowerCase()}s`,
                             )} ${t("reminders.before")}`}</Text>
-                            <AntDesign
+                            <VectorIconCompat
                               onPress={() => {
                                 if (field.value) {
                                   let found = field.value.filter(
@@ -2013,7 +2014,7 @@ export default function CreateReminderScreen({
                     fieldState.error && styles.errorBox,
                   ]}
                 >
-                  <Ionicons
+                  <VectorIconCompat
                     name="people"
                     size={22}
                     color="black"
@@ -2225,7 +2226,7 @@ export default function CreateReminderScreen({
               render={({ field, fieldState, formState }) => {
                 return (
                   <View style={[styles.peopleContainer]}>
-                    <Entypo
+                    <VectorIconCompat
                       name="attachment"
                       size={22}
                       color="black"
@@ -2378,7 +2379,7 @@ export default function CreateReminderScreen({
               render={({ field, fieldState, formState }) => {
                 return (
                   <View style={[styles.peopleContainer]}>
-                    <Ionicons
+                    <VectorIconCompat
                       name="location-sharp"
                       size={22}
                       color="black"

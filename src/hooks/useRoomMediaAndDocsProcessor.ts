@@ -168,9 +168,14 @@ export function useRoomMediaAndDocsProcessor() {
         ? result.data
         : [];
 
-      const tempFilteredData = { media: [], docs: [], audio: [], links: [] };
+      const tempFilteredData: Record<string, any[]> = {
+        media: [],
+        docs: [],
+        audio: [],
+        links: [],
+      };
 
-      mediaItems.forEach((element) => {
+      mediaItems.forEach((element: any) => {
         const bucket = getBucketByMessage(element);
         switch (bucket) {
           case "media":
@@ -195,11 +200,11 @@ export function useRoomMediaAndDocsProcessor() {
 
       Object.keys(tempFilteredData).forEach((key) => {
         tempFilteredData[key].sort(
-          (a, b) =>
+          (a: any, b: any) =>
             moment(b.created_at).valueOf() - moment(a.created_at).valueOf()
         );
 
-        const groupedData = tempFilteredData[key].reduce((acc: any[], elm) => {
+        const groupedData = tempFilteredData[key].reduce((acc: any[], elm: any) => {
           const getMonthAndYear = moment(elm.created_at).format("MMM YYYY");
           let title = getMonthAndYear;
 

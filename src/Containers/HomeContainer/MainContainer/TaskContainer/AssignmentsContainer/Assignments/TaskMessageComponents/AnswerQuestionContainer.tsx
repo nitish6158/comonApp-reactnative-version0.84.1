@@ -1,5 +1,5 @@
-import React, { SetStateAction, useState } from "react";
-import { Task, Text, View } from "react-native";
+import React, { useState } from "react";
+import { Text, View } from "react-native";
 
 import Colors from "@/Constants/Colors";
 import { ImagePhoto } from "@Types/types";
@@ -21,12 +21,13 @@ export default function AnswerQuestionContainer({ currentTask }: { currentTask: 
 
   const DownloadFileStore = useSelector((state: any) => state.Chat.DownloadFileStore);
   const [ImagePreviewVisible, setImagePreviewVisible] = useState(false);
-  const [ImagePreviewImage, setImagePreviewImage] = useState<SetStateAction<{ url: string; type: string }>>({});
+  const [ImagePreviewImage, setImagePreviewImage] = useState<{ url: string; type: string }>({ url: "", type: "" });
   const closeImageModal = () => {
-    setImagePreviewVisible(!ImagePreviewImage);
+    setImagePreviewVisible(!ImagePreviewVisible);
   };
   const { getFileLocationByFilename, readComonDirectory, donwloadFiles } = useFileSystem();
   const documentData = { fileURL: currentTask?.attachment?.filename, filename: currentTask?.attachment?.filename };
+  const attachmentType = currentTask?.attachment?.type as keyof typeof ImagePhoto | undefined;
 
   return (
     <View style={{ flexDirection: "row" }}>
@@ -53,7 +54,9 @@ export default function AnswerQuestionContainer({ currentTask }: { currentTask: 
           <View style={{ height: 1, backgroundColor: Colors.light.White, marginVertical: 5 }} />
           <Text style={{ fontSize: 17, color: Colors.light.White }}>
             {currentTask?.content}
-            {currentTask?.attachment && currentTask?.attachment?.type == ImagePhoto[currentTask?.attachment?.type] && (
+            {currentTask?.attachment &&
+              attachmentType &&
+              currentTask?.attachment?.type == (ImagePhoto as any)[attachmentType] && (
               <View>
                 <MediaPreview size="xlarge" imageUri={currentTask?.attachment?.filename} renderCloseIcon={false} />
               </View>
@@ -61,14 +64,14 @@ export default function AnswerQuestionContainer({ currentTask }: { currentTask: 
           </Text>
           {currentTask?.attachment && currentTask.attachment.type == "AUDIO" && (
             <View style={{ backgroundColor: Colors.light.White, padding: 5, borderRadius: 6 }}>
-              {DownloadFileStore.indexOf(getDownloadfileName(currentTask?.attachment?.filename)) == -1 ? (
+              {DownloadFileStore.indexOf(getDownloadfileName(currentTask?.attachment?.filename ?? "")) == -1 ? (
                 <AudioDownloadView item={documentData} TextColor={Colors.light.black} />
               ) : (
                 <AudioSlider
                   backgroundColor={Colors.light.White}
-                  id={currentTask?.attachment.filename}
+                  id={currentTask?.attachment.filename ?? ""}
                   topColor={Colors.light.PrimaryColor}
-                  audio={getFileLocationByFilename(currentTask?.attachment?.filename)}
+                  audio={getFileLocationByFilename(currentTask?.attachment?.filename ?? "")}
                 />
               )}
             </View>
@@ -82,7 +85,7 @@ export default function AnswerQuestionContainer({ currentTask }: { currentTask: 
                 setImagePreviewVisible={() => setImagePreviewVisible(true)}
                 ContainerStyle={{ alignSelf: "center", marginTop: 10 }}
                 filename={currentTask?.attachment?.filename}
-                key={currentTask.scenarioId}
+                key={(currentTask as any).scenarioId}
               />
             </>
           )}

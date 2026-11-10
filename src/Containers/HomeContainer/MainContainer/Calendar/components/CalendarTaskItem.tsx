@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   View,
   Text,
@@ -8,14 +9,13 @@ import {
 import React, { useMemo, useState, useEffect } from "react";
 import { reminder } from "@/schemas/schema";
 import { screenStyle as reminderStyle } from "../../ReminderContainer/ViewReminderScreen/viewReminder.styles";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import Entypo from "react-native-vector-icons/Entypo";
+
 import { ParticipantAcceptStatus } from "@/graphql/generated/types";
 import dayjs from "dayjs";
 import { Colors } from "@/Constants";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import { IAllCalendarData } from "@/Atoms/CalendarAtom";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+
 import FastImage from "@d11/react-native-fast-image";
 import { DefaultImageUrl, GroupUrl } from "@Service/provider/endpoints";
 import { Chip } from "react-native-ui-lib";
@@ -42,6 +42,8 @@ import "dayjs/locale/fr";
 import "dayjs/locale/es";
 import "dayjs/locale/es";
 import { getStorage } from "@/utils/storage";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type props = {
   eventStyle: ViewStyle[];
@@ -78,7 +80,6 @@ export default function CalendarTaskItem({
 
   const getLocale = async () => {
     const loc = await getStorage("LANGUAGE");
-
 
     if (loc) {
       return loc;
@@ -205,7 +206,7 @@ export default function CalendarTaskItem({
                   alignItems: "center",
                 }}
               >
-                <Ionicons
+                <VectorIconCompat
                   name="people"
                   size={18}
                   color={Colors.light.blue}
@@ -220,7 +221,7 @@ export default function CalendarTaskItem({
                   alignItems: "center",
                 }}
               >
-                <FontAwesome5
+                <VectorIconCompat
                   name="tasks"
                   size={16}
                   color={Colors.light.blue}

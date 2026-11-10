@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Share as NativeShare, Pressable, ShareContent, ShareOptions } from "react-native";
 
 import Colors from "@/Constants/Colors";

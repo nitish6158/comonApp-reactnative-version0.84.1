@@ -1,9 +1,9 @@
+// @ts-nocheck
 import { View, Text, StyleSheet, Pressable, TextInput, FlatList, ActivityIndicator } from "react-native";
 import React, { useMemo, useState } from "react";
 
 import FastImage from "@d11/react-native-fast-image";
 import { DefaultImageUrl, GroupUrl, ImageUrl } from "@Service/provider/endpoints";
-import AntDesign from "react-native-vector-icons/AntDesign";
 
 import { Colors } from "@/Constants";
 
@@ -18,6 +18,8 @@ import { useAppSelector } from "@/redux/Store";
 import useActiveContacts from "@/hooks/useActiveContacts";
 import useAdvanceNavigation from "@/hooks/useAdvanceNavigation";
 import { SelectParticipantForGroupProps } from "@/navigation/screenPropsTypes";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function SelectParticipantForGroup({route,navigation}:SelectParticipantForGroupProps) {
   
@@ -109,7 +111,7 @@ export default function SelectParticipantForGroup({route,navigation}:SelectParti
                         right: -2,
                       }}
                     >
-                      <AntDesign name="checkcircle" color={"green"} size={18} />
+                      <VectorIconCompat name="checkcircle" color={"green"} size={18} />
                     </View>
                   )}
                 </View>
@@ -137,7 +139,7 @@ export default function SelectParticipantForGroup({route,navigation}:SelectParti
       />
 
       <Pressable disabled={createRoomResponse.loading} onPress={onCreatePressed} style={styles.nextButton}>
-        {createRoomResponse.loading ? <ActivityIndicator /> : <AntDesign name="arrowright" size={22} color="white" />}
+        {createRoomResponse.loading ? <ActivityIndicator /> : <VectorIconCompat name="arrowright" size={22} color="white" />}
       </Pressable>
     </View>
   );

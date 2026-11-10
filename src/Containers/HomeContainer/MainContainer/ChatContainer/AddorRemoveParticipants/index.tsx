@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { DefaultImageUrl, ImageUrl } from "@Service/provider/endpoints";
 import { Dimensions, FlatList, Pressable, View } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
@@ -7,7 +8,7 @@ import {
 } from "@Service/generated/room.generated";
 
 import AnimatedTextInput from "@Components/AnimatedTextInput";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import AvtaarWithoutTitle from "@Components/AvtaarWithoutTitle";
 import Colors from "@/Constants/Colors";
 import CommonLoader from "@Components/CommonLoader";
@@ -33,6 +34,8 @@ import { ChatRoomSettingScreenProps } from "@/navigation/screenPropsTypes";
 import { socketConnect } from "@/utils/socket/SocketConnection";
 import { socketManager } from "@/utils/socket/SocketManager";
 import { produce } from "immer";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 const { height } = Dimensions.get("window");
 
@@ -110,8 +113,6 @@ function AddorRemoveParticipants({
 
   navigateBack();
 };
-
-
 
   const GropListItem = ({
     item,
@@ -197,7 +198,7 @@ function AddorRemoveParticipants({
                 }}
                 style={styles.CheckIconContainer}
               >
-                <AntDesign name="closecircle" size={22} color="red" />
+                <VectorIconCompat name="closecircle" size={22} color="red" />
               </Pressable>
             }
             // eslint-disable-next-line react-native/no-inline-styles

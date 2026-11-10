@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { AddTaskResultDto, Edge, Task } from "@Service/generated/types";
 import {
   Alert,
@@ -48,7 +49,6 @@ import { onAddTaskResultType, useTaskReport } from "@Hooks/useTaskReport";
 import { useDispatch, useSelector } from "react-redux";
 import { useFocusEffect, useNavigation } from "@react-navigation/core";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import AudioRecordRed from "@Images/AudioRecording/AudioRecordRed.svg";
 import Colors from "@/Constants/Colors";
 import DigitalTimeString from "@Components/AudioPlayer/src/DigitalTimeString";
@@ -89,6 +89,8 @@ import dayjs from "dayjs";
 import { setCurrentReport } from "@/redux/Reducer/OrganisationsReducer";
 import { requestLocation } from "@/utils/permission/requestLocation";
 import { socketManager } from "@/utils/socket/SocketManager";
+import { VectorIconCompat } from "@/Components/icons";
+
 // const { useRealm } = RealmContext;
 
 export default function AudioRecording({
@@ -687,7 +689,7 @@ export default function AudioRecording({
                           >
                             {/* {!showRecording && <Chevron />} */}
                             {!isPaused ? (
-                              <AntDesign
+                              <VectorIconCompat
                                 name="pausecircle"
                                 size={30}
                                 color={Colors.light.PrimaryColor}

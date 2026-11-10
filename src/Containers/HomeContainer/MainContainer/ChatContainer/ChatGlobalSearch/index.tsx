@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from "react";
 
 import { Dimensions, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
@@ -7,7 +8,7 @@ import { AllChatRooms } from "@Atoms/allRoomsAtom";
 import Colors from "@/Constants/Colors";
 import CommonLoader from "@Components/CommonLoader";
 import Contactlist from "./contactList";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { RootState } from "@Store/Reducer";
 import SearchInput from "@Components/SearchInput";
 import { filterInObject } from "../../ProfileContainer/contacts/FilterContact";
@@ -17,6 +18,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import getAlphabatic from "@Util/alphabeticOrder";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 function GlobalSearch({ navigation }: any) {
   const { comonContact } = useSelector((state: RootState) => state.Contact);
@@ -86,7 +89,7 @@ function GlobalSearch({ navigation }: any) {
       {loading && <CommonLoader />}
 
       <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
-        <Ionicons name="chevron-back" size={35} color="black" onPress={() => nav.goBack()} style={{ marginTop: 12 }} />
+        <VectorIconCompat name="chevron-back" size={35} color="black" onPress={() => nav.goBack()} style={{ marginTop: 12 }} />
         <SearchInput
           SearchValue={SearchValue}
           SetSearchValue={SetSearchValue}

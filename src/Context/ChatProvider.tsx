@@ -54,13 +54,11 @@ const saveCachedConversation = (roomId: string, chats: conversations[]) => {
   const cacheKey = getConversationCacheKey(roomId);
   const serializedChats = JSON.stringify(chats);
   try {
+    // MMKV only on hot path — dual AsyncStorage writes stalled the JS thread
     storage.set(cacheKey, serializedChats);
   } catch (error) {
     console.warn("Unable to save conversation in MMKV:", error);
   }
-  AsyncStorage.setItem(cacheKey, serializedChats).catch((error) => {
-    console.warn("Unable to save conversation in AsyncStorage:", error);
-  });
 };
 
 const deleteCachedConversation = (roomId: string) => {
@@ -70,9 +68,8 @@ const deleteCachedConversation = (roomId: string) => {
   } catch (error) {
     console.warn("Unable to delete conversation from MMKV:", error);
   }
-  AsyncStorage.removeItem(cacheKey).catch((error) => {
-    console.warn("Unable to delete conversation from AsyncStorage:", error);
-  });
+  // Best-effort cleanup of legacy AsyncStorage mirror (rare path)
+  AsyncStorage.removeItem(cacheKey).catch(() => {});
 };
 
 type UpdateMessageType =
@@ -414,7 +411,7 @@ export const ChatProvider = ({
             }
 
             const existingDeleteIndex = message.deleted.findIndex(
-              del => del.user_id === userId
+              (del: any) => del.user_id === userId
             );
 
             const deleteEntry = {
@@ -473,7 +470,7 @@ export const ChatProvider = ({
                 msg.read_by = [];
               }
 
-              const existingIndex = msg.read_by.findIndex(r => r.user_id === userId);
+              const existingIndex = msg.read_by.findIndex((r: any) => r.user_id === userId);
               if (existingIndex !== -1) {
                 msg.read_by.splice(existingIndex, 1);
               }
@@ -639,10 +636,10 @@ export const ChatProvider = ({
             updatedFields = handleFavoriteUpdate(message);
             break;
           case "delete":
-            updatedFields = handleDeleteUpdate(message, data);
+            updatedFields = handleDeleteUpdate(message, data as any);
             break;
           case "media":
-            updatedFields = handleMediaUpdate(message, data);
+            updatedFields = handleMediaUpdate(message, data as any);
             break;
 
           default:

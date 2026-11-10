@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Dimensions, FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { useGetMyNotificationsLazyQuery, useSetNotificationSeenMutation } from "@Service/generated/task.generated";

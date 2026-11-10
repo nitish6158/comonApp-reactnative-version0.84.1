@@ -20,7 +20,7 @@ export interface IAllCalendarData {
     dayOfWeeks: string[];
   };
   montlyParams?: {
-    months: [];
+    months: string[];
     twicePerMonth: boolean;
   };
   dateTimeInput: Array<{

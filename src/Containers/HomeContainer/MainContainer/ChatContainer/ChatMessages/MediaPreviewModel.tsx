@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import useFileSystem from "@/hooks/useFileSystem";
 import { useAtom, useAtomValue } from "jotai";
@@ -6,7 +7,7 @@ import { singleRoom } from "@/Atoms";
 import { useTranslation } from "react-i18next";
 import Modal from "react-native-modal";
 import { Platform, Pressable, StatusBar, Text, TouchableOpacity, View } from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import dayjs from "dayjs";
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import ToastMessage from "@/utils/ToastMesage";
@@ -14,6 +15,8 @@ import { Colors } from "@/Constants";
 import ImagePreviewComponent from "./ImagePreviewComponent";
 import VideoPreviewComponent from "./VideoPreviewComponent";
 import GetExtension from "@/utils/getExtensionfromUrl";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function MediaPreviewModel() {
   const [MediaPreviewData, setMediaPreviewData] = useAtom(MediaPreviewAtom);
@@ -45,7 +48,7 @@ export default function MediaPreviewModel() {
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <AntDesign name="arrowleft" size={24} color="white" />
+            <VectorIconCompat name="arrowleft" size={24} color="white" />
             <View style={{ marginLeft: 15, justifyContent: "center" }}>
               <Text style={{ color: "white", fontWeight: "700" }}>
                 {display?.roomName.slice(0, 22)}

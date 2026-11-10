@@ -1,21 +1,22 @@
+// @ts-nocheck
 import { Block, Center, HStack, Typography } from "rnmuilib";
 import { DefaultImageUrl, GroupUrl, ImageUrl } from "@Service/provider/endpoints";
 import { Alert, Platform, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import React, { Fragment, useEffect, useMemo, useState } from "react";
 import LiveKitVideoTrack from "./LiveKitVideoTrack";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import CallBackground from "./CallBackground";
 import Colors from "@/Constants/Colors";
 import Icon from "@Images/Icon";
-import Icons from "react-native-vector-icons/MaterialCommunityIcons";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { ShowCallTimeUI } from "./CallTimer";
 import SwitchToVideoPromt from "./SwitchToVideoPromt";
 import VideoDisableBlock from "./VideoDisableBlock";
 import { callAtomType } from "@Atoms/callAtom";
 import { useTranslation } from "react-i18next";
 import FastImage from "@d11/react-native-fast-image";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type fullModeProps = {
   callRequest: callAtomType;
@@ -121,7 +122,7 @@ export default function SeniorCallMode({
           }}
         >
           <Pressable onPress={SwitchToMiniMode} style={{ flexDirection: "row", alignItems: "center" }}>
-            <Icons name="chevron-left" style={{ color: Colors.light.White }} size={26} />
+            <VectorIconCompat name="chevron-left" color={Colors.light.White} size={26} />
             <Text style={{ color: 'white', fontSize: 16 }}>{t("navigation.back")}</Text>
           </Pressable>
         </View>

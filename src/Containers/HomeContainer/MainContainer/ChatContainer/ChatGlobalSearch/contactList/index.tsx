@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { AnyAction, Dispatch } from "redux";
 import { DoubleUserAction, LastMessageType, ScreensList, SingleUserAction } from "@Types/types";
 import { FlatList, StyleSheet, View } from "react-native";

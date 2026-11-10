@@ -6,7 +6,7 @@ import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import AttachFile from "./AttachFile";
 import Colors from "@/Constants/Colors";
 import { Edge } from "@Service/generated/types";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import { Task } from "@Service/generated/assigment.generated";
 import TaskPermissionView from "./TaskPermissionView";
 import { checkPermission } from "@Util/comon.functions.utils";
@@ -17,20 +17,22 @@ import { useTranslation } from "react-i18next";
 import { windowWidth } from "@Util/ResponsiveView";
 import DigitalSignature from "@Components/DigitalSignature";
 
+import { VectorIconCompat } from "@/Components/icons";
+
 export function RangeSelect({
   task,
   edge,
   onAddTaskResult,
   addTaskLoading,
 }: {
-  task: Task;
+  task: any;
   edge: Edge;
   addTaskLoading: boolean;
   onAddTaskResult: onAddTaskResultType;
 }) {
-  const [range, setRange] = useState<Number | undefined>(0);
-  const [selected, setselected] = useState("");
-  const [media, setMedia] = useState();
+  const [range, setRange] = useState<number | undefined>(0);
+  const [selected, setselected] = useState<any>("");
+  const [media, setMedia] = useState<any>();
   const [finalResult, setFinalResult] = useState<number>(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [signature, setSignature] = useState("");
@@ -46,7 +48,7 @@ export function RangeSelect({
           const exp = typeof item?.value == "string" ? JSON.parse(item.value) : item.value;
           if (exp?.length) {
             let expression = "";
-            exp.forEach((e, i) => {
+            exp.forEach((e: any, i: number) => {
               const operator = e?.operator;
               const value = e?.value;
               const gate = e?.gate;
@@ -86,17 +88,17 @@ export function RangeSelect({
   }, []);
 
   React.useEffect(() => {
-    if (task.rangeExpression.min) {
-      setRange(task.rangeExpression.min);
+    if (task.rangeExpression?.min != null) {
+      setRange(Number(task.rangeExpression.min));
     }
   }, [task.rangeExpression?.min]);
 
-  function evaluateConditions(operations, currentValue) {
+  function evaluateConditions(operations: any, currentValue: any) {
     for (const operation of operations) {
       const conditions = JSON.parse(operation.value);
 
       // Evaluate conditions for the current operation
-      const operationResult = conditions.every((condition) => {
+      const operationResult = conditions.every((condition: any) => {
         switch (condition.operator) {
           case ">":
             return currentValue > condition.value;
@@ -163,12 +165,12 @@ export function RangeSelect({
             }}
             value={Number(range)}
             disabled={task.rangeExpression?.min == task.rangeExpression?.max}
-            minimumValue={Number(task.rangeExpression.min)}
-            maximumValue={Number(task.rangeExpression?.max)}
+            minimumValue={Number(task.rangeExpression?.min ?? 0)}
+            maximumValue={Number(task.rangeExpression?.max ?? 0)}
             thumbTintColor={Colors.light.PrimaryColor}
             thumbStyle={{ height: 25, width: 25 }}
           />
-          <Text style={{ fontSize: 17, textAlign: "center" }}>{range}</Text>
+          <Text style={{ fontSize: 17, textAlign: "center" }}>{String(range ?? 0)}</Text>
         </View>
         <Text
           style={{
@@ -189,19 +191,19 @@ export function RangeSelect({
       {selected?.location && (
         <TaskPermissionView
           message={t("task.useLocation")}
-          icon={<FontAwesome name="map-marker" size={24} color="gray" />}
+          icon={<VectorIconCompat name="map-marker" size={24} color="gray" />}
         />
       )}
 
       {selected?.media && (
         <AttachFile
-          task={{ mediaType: selected?.media }}
+          task={{ mediaType: selected?.media } as any}
           addTaskLoading={addTaskLoading}
           edge={edge}
-          onAddTaskResult={(edge, task, undefined, file) => {
+          onAddTaskResult={(_edge, _task, _opts, file) => {
             setMedia(file);
           }}
-          mediaRequiredOnOptions={selected.media}
+          mediaRequiredOnOptions={selected.media as any}
         />
       )}
 

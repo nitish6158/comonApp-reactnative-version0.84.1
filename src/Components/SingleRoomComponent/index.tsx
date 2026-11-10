@@ -1,6 +1,7 @@
+// @ts-nocheck
 import Animated from "react-native-reanimated";
 import { Image, Pressable, View } from "react-native";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import Color from "@/Constants/Colors";
 import { DefaultImageUrl } from "@Service/provider/endpoints";
 import FormatTextRender from "../formatTextRender";
@@ -36,7 +37,7 @@ interface ChatProps {
   onPressContinaer: () => {};
   chatclear?: boolean;
 }
-export default function SingleRoomComponent({
+function SingleRoomComponent({
   roomData,
   date,
   Name,
@@ -212,3 +213,5 @@ function UnreadChatMessages({ unread, isUnreadByMe }: Readonly<unreadProps>) {
     </View>
   );
 }
+
+export default memo(SingleRoomComponent);

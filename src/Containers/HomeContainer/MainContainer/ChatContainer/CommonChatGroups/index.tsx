@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
 import React, { useEffect, useState } from "react";

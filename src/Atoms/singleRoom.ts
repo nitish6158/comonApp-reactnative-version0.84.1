@@ -30,7 +30,7 @@ export interface singleRoomType {
   isCurrentRoomDisappearedMessageOn: boolean;
   currentUserUtility: RoomParticipantData;
   isMyself: Boolean;
-  log: {
+  log?: {
     type: logType;
     created_at: string;
   };
@@ -43,6 +43,12 @@ export interface singleRoomType {
     user_id: string;
     receipt: boolean;
   }>;
+  mutedBy?: Array<{
+    user_id: string;
+    expired_at?: number | string;
+    muted_at?: number;
+  }>;
+  totalMedia?: number;
 }
 export const defaultgroupPermission = {
   EditInfoPermission: { permit: "common", type: "editInfo" },
@@ -52,7 +58,7 @@ export const defaultgroupPermission = {
 
 export  const initialDisplayState: singleRoomType = {
   roomId: "",
-  roomType: "",
+  roomType: "" as singleRoomType["roomType"],
   roomName: "",
   roomImage: "",
   roomDescription: "",

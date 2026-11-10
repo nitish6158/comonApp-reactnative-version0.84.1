@@ -1,9 +1,11 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import Colors from "@/Constants/Colors";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import React from "react";
 import { ShowCallTimeUI } from "./CallTimer";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type miniModeProps = {
   switchToFullMode: (value: boolean) => void;
@@ -16,7 +18,7 @@ export default function MiniCallMode({ switchToFullMode, userName, duration }: m
     <Pressable onPress={() => switchToFullMode(true)} style={miniModeStyle.container}>
       <Text style={miniModeStyle.userName}>{userName}</Text>
       <View style={miniModeStyle.callDetailsContainer}>
-        <Ionicons name="ios-call" size={16} color="white" />
+        <VectorIconCompat name="ios-call" size={16} color="white" />
         <ShowCallTimeUI color="white" />
       </View>
     </Pressable>

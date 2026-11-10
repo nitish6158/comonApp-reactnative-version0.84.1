@@ -36,7 +36,7 @@ export default function useRoomMedia({ roomId, userId }: UseRoomMediaProps) {
 
                     // Filter and count media
                     const myMedia = conversations.filter(
-                        (conv) => !conv.deleted?.some((del) => del.user_id === userId)
+                        (conv) => !conv.deleted?.some((del: any) => del.user_id === userId)
                     );
 
                     let count = 0;

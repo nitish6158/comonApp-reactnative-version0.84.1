@@ -56,7 +56,7 @@ export default function TermsScreen({ onDecline, onAgree }: TermsScreenProps) {
   const translation = useTranslation().t;
 
   const [scrollDirection, setScrollDirection] = useState(false);
-  const scrollViewRef = useRef<any>();
+  const scrollViewRef = useRef<any>(null);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const totalContentSize =

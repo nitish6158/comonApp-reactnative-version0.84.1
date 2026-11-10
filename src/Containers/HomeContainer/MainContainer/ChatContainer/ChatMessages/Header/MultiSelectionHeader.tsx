@@ -12,9 +12,10 @@ import {
 import { Pressable, Text, View } from "react-native";
 import { useAtom, useSetAtom } from "jotai";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import React from "react";
 import { useTranslation } from "react-i18next";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function MultiSelectionHeader() {
   const { t } = useTranslation();
@@ -40,7 +41,7 @@ export default function MultiSelectionHeader() {
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <AntDesign
+        <VectorIconCompat
           name="search1"
           size={20}
           color="black"

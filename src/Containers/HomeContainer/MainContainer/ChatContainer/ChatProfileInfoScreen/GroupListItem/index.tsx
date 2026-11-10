@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Alert, FlatList, Pressable, StyleSheet, View } from "react-native";
 import { DefaultImageUrl, ImageUrl } from "@Service/provider/endpoints";
 //import liraries

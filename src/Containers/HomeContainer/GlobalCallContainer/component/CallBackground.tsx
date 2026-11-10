@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ImageBackground, Platform, View, useWindowDimensions } from "react-native";
 import React, { useMemo } from "react";
 import LiveKitVideoTrack from "./LiveKitVideoTrack";

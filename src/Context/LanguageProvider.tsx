@@ -10,7 +10,7 @@ import { Language } from "@/graphql/generated/types";
 export interface LanguageContextState {
   onOpen: () => void;
   onClose: () => void;
-  onSelect: (locale: locales) => void;
+  onSelect: (locale: any) => void;
   currentLanguage: string;
 }
 
@@ -30,11 +30,12 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   const [currentLanguage, setCurrentLanguage] = useState("en");
   const { i18n } = useTranslation();
 
-  const onSelect = (locale: Language) => {
+  const onSelect = (locale: any) => {
     console.log(locale)
-    i18n.changeLanguage(locale.code).then(() => {
-      setStorage(DefaultStorageKeys.LANGUAGE, locale.code);
-      setCurrentLanguage(locale.code);
+    const code = typeof locale === "string" ? locale : locale?.code;
+    i18n.changeLanguage(code ?? undefined).then(() => {
+      setStorage(DefaultStorageKeys.LANGUAGE, code ?? "en");
+      setCurrentLanguage(code ?? "en");
       onClose();
     });
   };

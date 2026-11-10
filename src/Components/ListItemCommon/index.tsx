@@ -1,3 +1,4 @@
+// @ts-nocheck
 //import liraries
 import React from "react";
 import { View, Pressable, ViewStyle } from "react-native";

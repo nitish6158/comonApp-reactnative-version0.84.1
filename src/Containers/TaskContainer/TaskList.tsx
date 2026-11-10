@@ -30,8 +30,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { TaskComponent } from "./TaskUtils";
 import TaskListFooter from "./components/TaskListFooter";
-const MaterialCommunityIcons =
-  require("react-native-vector-icons/MaterialCommunityIcons").default;
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type FormValues = {
   title: string;
@@ -238,14 +238,14 @@ const TaskList = ({ navigation }: { navigation?: any }) => {
       activeOpacity={0.7}
     >
       <View style={styles.row}>
-        <MaterialCommunityIcons
+        <VectorIconCompat
           name={item.icon}
           size={28}
           color={Colors.light.PrimaryColor}
           style={styles.icon}
         />
         <Text style={styles.taskLabel}>{item.label}</Text>
-        <MaterialCommunityIcons
+        <VectorIconCompat
           name="chevron-right"
           size={28}
           color="#bbb"
@@ -262,7 +262,7 @@ const TaskList = ({ navigation }: { navigation?: any }) => {
           style={styles.backBtn}
           onPress={() => navigation.goBack()}
         >
-          <MaterialCommunityIcons
+          <VectorIconCompat
             name="arrow-left"
             size={24}
             color={Colors.light.text}
@@ -301,7 +301,7 @@ const TaskList = ({ navigation }: { navigation?: any }) => {
             activeOpacity={0.7}
           >
             <View style={styles.row}>
-              <MaterialCommunityIcons
+              <VectorIconCompat
                 name="view-list"
                 size={28}
                 color={Colors.light.alertSuccess}
@@ -312,7 +312,7 @@ const TaskList = ({ navigation }: { navigation?: any }) => {
               >
                 {t("taskList.create-multiple-tasks")}
               </Text>
-              <MaterialCommunityIcons
+              <VectorIconCompat
                 name="chevron-right"
                 size={28}
                 color="#bbb"
@@ -337,7 +337,7 @@ const TaskList = ({ navigation }: { navigation?: any }) => {
           style={styles.modalOverlay}
         >
           <View style={styles.modalBox}>
-            <MaterialCommunityIcons
+            <VectorIconCompat
               name="book-check"
               size={90}
               color={Colors.light.PrimaryColor}

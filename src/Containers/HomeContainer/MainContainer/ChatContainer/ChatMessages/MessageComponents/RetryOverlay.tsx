@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type props = {
   isVisible: boolean;
@@ -13,7 +14,7 @@ export default function RetryOverlay({ isVisible }: props) {
     return (
       <View style={styles.overlay}>
         <TouchableOpacity style={styles.retryContainer}>
-          <MaterialCommunityIcons name="upload" size={32} color="white" />
+          <VectorIconCompat name="upload" size={32} color="white" />
         </TouchableOpacity>
       </View>
     );

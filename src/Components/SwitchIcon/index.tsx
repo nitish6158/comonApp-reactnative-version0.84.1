@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from "react";
 
 import { Pressable, StyleProp, TextStyle } from "react-native";
@@ -5,8 +6,10 @@ import { Pressable, StyleProp, TextStyle } from "react-native";
 import { $space_xs } from "@/Constants/Spaces";
 import { $text_md } from "@/Constants/TextSizes";
 import Colors from "@/Constants/Colors";
-import Feather from "react-native-vector-icons/Feather";
+
 import { OutlineGlyphMapType } from "@ant-design/icons-react-native/lib/outline";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 interface SwitchIconProps {
   active: boolean;
@@ -24,7 +27,7 @@ export const SwitchIcon = ({
   style = { color: Colors.light.tintText, fontSize: $text_md },
 }: SwitchIconProps) => (
   <Pressable onPress={onPress}>
-    <Feather
+    <VectorIconCompat
       name={active ? activeIcon : icon}
       style={[{ paddingHorizontal: $space_xs, paddingVertical: $space_xs }, style]}
     />

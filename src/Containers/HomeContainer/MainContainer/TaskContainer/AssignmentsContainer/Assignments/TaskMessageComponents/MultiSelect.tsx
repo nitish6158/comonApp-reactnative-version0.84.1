@@ -7,14 +7,16 @@ import { Text, View, StyleSheet, Pressable, Image, Dimensions } from "react-nati
 
 import AttachFile from "./AttachFile";
 import Colors from "@/Constants/Colors";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import TaskPermissionView from "./TaskPermissionView";
 import { checkPermission } from "@Util/comon.functions.utils";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { $space_xs, $space_xxl } from "@/Constants";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import DigitalSignature from "@Components/DigitalSignature";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export function MultiSelect({
   taskDelay,
@@ -30,10 +32,10 @@ export function MultiSelect({
   edge: Edge;
 }) {
   const isTimeout = task?.edges.find((e) => e.type === "TIMEOUT");
-  const singleEdge = task?.edges.find((e) => e.type === "DEFAULT" && e?.options?.length > 0);
+  const singleEdge = task?.edges.find((e) => e.type === "DEFAULT" && (e?.options?.length ?? 0) > 0);
 
   const [selected, setSelected] = useState<EdgeOption | null>(null);
-  const [media, setMedia] = useState();
+  const [media, setMedia] = useState<any>();
   const [modalVisible, setModalVisible] = useState(false);
   const [signature, setSignature] = useState("");
 
@@ -73,7 +75,7 @@ export function MultiSelect({
     }
     const getTaskAnswer = checked.map((e) => e.label);
     onAddTaskResult(
-      singleEdge,
+      singleEdge as any,
       task,
       getTaskAnswer.toString(),
       media ?? undefined,
@@ -101,7 +103,7 @@ export function MultiSelect({
             key={index}
             onPress={() => onSetChecked(option)}
           >
-            <MaterialCommunityIcons
+            <VectorIconCompat
               name={checked.find((e) => e.label == option.label) ? "check-circle" : "checkbox-blank-circle-outline"}
               size={28}
               color="white"
@@ -114,19 +116,19 @@ export function MultiSelect({
       {selected?.location && (
         <TaskPermissionView
           message={t("task.useLocation")}
-          icon={<FontAwesome name="map-marker" size={24} color="gray" />}
+          icon={<VectorIconCompat name="map-marker" size={24} color="gray" />}
         />
       )}
 
       {selected?.media && (
         <AttachFile
-          task={{ mediaType: selected?.media }}
+          task={{ mediaType: selected?.media } as any}
           addTaskLoading={addTaskLoading}
           edge={edge}
-          onAddTaskResult={(edge, task, undefined, file) => {
+          onAddTaskResult={(_edge, _task, _opts, file) => {
             setMedia(file);
           }}
-          mediaRequiredOnOptions={selected.media}
+          mediaRequiredOnOptions={selected.media as any}
         />
       )}
       {selected?.signature && (
@@ -158,7 +160,7 @@ export function MultiSelect({
       {(taskDelay == 0 || taskDelay == undefined) && (
         <Button
           disabled={
-            checked.every((item) => typeof item == "string" || item == true) ||
+            checked.every((item) => typeof item == "string" || (item as any) == true) ||
             (selected?.media && !media ? true : false)
           }
           buttonStyle={{ height: 45, borderRadius: 30, width: 280, alignSelf: "center" }}

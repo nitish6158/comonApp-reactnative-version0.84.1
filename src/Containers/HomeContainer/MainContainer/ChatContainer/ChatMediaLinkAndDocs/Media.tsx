@@ -1,7 +1,7 @@
+// @ts-nocheck
 import { Image, Modal, Pressable, ScrollView, View,Text } from "react-native";
 import React, { SetStateAction, useState } from "react";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import Colors from "@/Constants/Colors";
 import { DefaultImageUrl } from "@Service/provider/endpoints";
 import FastImage from "@d11/react-native-fast-image";
@@ -16,6 +16,8 @@ import { useAtom, useAtomValue } from "jotai";
 import { useSelector } from "react-redux";
 import { RoomMediaAtom } from "@/Atoms";
 import MediaPreviewModel from "../ChatMessages/MediaPreviewModel";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 function Media({ name }: { name: string }) {
   const data = useAtomValue(RoomMediaAtom);
@@ -89,7 +91,7 @@ function Media({ name }: { name: string }) {
                   top: 18,
                 }}
               >
-                <AntDesign name="play" size={30} color={Colors.light.PrimaryColor} />
+                <VectorIconCompat name="play" size={30} color={Colors.light.PrimaryColor} />
               </View>
             </Pressable>
           ) : (

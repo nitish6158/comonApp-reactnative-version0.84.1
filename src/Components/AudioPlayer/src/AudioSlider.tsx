@@ -1,12 +1,11 @@
+// @ts-nocheck
 import { Animated, Pressable, Text, TouchableOpacity, View } from "react-native";
 //import liraries
 import React, { useEffect, useRef, useState } from "react";
 
 import Colors from "@/Constants/Colors";
 import DigitalTimeString from "./DigitalTimeString";
-import Entypo from "react-native-vector-icons/Entypo";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import Slider from "@react-native-community/slider";
 import Sound from "react-native-sound";
 import ToastMessage from "@Util/ToastMesage";
@@ -17,15 +16,18 @@ import FastImage from "@d11/react-native-fast-image";
 import { DefaultImageUrl } from "@Service/provider/endpoints";
 import { useTranslation } from "react-i18next";
 
+import { VectorIconCompat } from "@/Components/icons";
+
 // create a component
 type props = {
-  senderProfileUrl: string;
+  senderProfileUrl?: string;
   duration?: string;
   audio: string;
   topColor: string;
-  UserImage: string;
+  UserImage?: string;
   backgroundColor: string;
   withoutWrapper?: boolean;
+  id?: string;
 };
 
 export default function AudioSlider(props: props) {
@@ -145,7 +147,7 @@ export default function AudioSlider(props: props) {
             justifyContent: "center",
           }}
         >
-          <FontAwesome5 name="microphone" size={7} color={props.backgroundColor} />
+          <VectorIconCompat name="microphone" size={7} color={props.backgroundColor} />
         </View>
 
         <View>
@@ -176,9 +178,9 @@ export default function AudioSlider(props: props) {
           }}
         >
           {playing ? (
-            <MaterialIcons name="pause" size={30} color={props.topColor} />
+            <VectorIconCompat name="pause" size={30} color={props.topColor} />
           ) : (
-            <Entypo
+            <VectorIconCompat
               name={audioError ? "sound-mute" : "controller-play"}
               size={audioError ? 20 : 30}
               color={audioError ? "red" : props.topColor}

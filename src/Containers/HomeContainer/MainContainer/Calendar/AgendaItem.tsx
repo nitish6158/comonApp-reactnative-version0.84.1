@@ -3,10 +3,11 @@ import { StyleSheet, Alert, View, Text, TouchableOpacity } from "react-native";
 import moment from "moment";
 import { isEmpty } from "lodash";
 import { Colors } from "@/Constants";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { IAllCalendarData } from "@/Atoms/CalendarAtom";
 import { useTranslation } from "react-i18next";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 interface ItemProps {
   item: IAllCalendarData;
@@ -41,9 +42,9 @@ export default function AgendaItem(props: ItemProps) {
       <View>
         <View style={[styles.rowDirection]}>
           {item?.type == "REMINDER" ? (
-            <MaterialIcons name="notifications-on" size={25} color={"#128276"} />
+            <VectorIconCompat name="notifications-on" size={25} color={"#128276"} />
           ) : (
-            <Ionicons name="list-circle-sharp" size={25} />
+            <VectorIconCompat name="list-circle-sharp" size={25} />
           )}
           <Text style={styles.itemTitleText}>{item.label}</Text>
         </View>

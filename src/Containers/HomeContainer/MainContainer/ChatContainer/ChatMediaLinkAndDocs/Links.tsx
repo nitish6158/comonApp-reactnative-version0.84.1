@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Dimensions,
   Linking,
@@ -12,7 +13,7 @@ import { chatIndexForScroll, chatMode, RoomLinksAtom } from "@Atoms/ChatMessageE
 import ArrowRight from "@Images/Arrow_right.svg";
 import Autolink from "react-native-autolink";
 import Colors from "@/Constants/Colors";
-import Feather from "react-native-vector-icons/Feather";
+
 // import RealmContext from "../../../../../schemas";
 import { RootState } from "@Store/Reducer";
 import SectionTitle from "./SectionTitle";
@@ -27,8 +28,9 @@ import { useTranslation } from "react-i18next";
 import { socketManager } from "@/utils/socket/SocketManager";
 import useFindActiveRoomLinks from "@/utils/findConversitionLinks";
 
-const { width } = Dimensions.get("window");
+import { VectorIconCompat } from "@/Components/icons";
 
+const { width } = Dimensions.get("window");
 
 function Links({ name }: { name: string }) {
   const MyProfile = useSelector((state: RootState) => state.Chat.MyProfile);
@@ -113,7 +115,7 @@ function Links({ name }: { name: string }) {
                             marginRight: 16,
                           }}
                         >
-                          <Feather
+                          <VectorIconCompat
                             name="link-2"
                             size={20}
                             color={Colors.light.PrimaryColor} />

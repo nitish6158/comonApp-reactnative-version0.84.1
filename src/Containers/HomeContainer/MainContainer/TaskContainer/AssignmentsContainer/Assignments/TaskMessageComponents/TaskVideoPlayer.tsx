@@ -6,7 +6,7 @@ import { DefaultImageUrl } from "@Service/provider/endpoints";
 import Video from "react-native-video";
 
 type props = {
-  filename: String;
+  filename: string;
   ContainerStyle?: ViewStyle;
   isFullScreen?: boolean;
   setImagePreviewImage?: ({ url, type }: any) => void;
@@ -19,7 +19,7 @@ export function TaskVideoPlayer({
   isFullScreen,
   setImagePreviewVisible,
 }: props) {
-  const uri = filename.includes(DefaultImageUrl) ? filename : `${DefaultImageUrl}${filename}`;
+  const uri = String(filename).includes(DefaultImageUrl) ? String(filename) : `${DefaultImageUrl}${filename}`;
   return (
     <View
       style={[
@@ -32,7 +32,7 @@ export function TaskVideoPlayer({
       ]}
     >
       <Video
-        source={{ uri: uri }}
+        source={{ uri }}
         controls
         style={{
           height: windowHeight / 4,

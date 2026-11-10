@@ -37,14 +37,14 @@ function SendChatHelper() {
       }
       Replymessage = {
         cid: replyMessage?._id?.toString(),
-        type: replyMessage?.type,
+        chat_type: replyMessage?.type,
         sender: replyMessage?.sender,
         name: "",
         message: sendmessage,
         fontStyle: "normal",
-        file_URL: replyMessage.fileURL,
+        url: replyMessage.fileURL,
         created_at: Date.now(),
-      };
+      } as any;
     }
 
     if (isConnected) {

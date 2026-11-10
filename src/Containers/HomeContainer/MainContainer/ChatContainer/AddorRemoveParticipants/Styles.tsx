@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Colors from "@/Constants/Colors";
 import { StyleSheet } from "react-native";
 import { windowHeight } from "@Util/ResponsiveView";

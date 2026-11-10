@@ -13,8 +13,8 @@ export interface UseStorageDedlineReturnType {
   isCanResend: boolean;
   onRemove: () => void;
   onFinish: () => void;
-  onResend: () => void;
-  setIsCanResend: (value) => void;
+  onResend: (storageKey: StorageKeysList) => void;
+  setIsCanResend: (value: boolean) => void;
 }
 
 export const useStorageDedline = ({ storageKey }: UseStorageDedline): UseStorageDedlineReturnType => {

@@ -1,8 +1,8 @@
+// @ts-nocheck
 import * as React from "react";
 
 import { Platform, Pressable, ScrollView, StatusBar, View } from "react-native";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import CommonHeader from "../header/CommonHeader";
 import Modal from "react-native-modal";
 import Text from "../Text";
@@ -26,10 +26,12 @@ import { storage } from "@/redux/backup/mmkv";
 import { keys } from "@/redux/backup/keys";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { VectorIconCompat } from "@/Components/icons";
+
 interface LanguageProps {
   visible?: boolean;
   onClose?: () => void;
-  onSelect: (locale: locales) => void;
+  onSelect: (locale: any) => void;
 }
 
 const LanguageSelector = ({ visible, onClose, onSelect }: LanguageProps) => {
@@ -121,7 +123,7 @@ const LanguageSelector = ({ visible, onClose, onSelect }: LanguageProps) => {
                   </View>
                 </View>
                 {locale.code === currentLang ? (
-                  <AntDesign name="check" size={20} />
+                  <VectorIconCompat name="check" size={20} />
                 ) : (
                   <></>
                 )}

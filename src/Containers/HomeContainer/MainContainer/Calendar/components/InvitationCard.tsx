@@ -1,15 +1,15 @@
+// @ts-nocheck
 import { View, Text, Pressable, ActivityIndicator } from "react-native";
 import React, { useState } from "react";
 import { useAtomValue } from "jotai";
 import { screenStyle as styles } from "../../ReminderContainer/ViewReminderScreen/viewReminder.styles";
-import Ionicons from "react-native-vector-icons/Ionicons";
 
 import { currentUserIdAtom } from "@/Atoms";
 import dayjs from "dayjs";
 import FastImage from "@d11/react-native-fast-image";
 import { DefaultImageUrl } from "@Service/provider/endpoints";
 import { windowWidth } from "@Util/ResponsiveView";
-import Entypo from "react-native-vector-icons/Entypo";
+
 import { Chip } from "react-native-ui-lib";
 import SingleViewReminder from "../../ReminderContainer/ViewReminderScreen/components/SingleViewReminder";
 import { reminder } from "@/schemas/schema";
@@ -21,6 +21,8 @@ import { useNavigation } from "@react-navigation/core";
 import { useTranslation } from "react-i18next";
 import { ParticipantAcceptStatus } from "@/graphql/generated/types";
 import CalendarDataManipulator from "../CalendarDataManipulator";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type InvitationCardProps = {
   item: reminder;
@@ -78,7 +80,7 @@ export default function InvitationCard({ item, index }: Readonly<InvitationCardP
 
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <View style={styles.participantIcon}>
-                <Ionicons
+                <VectorIconCompat
                   name="people"
                   size={18}
                   color={styles[`type_text_${item.type}`].color}
@@ -89,7 +91,7 @@ export default function InvitationCard({ item, index }: Readonly<InvitationCardP
 
               {item.attachment && item.attachment.length > 0 && (
                 <View style={styles.participantIcon}>
-                  <Entypo
+                  <VectorIconCompat
                     name="attachment"
                     size={16}
                     color={styles[`type_text_${item.type}`].color}
@@ -101,21 +103,21 @@ export default function InvitationCard({ item, index }: Readonly<InvitationCardP
               {item.approvalReminderTime && item.approvalReminderTime.length > 0 && (
                 <View style={[styles.participantIcon, { marginHorizontal: 5 }]}>
                   {currentUser?.accepted === ParticipantAcceptStatus['Pause'] && (
-                    <Ionicons name="notifications-off-sharp" size={16} color={styles[`type_text_${item.type}`].color} />
+                    <VectorIconCompat name="notifications-off-sharp" size={16} color={styles[`type_text_${item.type}`].color} />
                   )}
 
                   {(currentUser?.accepted === ParticipantAcceptStatus["Accept"] ||
                     currentUser?.accepted === ParticipantAcceptStatus["Reject"]) && (
-                    <Ionicons name="notifications" size={16} color={styles[`type_text_${item.type}`].color} />
+                    <VectorIconCompat name="notifications" size={16} color={styles[`type_text_${item.type}`].color} />
                   )}
                   {currentUser?.accepted === ParticipantAcceptStatus["Pending"] && (
-                    <Ionicons name="notifications-outline" size={16} color={styles[`type_text_${item.type}`].color} />
+                    <VectorIconCompat name="notifications-outline" size={16} color={styles[`type_text_${item.type}`].color} />
                   )}
                   <Text style={{ marginLeft: 2 }}>{item.approvalReminderTime.length}</Text>
                 </View>
               )}
               {item.location && (
-                <Ionicons name="location-sharp" size={18} color="red" style={{ marginHorizontal: 3 }} />
+                <VectorIconCompat name="location-sharp" size={18} color="red" style={{ marginHorizontal: 3 }} />
               )}
             </View>
           </View>

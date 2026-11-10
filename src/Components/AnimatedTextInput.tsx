@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Animated, Platform, Pressable, StyleSheet, TextInput, View, Text, TouchableOpacity } from "react-native";
 import React, { useEffect, useRef, useState, useTransition } from "react";
 

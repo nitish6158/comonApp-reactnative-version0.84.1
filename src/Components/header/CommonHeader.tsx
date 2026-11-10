@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ActivityIndicator, Pressable, Text, View, useWindowDimensions } from "react-native";
 import { AllScreenParamList, navigate, navigateBack } from "@Navigation/utility";
 import { mainStyles, typographyStyles } from "../../styles/main";

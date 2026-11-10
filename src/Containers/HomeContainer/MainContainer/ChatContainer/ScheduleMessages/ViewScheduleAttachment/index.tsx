@@ -2,9 +2,10 @@ import { View, Text, Pressable, TouchableOpacity, StatusBar, ScrollView, StyleSh
 import React from "react";
 import ImagePreviewComponent from "@/Containers/HomeContainer/MainContainer/ChatContainer/ChatMessages/ImagePreviewComponent";
 import { ViewScheduleAttachmentProps } from "@/navigation/screenPropsTypes";
-import Ionicons from "react-native-vector-icons/Ionicons";
 
 import VideoPreviewComponent from "../../ChatMessages/VideoPreviewComponent";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function ViewScheduleAttachment({ navigation, route }: ViewScheduleAttachmentProps) {
 
@@ -12,7 +13,7 @@ export default function ViewScheduleAttachment({ navigation, route }: ViewSchedu
     <View style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar backgroundColor="black" />
       <View style={{ marginHorizontal: 10 }}>
-        <Ionicons name="arrow-back" color="white" size={30} onPress={navigation.goBack} />
+        <VectorIconCompat name="arrow-back" color="white" size={30} onPress={navigation.goBack} />
       </View>
       <ImagePreviewComponent isVisible={route.params.type == "image"} imageURL={`${route.params.url}`} />
       <VideoPreviewComponent isVisible={route.params.type == "video"} videoUrl={`${route.params.url}`} />

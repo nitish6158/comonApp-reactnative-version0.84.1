@@ -31,7 +31,7 @@ export function SeniorNavigator() {
   React.useEffect(() => {
     if (initialRoute.name) {
       setTimeout(() => {
-        navigate(initialRoute.name, initialRoute.payload);
+        navigate(initialRoute.name as any, initialRoute.payload);
       }, 1000);
     }
   }, [initialRoute.name]);
@@ -82,16 +82,20 @@ export function SeniorNavigator() {
           component={SeniorChatMessageScreen}
           options={{ headerShown: false }}
         />
-        <SeniorStack.Screen name="ViewContactScreen" component={ViewContactScreen} options={{ headerShown: false }} />
+        <SeniorStack.Screen
+          name="ViewContactScreen"
+          component={ViewContactScreen as any}
+          options={{ headerShown: false }}
+        />
         <SeniorStack.Screen
           name="EditProfileImageScreen"
-          component={EditProfileScreen}
+          component={EditProfileScreen as any}
           options={{ headerShown: false }}
         />
 
         <SeniorStack.Screen
-          name="AboutContainer"
-          component={AboutContainer}
+          name={"AboutContainer" as any}
+          component={AboutContainer as any}
           options={{
             headerShown: false,
           }}

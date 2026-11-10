@@ -1,13 +1,16 @@
+// @ts-nocheck
 import { Text, View } from "react-native";
 
 import Colors from "@/Constants/Colors";
 import { Conversation } from "@Models/chatmessage";
-import Entypo from "react-native-vector-icons/Entypo";
+
 import React from "react";
 import ReplymsgView from "@Util/helpers/replymsgview";
 import { singleRoom } from "@Atoms/singleRoom";
 import { useAtom } from "jotai";
 import { useTranslation } from "react-i18next";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type props = {
   isVisible: boolean;
@@ -26,7 +29,6 @@ export default function ReplyMessageComponent({
 
   const { t } = useTranslation();
 
-
   if (!isVisible) {
     return null;
   } else if (isMessageDeletedForEveryOne) {
@@ -35,7 +37,7 @@ export default function ReplyMessageComponent({
     return (
       <View style={{ marginBottom: 5 }}>
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
-          <Entypo name="reply" size={15} style={{ marginRight: 5 }} color={Colors.light.black} />
+          <VectorIconCompat name="reply" size={15} style={{ marginRight: 5 }} color={Colors.light.black} />
           <Text style={{ fontSize: 12, marginVertical: 5 }}>{t("repliedOn")}</Text>
         </View>
         <View

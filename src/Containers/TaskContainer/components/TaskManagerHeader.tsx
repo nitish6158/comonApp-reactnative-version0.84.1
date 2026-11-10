@@ -5,8 +5,7 @@ import { Colors } from "@/Constants";
 import { taskManagerHeaderStyles } from "../styles/TaskManagerHeaderStyles";
 import { ModalDetail } from "../TaskUtils";
 
-const MaterialCommunityIcons =
-  require("react-native-vector-icons/MaterialCommunityIcons").default;
+import { VectorIconCompat } from "@/Components/icons";
 
 interface TaskManagerHeaderProps {
   navigation?: any;
@@ -39,7 +38,7 @@ export const TaskManagerHeader: React.FC<TaskManagerHeaderProps> = ({
             style={taskManagerHeaderStyles.backBtn}
             onPress={onBackPress}
           >
-            <MaterialCommunityIcons
+            <VectorIconCompat
               name="arrow-left"
               size={26}
               color="#007bff"
@@ -58,7 +57,7 @@ export const TaskManagerHeader: React.FC<TaskManagerHeaderProps> = ({
               <ActivityIndicator color={Colors.light.White} size={18} />
             ) : (
               <>
-                <MaterialCommunityIcons
+                <VectorIconCompat
                   name="check"
                   size={18}
                   color={Colors.light.White}

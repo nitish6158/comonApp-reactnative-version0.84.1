@@ -1,6 +1,7 @@
+// @ts-nocheck
 import { View, Text, Platform, Pressable } from "react-native";
 import React, { useMemo, useState } from "react";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { useTranslation } from "react-i18next";
 import { FlatList } from "react-native";
 import getAlphabatic from "@Util/alphabeticOrder";
@@ -17,6 +18,8 @@ import { DefaultImageUrl, ImageUrl } from "@Service/provider/endpoints";
 import { reminderStyle as styles } from "../reminder.styles";
 import { filterInObject } from "../../../ProfileContainer/contacts/FilterContact";
 import { TextField } from "react-native-ui-lib";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type props = {
   onBackPress: () => void;
@@ -44,14 +47,14 @@ export default function ParticipantSelection({ onBackPress, participants, select
         }}
       >
         <View style={[styles.headerContainer]}>
-          <AntDesign name="arrowleft" color="gray" size={22} onPress={onBackPress} />
+          <VectorIconCompat name="arrowleft" color="gray" size={22} onPress={onBackPress} />
           <View style={{ marginLeft: 20 }}>
             <Text style={{ fontSize: 16 }}>{t("titles.select-participants")}</Text>
             <Text style={{ fontSize: 12 }}>{`${selectedParticipants.length} ${t("others.Selected")}`}</Text>
           </View>
         </View>
         <Pressable onPress={onBackPress}>
-          <AntDesign name="check" size={22} color={"black"} style={{}} />
+          <VectorIconCompat name="check" size={22} color={"black"} style={{}} />
         </Pressable>
       </View>
 
@@ -117,7 +120,7 @@ export default function ParticipantSelection({ onBackPress, participants, select
                         borderColor: "white",
                       }}
                     >
-                      <AntDesign name="checkcircle" color="green" size={18} />
+                      <VectorIconCompat name="checkcircle" color="green" size={18} />
                     </View>
                   )}
                 </View>

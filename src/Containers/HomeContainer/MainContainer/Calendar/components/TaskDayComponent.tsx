@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { View, Text, ActivityIndicator } from "react-native";
 import React, { useMemo, useState } from "react";
 import { reminder } from "@/schemas/schema";

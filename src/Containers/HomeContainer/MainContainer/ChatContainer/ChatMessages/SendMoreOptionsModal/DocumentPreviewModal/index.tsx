@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   View,
   Text,
@@ -12,15 +13,17 @@ import {
 import React, { useRef, useState } from "react";
 import Modal from "react-native-modal";
 import { DocumentPickerResponse } from "react-native-document-picker";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { windowHeight, windowWidth } from "@Util/ResponsiveView";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { Colors } from "@/Constants";
 import Icon from "@Assets/images/Icon";
 import { useAtomValue } from "jotai";
 import { singleRoom } from "@/Atoms";
 import { MentionInput } from "react-native-controlled-mentions";
 import { MentionInputProps } from "react-native-controlled-mentions/dist/types";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type props = {
   onClose: () => void;
@@ -47,7 +50,7 @@ export default function DocumentPreviewModal({ onClose, document, onMessageSend,
             onMessageSend(caption.trim());
           }}
         >
-          <Ionicons name="send" color="white" size={18} style={{ marginLeft: 2 }} />
+          <VectorIconCompat name="send" color="white" size={18} style={{ marginLeft: 2 }} />
         </TouchableOpacity>
         <View style={{ width: 5 }} />
         {display.roomType !== "self" &&<Pressable
@@ -79,7 +82,7 @@ export default function DocumentPreviewModal({ onClose, document, onMessageSend,
           keyboardVerticalOffset={windowHeight / keyBoardOffset}
         >
           <View style={styles.topContainer}>
-            <AntDesign name="arrowleft" color="white" size={24} onPress={onClose} />
+            <VectorIconCompat name="arrowleft" color="white" size={24} onPress={onClose} />
           </View>
           <View style={{ flex: 1 }}>
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>

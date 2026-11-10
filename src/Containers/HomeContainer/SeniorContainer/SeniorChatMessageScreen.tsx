@@ -10,7 +10,7 @@ import ChatMessageWrapper from "../MainContainer/ChatContainer/ChatMessages/Chat
 import ChatListData from "../MainContainer/ChatContainer/ChatMessages/ChatListItem";
 import ChatBottomView from "../MainContainer/ChatContainer/ChatMessages/ChatBottomView";
 import { ListItem } from "react-native-elements";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { AvtaarWithoutTitle } from "@/Components";
 import { DefaultImageUrl, ImageUrl } from "@/graphql/provider/endpoints";
 import HeaderLeftActions from "../MainContainer/ChatContainer/ChatMessages/Header/HeaderLeftActions";
@@ -23,6 +23,8 @@ import { ChatContext } from "@/Context/ChatProvider";
 import NetInfo from "@react-native-community/netinfo";
 import FastImage from "@d11/react-native-fast-image";
 import { t } from "i18next";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function SeniorChatMessageScreen({ navigation, route }: SeniorChatMessageScreenProps) {
   global.roomId = route.params?.roomId;
@@ -64,7 +66,7 @@ export default function SeniorChatMessageScreen({ navigation, route }: SeniorCha
           }}
           style={styles.backContainer}
         >
-          <AntDesign name="arrowleft" size={30} color="black" />
+          <VectorIconCompat name="arrowleft" size={30} color="black" />
         </Pressable>
         <View style={[styles.container, styles.center]}>
           <FastImage
@@ -124,7 +126,6 @@ export default function SeniorChatMessageScreen({ navigation, route }: SeniorCha
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   main: {

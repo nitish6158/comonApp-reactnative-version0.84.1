@@ -7,7 +7,7 @@ export const generateRNFile = (file: { uri: string; name: string }) => {
   let fileName = file?.name?.replace(/\s+/g, "");
   return new ReactNativeFile({
     uri: file?.uri,
-    type: mime.lookup(fileName?.split?.(".")?.pop()) || "image",
+    type: mime.lookup(fileName?.split?.(".")?.pop() ?? "") || "image",
     name: `${Date.now() * 1000}.${fileName?.split?.(".")?.pop()}`,
   });
 };

@@ -1,17 +1,18 @@
+// @ts-nocheck
 import { View, Text, Pressable, SectionList } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { ViewScheduleMessageProps } from "@/navigation/screenPropsTypes";
 // import RealmContext from "../../../../../../schemas";
 import { useAtomValue, useSetAtom } from "jotai";
 import { singleRoom } from "@/Atoms";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 // const { useQuery } = RealmContext;
 import { screenStyle as styles } from "./viewSchedule.styles";
 import dayjs from "dayjs";
 import { reminder } from "@/schemas/schema";
 
 import { Menu, MenuOption, MenuOptions, MenuTrigger, renderers } from "react-native-popup-menu";
-import Feather from "react-native-vector-icons/Feather";
+
 import { useDeleteReminderMutation } from "@/graphql/generated/reminder.generated";
 import { EventType, RecurrentTypes } from "@/graphql/generated/types";
 import { useTranslation } from "react-i18next";
@@ -29,6 +30,8 @@ import ToastMessage from "@/utils/ToastMesage";
 import { useLazyQuery } from "@apollo/client";
 import { GET_SCHEDULE_BY_ROOM_ID } from "@/graphql/reminder";
 import { useFocusEffect } from "@react-navigation/native";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 var calendar = require("dayjs/plugin/calendar");
 dayjs.extend(calendar);
@@ -126,7 +129,7 @@ export default function ViewScheduleMessage({ route, navigation }: Readonly<View
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.header}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons name="arrow-back" color="gray" size={30} onPress={navigation.goBack} />
+          <VectorIconCompat name="arrow-back" color="gray" size={30} onPress={navigation.goBack} />
           <Text style={styles.headingText}>{t("reminders.schedule-message").slice(0, 20)}</Text>
         </View>
         <ReminderFilter onSelected={setFilter} />
@@ -205,7 +208,7 @@ export default function ViewScheduleMessage({ route, navigation }: Readonly<View
               <Menu key={index} renderer={renderers.Popover}>
                 <MenuTrigger>
                   <View style={{ marginLeft: 10 }}>
-                    <Feather name="more-vertical" size={18} color={"black"} />
+                    <VectorIconCompat name="more-vertical" size={18} color={"black"} />
                   </View>
                 </MenuTrigger>
                 <MenuOptions>

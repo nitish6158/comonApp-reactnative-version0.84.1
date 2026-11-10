@@ -1,20 +1,84 @@
 import { createSlice } from "@reduxjs/toolkit";
-import io, { Socket } from "socket.io-client";
-import { Platform } from "react-native";
+import type { Socket } from "socket.io-client";
 
-import { SOCKET_URL } from "@/graphql/provider/endpoints";
-import ToastMessage from "@/utils/ToastMesage";
-import store from "../Store";
-import { addOrganisationInvite, deleteAssignment, setOrganisationInvites } from "./OrganisationsReducer";
-import {
-  setChatsInCommonList,
-  setFavoriteChatList,
-  setFolderDataList,
-  setMyProfile,
-  setRoomMediaData,
-} from "./ChatReducer";
+import { socketConnect } from "@/utils/socket/SocketConnection";
 
-export let socket = {} as Socket;
+/**
+ * Legacy compatibility export.
+ * All historical `import { socket } from SocketSlice` callers must share the
+ * single Socket.IO client owned by `socketConnect` — never open a second `io()`.
+ */
+function getLiveSocket(): Socket | null {
+  return socketConnect.getSocket();
+}
+
+export const socket = new Proxy({} as Socket, {
+  get(_target, prop, _receiver) {
+    if (prop === "emit") {
+      return (event: string, ...args: any[]) => {
+        const live = getLiveSocket();
+        if (live?.connected) {
+          return (live.emit as any)(event, ...args);
+        }
+        // Ensure connection then emit (fire-and-forget for legacy sync callers)
+        void socketConnect.emit(event as any, args[0] as any).catch((err) => {
+          console.warn(`[socket bridge] emit failed for ${String(event)}:`, err);
+        });
+      };
+    }
+
+    if (prop === "on") {
+      return (event: string, listener: (...args: any[]) => void) => {
+        // Prefer SocketConnection messageHandlers for "message" to avoid duplicate work.
+        // For other events, attach to the live socket when available.
+        const live = getLiveSocket();
+        if (!live) {
+          console.warn(`[socket bridge] on("${event}") before connect — ignored`);
+          return socket;
+        }
+        live.on(event, listener);
+        return socket;
+      };
+    }
+
+    if (prop === "off") {
+      return (event: string, listener?: (...args: any[]) => void) => {
+        const live = getLiveSocket();
+        if (!live) return socket;
+        if (listener) live.off(event, listener);
+        else live.off(event);
+        return socket;
+      };
+    }
+
+    if (prop === "disconnect") {
+      return () => {
+        socketConnect.disconnect();
+      };
+    }
+
+    if (prop === "connect") {
+      return () => {
+        void socketConnect.connect();
+      };
+    }
+
+    if (prop === "connected") {
+      return !!getLiveSocket()?.connected;
+    }
+
+    if (prop === "id") {
+      return getLiveSocket()?.id;
+    }
+
+    const live = getLiveSocket() as any;
+    const value = live?.[prop as any];
+    if (typeof value === "function") {
+      return value.bind(live);
+    }
+    return value;
+  },
+}) as Socket;
 
 type socketSliceType = {
   socketID: string;
@@ -24,129 +88,38 @@ const initialState: socketSliceType = {
   socketID: "",
 };
 
-function initBaseListener() {
-  const dispatch = store.dispatch;
-
-  if (typeof socket?.on === "function") {
-    socket.on("message", (data) => {
-      if (data.type == "online") {
-        let currentUserID = store.getState().Chat.MyProfile?._id;
-        if (currentUserID) {
-          if (currentUserID !== data.msg.user_id) {
-            // console.log("online",data.msg)
-            socket.emit("sendStatusToAUser", {
-              type: "online",
-              user_id: data.msg.user_id,
-              roomId: data.msg.roomId,
-            });
-          }
-        }
-      }
-      if (data.type == "pinChat") {
-        ToastMessage(data.msg);
-      }
-      if (data.type == "unpinChat") {
-        ToastMessage(data.msg);
-      }
-
-      if (data?.type == "invited") {
-        dispatch(addOrganisationInvite(data.msg));
-      }
-
-      if (data?.type == "assigmentDeleted") {
-        dispatch(deleteAssignment(data.msg.assignmentId));
-      }
-
-      // if (data.type == "updateRoomName") {
-      //   // ToastMessage(t("toastmessage.group-name-updated-successfully"));
-      // }
-      if (data?.type == "deleteInvite") {
-        const removedInvitation = store.getState().Organisation.invites?.filter((e) => e?._id != data?.msg?.inviteId);
-        dispatch(setOrganisationInvites(removedInvitation));
-      }
-
-      if (data.type == "profile") {
-        // dispatch(setMyProfile(data.msg));
-        // dispatch(setFolderDataList(data.msg.folders));
-        // console.log(data.msg)
-        // setCurrentUserData(data.msg);
-      }
-
-      if (data.type == "onJoinRoom") {
-        socket.emit("connectToRoom", { roomId: data.msg._id });
-      }
-
-      // if (data.type == "blockRoom") {
-      //   console.log("Block room data", data?.msg);
-      //   // ToastMessage(t("toastmessage.user-blocked-successfully"));
-      // }
-      // if (data.type == "unblockRoom") {
-      //   console.log("unblockRoom room data", data?.msg);
-      //   // ToastMessage(t("toastmessage.user-unBlocked-successfully"));
-      // }
-      // if (data?.type == "onBlockRoom") {
-      //   socket?.emit("getProfile");
-      // }
-      if (data?.type == "newUser") {
-        console.log("newUser", data.msg);
-      }
-
-      if (data.type == "getUserMediaByRoomId") {
-        dispatch(setRoomMediaData(data.msg));
-      }
-      if (data.type == "getFavouriteChats") {
-        dispatch(setFavoriteChatList(data.msg));
-      }
-
-      if (data.type == "getRoomInComon") {
-        dispatch(setChatsInCommonList(data.msg));
-      }
-      // if (data.type == "clearAllChats") {
-      //   if (data?.msg?.message) {
-      //     // ToastMessage(`${t("chatClear")}`);
-      //   }
-      // }
-    });
-    socket?.on("connect", (data) => {
-      console.log(`<---${Platform.OS} Socket connected successfully--->`);
-    });
-    socket?.on("disconnect", () => {
-      console.log(`<----${Platform.OS} Socket disconnected successfully--->`);
-    });
-  }
-}
-
 export const socketSlice = createSlice({
   name: "socket",
   initialState,
   reducers: {
     connectToSocket: (state, { payload }) => {
-      const Remote = `${SOCKET_URL}${payload}`;
-      let socketInit = io(Remote);
-      socket = socketInit;
-
-      initBaseListener();
-    },
-    disconnectToSocket: (state, { payload }) => {
-      if (Object.keys(socket).length > 0) {
-        console.log("Socket disconnect called");
-        socket.disconnect();
+      // Bridge only — do not create a second io() client.
+      void socketConnect.connect().then((live) => {
+        if (live?.id) {
+          // id synced via updateSocketID from callers if needed
+        }
+      });
+      // Keep payload referenced so older call sites still type-check
+      if (payload && typeof payload === "string") {
+        // token is read inside socketConnect.connect via getSession()
       }
     },
-    reconnectToSocket: (state, { payload }) => {
-      if (Object.keys(socket).length > 0) {
-        socket.disconnect();
-        socket.connect();
-        state.socketID = socket.id;
-      }
+    disconnectToSocket: (state) => {
+      socketConnect.disconnect();
+      state.socketID = "";
+    },
+    reconnectToSocket: (state) => {
+      void socketConnect.forceReconnect().then(() => {
+        state.socketID = getLiveSocket()?.id || "";
+      });
     },
     updateSocketID: (state, { payload }) => {
       state.socketID = payload;
     },
   },
-  // extraReducers: {},
 });
 
-export const { connectToSocket, disconnectToSocket, reconnectToSocket, updateSocketID } = socketSlice.actions;
+export const { connectToSocket, disconnectToSocket, reconnectToSocket, updateSocketID } =
+  socketSlice.actions;
 
 export default socketSlice.reducer;

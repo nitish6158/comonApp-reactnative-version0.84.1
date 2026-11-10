@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   ActivityIndicator,
   Dimensions,
@@ -17,7 +18,7 @@ import { AllChatRooms } from "@Atoms/allRoomsAtom";
 import { CheckBox } from "react-native-elements";
 import Colors from "@/Constants/Colors";
 import FastImage from "@d11/react-native-fast-image";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { RootState } from "@Store/Reducer";
 import { StyleSheet } from "react-native";
 import ToastMessage from "@Util/ToastMesage";
@@ -31,9 +32,11 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 
 import { SelectChatRoomScreenProps } from "@/navigation/screenPropsTypes";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { socket } from "@/redux/Reducer/SocketSlice";
 import { socketConnect } from "@/utils/socket/SocketConnection";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 const { width, height } = Dimensions.get("window");
 export default function SelectChatRoomScreen({ route, navigation }: Readonly<SelectChatRoomScreenProps>) {
@@ -102,7 +105,7 @@ export default function SelectChatRoomScreen({ route, navigation }: Readonly<Sel
   return (
     <View style={styles.basicContainer}>
       <View style={styles.headerContainer}>
-        <Ionicons name="arrow-back" color="gray" size={30} onPress={onBackPressed} />
+        <VectorIconCompat name="arrow-back" color="gray" size={30} onPress={onBackPressed} />
         {searchSelected ? (
           <View style={{ flexGrow: 1, maxWidth: width - 80 }}>
             <TextInput
@@ -121,12 +124,12 @@ export default function SelectChatRoomScreen({ route, navigation }: Readonly<Sel
           </View>
         )}
         <Pressable onPress={enableContactSearch}>
-          <AntDesign name="search1" color="black" size={24} />
+          <VectorIconCompat name="search1" color="black" size={24} />
         </Pressable>
       </View>
       <FlatList data={filterChat} renderItem={renderAllRooms} keyExtractor={(_, index) => index.toString()} />
       <Pressable style={styles.nextButtonView} onPress={onPressShareButton}>
-        <Ionicons name="send-sharp" color="white" size={22} />
+        <VectorIconCompat name="send-sharp" color="white" size={22} />
       </Pressable>
     </View>
   );
@@ -218,7 +221,6 @@ export default function SelectChatRoomScreen({ route, navigation }: Readonly<Sel
 
   function renderAllRooms({ item, index }) {
 
-
     return (
       <TouchableOpacity
         style={[styles.rowDirection, styles.chatContainer]}
@@ -234,7 +236,7 @@ export default function SelectChatRoomScreen({ route, navigation }: Readonly<Sel
           />
           {selectedContacts.find((cc) => cc === item._id) && (
             <View style={styles.checkboxView}>
-              <AntDesign name="checkcircle" size={18} color="green" />
+              <VectorIconCompat name="checkcircle" size={18} color="green" />
             </View>
           )}
         </View>

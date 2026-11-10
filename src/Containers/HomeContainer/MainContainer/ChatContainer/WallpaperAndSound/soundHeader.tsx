@@ -4,13 +4,14 @@ import { GoBackComponent, navigateNested } from "@Components/goBack";
 import { Pressable, View, useWindowDimensions } from "react-native";
 import { mainStyles, typographyStyles } from "../../../../../styles/main";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import Colors from "@/Constants/Colors";
 import { ListItem } from "react-native-elements";
 import { headerStyle } from "@Components/header/HeaderStyle";
 import { layoutStyle } from "@Components/layout/LayoutStyle";
 import { useNavigation } from "@react-navigation/core";
 import { useTranslation } from "react-i18next";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export type HeaderWithScreenNameProps = {
   title: string;
@@ -34,7 +35,7 @@ export const SoundHeader = ({ title, subtitle, navigateNested, onSave }: HeaderW
           navigation.goBack();
         }}
       >
-        <AntDesign name="arrowleft" size={24} color="black" style={{ marginRight: 5 }} />
+        <VectorIconCompat name="arrowleft" size={24} color="black" style={{ marginRight: 5 }} />
       </Pressable>
       <ListItem.Content style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <ListItem.Title style={typography.md}>{t(title)}</ListItem.Title>

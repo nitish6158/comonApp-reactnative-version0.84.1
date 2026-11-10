@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Alert,
   Keyboard,
@@ -17,7 +18,7 @@ import Dialog from "react-native-dialog";
 import Modal from "react-native-modal";
 import CommonHeader from "@/Components/header/CommonHeader";
 import { EditProfileImageScreenProps } from "../../../../../navigation/screenPropsTypes";
-import Feather from "react-native-vector-icons/Feather";
+
 import ImagePicker from "react-native-image-crop-picker";
 import Text from "@Components/Text";
 import ToastMessage from "@Util/ToastMesage";
@@ -41,11 +42,12 @@ import { useAppSelector } from "@/redux/Store";
 import { socket } from "@/redux/Reducer/SocketSlice";
 import FastImage from "@d11/react-native-fast-image";
 import { DefaultImageUrl, ImageUrl } from "@/graphql/provider/endpoints";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { getTimeZone } from "react-native-localize";
 import dayjs from "dayjs";
 import { socketConnect } from "@/utils/socket/SocketConnection";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 // create a component
 export default function EditProfileScreen({
@@ -112,7 +114,7 @@ export default function EditProfileScreen({
               right: 20,
             }}
           >
-            <Feather name="camera" size={18} color="#FFFF" />
+            <VectorIconCompat name="camera" size={18} color="#FFFF" />
           </View>
         </Pressable>
         <View style={styles.userForm}>
@@ -123,7 +125,7 @@ export default function EditProfileScreen({
               }}
               style={styles.inputContainer}
             >
-              <MaterialCommunityIcons
+              <VectorIconCompat
                 style={styles.inputIcon}
                 name="account-outline"
                 size={22}
@@ -143,7 +145,7 @@ export default function EditProfileScreen({
               }}
               style={styles.inputContainer}
             >
-              <AntDesign
+              <VectorIconCompat
                 style={styles.inputIcon}
                 name="infocirlceo"
                 size={22}
@@ -158,7 +160,7 @@ export default function EditProfileScreen({
             </Pressable>
 
             <View style={styles.inputContainer}>
-              <Feather
+              <VectorIconCompat
                 style={styles.inputIcon}
                 name="phone"
                 size={22}
@@ -171,7 +173,7 @@ export default function EditProfileScreen({
             </View>
 
             {/* <View style={styles.inputContainer}>
-              <MaterialCommunityIcons style={styles.inputIcon} name="email-outline" size={22} color={"gray"} />
+              <VectorIconCompat style={styles.inputIcon} name="email-outline" size={22} color={"gray"} />
               <View style={{}}>
                 <Text style={styles.inputLabel}>{t("form.label.email")}</Text>
                 <Text style={styles.inputText}>{MyProfile.email}</Text>

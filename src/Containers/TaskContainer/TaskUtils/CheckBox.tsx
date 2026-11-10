@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableWithoutFeedback } from "react-native";
-const MaterialCommunityIcons =
-  require("react-native-vector-icons/MaterialCommunityIcons").default;
+
+import { VectorIconCompat } from "@/Components/icons";
+
 interface CheckboxCardProps {
   label: string;
   value: boolean;
@@ -21,13 +22,13 @@ const CheckBox: React.FC<CheckboxCardProps> = ({ label, value, onChange }) => {
       <View style={styles.row}>
         <View style={styles.checkboxContainer}>
           {checked ? (
-            <MaterialCommunityIcons
+            <VectorIconCompat
               name="checkbox-marked"
               size={28}
               color="#007bff"
             />
           ) : (
-            <MaterialCommunityIcons
+            <VectorIconCompat
               name="checkbox-blank-outline"
               size={28}
               color="#ccc"

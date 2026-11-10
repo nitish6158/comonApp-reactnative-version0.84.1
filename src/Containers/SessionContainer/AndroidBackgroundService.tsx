@@ -100,13 +100,13 @@ function BackgroundNotifications() {
         await handleContactReminder(detail);
         break;
       case "missedCall":
-        NotificationCallBackData(detail);
+        NotificationCallBackData(detail as any);
         break;
       default:
         console.log("Unhandled press", keyName);
     }
 
-    await notifee.cancelNotification(detail.notification?.id);
+    await notifee.cancelNotification(detail.notification?.id ?? "");
 
     
     // if (detail.pressAction?.id === "dismiss") {
@@ -236,7 +236,7 @@ function BackgroundNotifications() {
         RoomId: contact.roomId,
       });
     }
-    notifee.cancelNotification(detail.notification?.id);
+    notifee.cancelNotification(detail.notification?.id ?? "");
   };
 
   const handleCalendarReminder = async (detail: any) => {
@@ -265,10 +265,10 @@ function BackgroundNotifications() {
 
     await markChatRead(parsedData);
 
-    if (ProfileRef.current.mode === "CLASSIC") {
+    if (ProfileRef.current?.mode === "CLASSIC") {
       navigate("ChatMessageScreen", { RoomId: roomID });
-    } else if (ProfileRef.current.mode === "SENIORCITIZEN") {
-      navigate("SeniorChatMessageScreen", { roomId: roomID });
+    } else if (ProfileRef.current?.mode === "SENIORCITIZEN") {
+      navigate("SeniorChatMessageScreen" as any, { roomId: roomID });
     }
   };
 

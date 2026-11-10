@@ -12,8 +12,7 @@ import { useTranslation } from "react-i18next";
 import { Colors } from "@/Constants";
 import { taskManagerStyles } from "../styles/TaskManagerStyles";
 
-const MaterialCommunityIcons =
-  require("react-native-vector-icons/MaterialCommunityIcons").default;
+import { VectorIconCompat } from "@/Components/icons";
 
 const { height: screenHeight } = Dimensions.get("window");
 
@@ -86,7 +85,7 @@ export const TaskTypeBottomSheet: React.FC<TaskTypeBottomSheetProps> = ({
         activeOpacity={0.7}
       >
         <View style={taskManagerStyles.bottomSheetItemContent}>
-          <MaterialCommunityIcons
+          <VectorIconCompat
             name={icon}
             size={24}
             color={isSelected ? Colors.light.PrimaryColor : Colors.light.grayText}
@@ -102,7 +101,7 @@ export const TaskTypeBottomSheet: React.FC<TaskTypeBottomSheetProps> = ({
           </Text>
         </View>
         {isSelected && (
-          <MaterialCommunityIcons
+          <VectorIconCompat
             name="check-circle"
             size={20}
             color={Colors.light.PrimaryColor}
@@ -144,7 +143,7 @@ export const TaskTypeBottomSheet: React.FC<TaskTypeBottomSheetProps> = ({
             onPress={onClose}
             style={taskManagerStyles.bottomSheetCloseButton}
           >
-            <MaterialCommunityIcons
+            <VectorIconCompat
               name="close"
               size={24}
               color={Colors.light.grayText}

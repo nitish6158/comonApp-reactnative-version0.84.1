@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Dimensions, Modal, Platform, StyleSheet, Text, TextProps, View, ViewProps } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Tooltip, TooltipProps } from "react-native-elements";

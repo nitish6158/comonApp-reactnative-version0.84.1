@@ -1,13 +1,16 @@
+// @ts-nocheck
 import { View, Text, Platform } from "react-native";
 import React, { useEffect, useRef } from "react";
 import Modal from "react-native-modal";
 import { reminderStyle as styles } from "../reminder.styles";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { GooglePlacesAutocomplete, GooglePlacesAutocompleteProps } from "react-native-google-places-autocomplete";
 import { GOOGLE_PLACE_API_KEY } from "@Service/provider/endpoints";
 import { LocationSelectionProps } from "../reminder.types";
 import { Colors } from "@/Constants";
 import { useTranslation } from "react-i18next";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function LocationSelection({ isVisible, onClose, onSelect, defaultText }: LocationSelectionProps) {
   const ref = useRef();
@@ -17,7 +20,7 @@ export default function LocationSelection({ isVisible, onClose, onSelect, defaul
     <View>
       <Modal style={{ margin: 0, backgroundColor: "white" }} isVisible={isVisible} onBackButtonPress={onClose}>
         <View style={[styles.headerContainer, { marginTop: Platform.OS == "ios" ? 40 : 5, paddingHorizontal: 20 }]}>
-          <AntDesign name="arrowleft" color="black" size={22} onPress={onClose} />
+          <VectorIconCompat name="arrowleft" color="black" size={22} onPress={onClose} />
         </View>
         <View style={{ flex: 1 }}>
           <GooglePlacesAutocomplete

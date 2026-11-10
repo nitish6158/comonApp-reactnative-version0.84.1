@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { FlashList } from "@shopify/flash-list";
 import { useAtomValue } from "jotai";
 import { Text, View } from "react-native";

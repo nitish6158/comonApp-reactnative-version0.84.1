@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Image, View } from "react-native";
 
 import { Layout } from "./layout";

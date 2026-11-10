@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { FlatList, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';

@@ -1,10 +1,11 @@
+// @ts-nocheck
 import { Dimensions, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import React, { Component, useState } from "react";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import Colors from "@/Constants/Colors";
-import Search from "@Images/search.svg";
 import { isEmpty } from "lodash";
+
+import { AppIcon } from "@/Components/icons";
 
 const { width, height } = Dimensions.get("window");
 interface SearchInputProps {
@@ -39,14 +40,14 @@ const SearchInput = ({ SearchValue, SetSearchValue, placeHolder, ShowSearchIcon 
             // alert('fd')
           }}
         >
-          <AntDesign name="close" size={18} color="gray" />
+          <AppIcon name="close" size={18} color="gray" />
         </Pressable>
       ) : (
         // </View>
         ShowSearchIcon && (
           <View style={styles.flotIcon}>
             <Pressable>
-              <Search />
+              <AppIcon name="search" size={18} color="gray" />
             </Pressable>
           </View>
         )

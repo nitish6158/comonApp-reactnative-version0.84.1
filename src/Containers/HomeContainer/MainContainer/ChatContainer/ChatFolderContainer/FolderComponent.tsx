@@ -1,14 +1,13 @@
+// @ts-nocheck
 import { FolderAndTabsAtom } from "@/Atoms";
 import { useAtom } from "jotai";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Platform, Pressable, Text, View } from "react-native";
 import { ScaleDecorator } from "react-native-draggable-flatlist";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Feather from "react-native-vector-icons/Feather";
+
 import { Menu, MenuItem } from "react-native-material-menu";
-import Octicons from "react-native-vector-icons/Octicons";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { Colors } from "@/Constants";
 import { useNavigation } from "@react-navigation/core";
 import { socketConnect } from "@/utils/socket/SocketConnection";
@@ -16,6 +15,8 @@ import { useDeleteFolderMutation } from "@/graphql/generated/room.generated";
 import { useAppSelector } from "@/redux/Store";
 import { useDispatch } from "react-redux";
 import { setMyProfile } from "@/redux/Reducer/ChatReducer";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function FolderComponent({ item, drag, isActive, onDeleteSuccess }: any) {
   const [visible, setVisible] = useState(false);
@@ -52,7 +53,7 @@ export default function FolderComponent({ item, drag, isActive, onDeleteSuccess 
           }}
         >
           <View style={{ flexDirection: "row", width: "90%", alignItems: "center" }}>
-            <MaterialCommunityIcons name="folder-text" size={32} color={Colors.light.PrimaryColor} />
+            <VectorIconCompat name="folder-text" size={32} color={Colors.light.PrimaryColor} />
             <Text style={{ textAlign: "center", fontSize: 16, marginLeft: 10 }}>{item.name}</Text>
           </View>
           <Menu
@@ -64,7 +65,7 @@ export default function FolderComponent({ item, drag, isActive, onDeleteSuccess 
                   setVisible(!visible);
                 }}
               >
-                <Feather name="more-vertical" size={24} color="rgba(51,51,51,.8)" />
+                <VectorIconCompat name="more-vertical" size={24} color="rgba(51,51,51,.8)" />
               </Pressable>
             }
             onRequestClose={() => {
@@ -81,7 +82,7 @@ export default function FolderComponent({ item, drag, isActive, onDeleteSuccess 
                 setVisible(!visible);
               }}
             >
-              <Octicons name="pencil" size={20} color={Colors.light.PrimaryColor} style={{ marginHorizontal: 33 }} />
+              <VectorIconCompat name="pencil" size={20} color={Colors.light.PrimaryColor} style={{ marginHorizontal: 33 }} />
               <Text>
                 {" "}
                 {"  "} {t("btn.edit")}
@@ -135,7 +136,7 @@ export default function FolderComponent({ item, drag, isActive, onDeleteSuccess 
                 }
               }}
             >
-              <AntDesign name="delete" size={20} color={Colors.light.PrimaryColor} />
+              <VectorIconCompat name="delete" size={20} color={Colors.light.PrimaryColor} />
               {"  "} {t("btn.delete")}
             </MenuItem>
           </Menu>

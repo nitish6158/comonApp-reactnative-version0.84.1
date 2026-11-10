@@ -10,7 +10,7 @@ const useFindActiveRoomLinks = () => {
   const fetchLinks = async () => {
     try {
       // Fetch conversations using ConversationService
-      const conversations = []
+      const conversations: any[] = [];
 
       const findLinks = (messages: any[]) => {
         const result = [];

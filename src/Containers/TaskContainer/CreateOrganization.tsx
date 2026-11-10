@@ -25,8 +25,8 @@ import { useGetMyComonContactQuery } from "@/graphql/generated/contact.generated
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentOrganization } from "@/redux/Reducer/OrganisationsReducer";
 import { RootState } from "@/redux/Store";
-const MaterialCommunityIcons =
-  require("react-native-vector-icons/MaterialCommunityIcons").default;
+
+import { VectorIconCompat } from "@/Components/icons";
 
 const roles = [
   { label: "ADMIN", value: "ADMIN" },
@@ -186,7 +186,7 @@ const CreateOrganization = () => {
           style={styles.backBtn}
           onPress={() => (step == 1 ? navigateBack() : setStep(1))}
         >
-          <MaterialCommunityIcons name="arrow-left" size={26} color="#007bff" />
+          <VectorIconCompat name="arrow-left" size={26} color="#007bff" />
         </TouchableOpacity>
       )}
       <Text style={styles.header}>Create Organization</Text>

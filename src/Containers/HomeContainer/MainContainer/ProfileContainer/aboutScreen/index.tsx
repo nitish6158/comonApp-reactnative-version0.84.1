@@ -3,10 +3,12 @@ import React from "react";
 import HeaderWithBack from "@Components/header/HeaderWithBack";
 import FastImage from "@d11/react-native-fast-image";
 import DeviceInfo from "react-native-device-info";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { Colors } from "@/Constants";
 import { PRIVACY_POLICY, PUBLIC_API } from "@Service/provider/endpoints";
 import { useTranslation } from "react-i18next";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function AboutContainer() {
   const { t } = useTranslation();

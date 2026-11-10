@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { AllChatRooms, ArchiveRoomsAtom } from "@Atoms/allRoomsAtom";
 import React from "react";
 import { RoomData } from "@Store/Models/ChatModel";

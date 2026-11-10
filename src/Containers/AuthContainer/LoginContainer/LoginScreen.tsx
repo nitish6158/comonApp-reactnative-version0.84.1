@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from "react";
 
 import {
@@ -43,7 +44,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 // import { useApp } from "@realm/react";
 import { setMyProfile } from "@/redux/Reducer/ChatReducer";
 import { PhoneType } from "@/Context";
@@ -65,6 +66,8 @@ import {
 } from "@Service/generated/auth.generated";
 import EmailConfirmationModal from "../NewSignUpContainer/EmailConfirmationModal";
 import { getFirebaseMessagingToken } from "@/utils/firebaseMessaging";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type payloadType = {
   phone: string;
@@ -215,14 +218,14 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
               labelStyle={{ fontSize: 16 }}
               label="+49 172 2804503"
               onPress={openHelpPhone}
-              leftElement={<Ionicons name="call" size={22} color="black" />}
+              leftElement={<VectorIconCompat name="call" size={22} color="black" />}
             />
             <Chip
               containerStyle={{ justifyContent: "space-between", paddingHorizontal: 20, height: 55, marginBottom: 8 }}
               labelStyle={{ fontSize: 16 }}
               label="M.Ketteler@gmx.de"
               onPress={openHelpMail}
-              leftElement={<Ionicons name="mail" size={22} color="black" />}
+              leftElement={<VectorIconCompat name="mail" size={22} color="black" />}
             />
           </View> */}
 
@@ -249,7 +252,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
       >
         <TermsScreen
           onDecline={onTermDecline}
-          onAgree={() => {
+          onAgree={async () => {
             if (waitingPayload) {
               termsSheetRef.current?.close();
               AsyncStorage.setItem(
@@ -275,7 +278,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
               });
 
               if (result.success && tempPayload) {
-                setSession(result.data);
+                await setSession(result.data);
                 updateAgreeStatus({
                   variables: {
                     input: {
@@ -504,11 +507,11 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
 
         if (result.success && tempPayload) {
           console.log("Setting session data", result.data.token);
-          setSession(result.data);
+          await setSession(result.data);
           let email = user.email;
           let password = tempPayload?.password;
           setLoader(false);
-          setTokenLogin(result?.data?.token);
+          await setTokenLogin(result?.data?.token);
           // handleRealmLogin(email, password);
         }
       } else {

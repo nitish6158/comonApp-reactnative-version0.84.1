@@ -1,5 +1,7 @@
 import { Colors } from "@/Constants";
 import React from "react";
+import { VectorIconCompat } from "@/Components/icons";
+
 import {
   View,
   Text,
@@ -8,8 +10,7 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-const MaterialCommunityIcons =
-  require("react-native-vector-icons/MaterialCommunityIcons").default;
+
 // Dummy data, replace with your API/Redux/GraphQL data
 const organizations = [
   { id: "1", name: "Acme Corp", description: "A global leader in widgets." },
@@ -42,7 +43,7 @@ const OrganizationListing = ({ navigation }: { navigation?: any }) => {
           style={styles.backBtn}
           onPress={() => navigation.goBack()}
         >
-          <MaterialCommunityIcons name="arrow-left" size={26} color="#007bff" />
+          <VectorIconCompat name="arrow-left" size={26} color="#007bff" />
         </TouchableOpacity>
       )}
       <View style={styles.headerRow}>
@@ -53,7 +54,7 @@ const OrganizationListing = ({ navigation }: { navigation?: any }) => {
             navigation && navigation.navigate("CreateOrganization")
           }
         >
-          <MaterialCommunityIcons
+          <VectorIconCompat
             name="plus-circle-outline"
             size={28}
             color="#007bff"

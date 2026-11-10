@@ -1,8 +1,9 @@
 import React, {useState} from "react";
 import { useTranslation } from "react-i18next";
 import {View, Text, TouchableOpacity, FlatList, StyleSheet} from "react-native";
-const MaterialCommunityIcons =
-  require("react-native-vector-icons/MaterialCommunityIcons").default;
+
+import { VectorIconCompat } from "@/Components/icons";
+
 interface Option {
   label: string;
   value: string;
@@ -37,7 +38,7 @@ const SingleSelectDropdown: React.FC<Props> = ({
         <Text style={styles.dropdownText}>
           {selectedLabel || placeholder || t('taskManager.select-option')}
         </Text>
-        <MaterialCommunityIcons
+        <VectorIconCompat
           name={open ? "menu-up" : "menu-down"}
           size={24}
           color="#333"

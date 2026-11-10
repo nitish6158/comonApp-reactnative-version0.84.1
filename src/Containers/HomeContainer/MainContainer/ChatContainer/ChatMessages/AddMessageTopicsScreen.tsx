@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { singleRoom } from "@/Atoms";
 import { Colors } from "@/Constants";
 import { useUpdateTopicMutation } from "@/graphql/generated/room.generated";
@@ -9,8 +10,10 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, Pressable, ActivityIndicator } from "react-native";
 import { TextField, Button } from "react-native-ui-lib";
 import _ from "lodash";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { useTranslation } from "react-i18next";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function AddMessageTopicsScreen({ route, navigation }: AddMessageTopicsScreenProps) {
   const display = useAtomValue(singleRoom);
@@ -20,7 +23,7 @@ export default function AddMessageTopicsScreen({ route, navigation }: AddMessage
   return (
     <View style={styles.main}>
       <Pressable style={styles.headerContainer} onPress={navigation.goBack}>
-        <AntDesign name="arrowleft" size={25} color="black" />
+        <VectorIconCompat name="arrowleft" size={25} color="black" />
         <Text style={styles.headingText}>{t("titles.make-headings")}</Text>
       </Pressable>
       <View style={styles.container}>

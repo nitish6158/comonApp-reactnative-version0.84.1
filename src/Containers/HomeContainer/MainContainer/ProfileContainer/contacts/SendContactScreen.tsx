@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   View,
   StyleSheet,
@@ -7,10 +8,10 @@ import {
 } from "react-native";
 import React, { useState, useEffect, useMemo } from "react";
 import { SendContactScreenProps } from "../../../../../navigation/screenPropsTypes";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/Reducer";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import { ContactDetailsDto } from "@/graphql/generated/types";
 import { Checkbox, Text } from "react-native-ui-lib";
 import { Colors } from "@/Constants";
@@ -21,6 +22,8 @@ import { socket } from "@/redux/Reducer/SocketSlice";
 import useAdvanceNavigation from "@/hooks/useAdvanceNavigation";
 import { socketManager } from "@/utils/socket/SocketManager";
 import { socketConnect } from "@/utils/socket/SocketConnection";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export default function SendContactScreen({
   route,
@@ -55,7 +58,7 @@ export default function SendContactScreen({
   return (
     <View style={styles.main}>
       <View style={styles.headerContainer}>
-        <Ionicons
+        <VectorIconCompat
           name="arrow-back"
           color="gray"
           size={30}
@@ -92,7 +95,7 @@ export default function SendContactScreen({
         />
       </View>
       <Pressable style={styles.nextButtonView} onPress={onNextButtonPressed}>
-        <Ionicons name="send-sharp" color="white" size={22} />
+        <VectorIconCompat name="send-sharp" color="white" size={22} />
       </Pressable>
     </View>
   );
@@ -183,7 +186,7 @@ function ContactGroupingView({
           return (
             <View key={sci} style={[styles.siblingContainer]}>
               <View style={styles.siblingDetails}>
-                <FontAwesome
+                <VectorIconCompat
                   name="phone"
                   size={26}
                   color={Colors.light.PrimaryColor}

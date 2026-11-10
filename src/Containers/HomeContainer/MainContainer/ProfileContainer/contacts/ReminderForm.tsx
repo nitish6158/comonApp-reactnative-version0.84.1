@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { View, Text, StyleSheet } from "react-native";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";

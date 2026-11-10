@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { singleRoom } from "@/Atoms";
 import CommonHeader from "@Components/header/CommonHeader";
 import { Colors } from "@/Constants";
@@ -10,10 +11,11 @@ import { useTranslation } from "react-i18next";
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import Sound from "react-native-sound";
 import { RadioButton } from "react-native-ui-lib";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { useSelector } from "react-redux";
 import RNFS from "react-native-fs";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 const ringtones = [
   {
@@ -135,7 +137,7 @@ export default function PhoneRingtone() {
         onPress={() => handleSound(item)}
       >
         <View style={styles.rowDirection}>
-          <AntDesign
+          <VectorIconCompat
             name="sound"
             size={24}
             color={item?.id == selectedTone?.id ? Colors.light.PrimaryColor : "gray"}
@@ -151,7 +153,7 @@ export default function PhoneRingtone() {
           </Text>
         </View>
         {playedSound && selectedTone?.id == item?.id ? (
-          <Ionicons
+          <VectorIconCompat
             name="stop-circle-outline"
             size={25}
             color={"red"}

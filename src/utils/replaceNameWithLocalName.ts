@@ -7,13 +7,13 @@ interface ReplaceNameWithLocalProps {
 }
 
 function ReplaceNameWithLocal({ Id, phoneNo, UserList }: ReplaceNameWithLocalProps) {
-  const tempuserlistdata = UserList?.find((userlist: { _id: any }) => userlist?.userId._id == Id);
+  const list = Array.isArray(UserList) ? UserList : [];
+  const tempuserlistdata = list.find((userlist) => userlist?.userId?._id == Id);
   if (tempuserlistdata != undefined) {
     if (tempuserlistdata?.firstName && tempuserlistdata?.lastName) {
       return tempuserlistdata?.firstName + " " + tempuserlistdata?.lastName;
     }
-  } else {
-    return phoneNo;
   }
+  return phoneNo as string | number | undefined;
 }
 export default ReplaceNameWithLocal;

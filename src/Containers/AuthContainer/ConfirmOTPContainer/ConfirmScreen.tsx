@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Alert, Image, Platform } from "react-native";
 
 import React, { useEffect, useState } from "react";

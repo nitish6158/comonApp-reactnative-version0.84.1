@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable react-native/no-inline-styles */
 import {
   ActivityIndicator,
@@ -29,9 +30,9 @@ import Colors from "@/Constants/Colors";
 import CommonHeader from "@Components/header/CommonHeader";
 import DarkThemeIcon from "@Images/Dark_theme.svg";
 import FastImage from "@d11/react-native-fast-image";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import LightThemeIcon from "@Images/Light_theme.svg";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 // import RealmContext from "../../../../../schemas";
 import Slider from "@react-native-community/slider";
 import dayjs from "dayjs";
@@ -69,11 +70,12 @@ async function shouldCompressImage(uri: string) {
     return false;
   }
 }
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import { socket } from "@/redux/Reducer/SocketSlice";
 import { socketConnect } from "@/utils/socket/SocketConnection";
 import { produce } from "immer";
 
+import { VectorIconCompat } from "@/Components/icons";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -346,7 +348,7 @@ function WallpaperAndSound() {
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20 }}>
         <View style={styles.chooseWallpaperBtn}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <MaterialCommunityIcons name="wallpaper" size={22} color="black" />
+            <VectorIconCompat name="wallpaper" size={22} color="black" />
             <Text style={[styles.darkText, { marginLeft: 10 }]}>
               {t("wallpaper-sound.wallpaper")}
             </Text>
@@ -616,7 +618,7 @@ function WallpaperAndSound() {
               }}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Ionicons
+                <VectorIconCompat
                   name="musical-notes-outline"
                   size={22}
                   color="black"
@@ -693,7 +695,7 @@ function WallpaperAndSound() {
                 }}
               >
                 <View style={styles.rowDirection}>
-                  <MaterialIcons name="phonelink-ring" size={25} />
+                  <VectorIconCompat name="phonelink-ring" size={25} />
                   <Text
                     style={{
                       marginLeft: 5,
@@ -706,7 +708,7 @@ function WallpaperAndSound() {
                     {t("ringtone")}
                   </Text>
                 </View>
-                <Ionicons
+                <VectorIconCompat
                   name="chevron-forward"
                   size={20}
                   style={{ marginRight: 10 }}

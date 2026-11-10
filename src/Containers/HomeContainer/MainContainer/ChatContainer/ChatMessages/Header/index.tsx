@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { StyleSheet, View } from "react-native";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 

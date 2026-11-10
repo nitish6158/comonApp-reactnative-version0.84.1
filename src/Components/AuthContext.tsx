@@ -1,10 +1,9 @@
 import React, { createContext, useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SessionKeys } from "@/utils/session";
+import { getSession, setSession } from "@/utils/session";
 
 export const AuthContext = createContext({
   tokenLogin: null as string | null,
-  setTokenLogin: async (_: string | null) => { },
+  setTokenLogin: async (_: string | null) => {},
   loading: true,
 });
 
@@ -12,28 +11,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [tokenLogin, setTokenState] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Save + set
+  /**
+   * UI auth gate + keep Keychain token field in sync when setting a token.
+   * Clearing (`null`) only updates React state — callers must `removeSession()`
+   * for a full Keychain wipe (same as previous AsyncStorage behavior).
+   */
   const setTokenLogin = async (value: string | null) => {
-    if (value) {
-      await AsyncStorage.setItem("session_token", value);
-    } else {
-      await AsyncStorage.removeItem("session_token");
+    if (!value) {
+      setTokenState(null);
+      return;
+    }
+
+    const current = await getSession();
+    if (current.token !== value) {
+      await setSession({
+        token: value,
+        refresh: current.refresh || "",
+        mode: current.mode || "",
+        expireAt: current.expireAt || 0,
+      });
     }
     setTokenState(value);
   };
 
-  // Load session once, on app start
   useEffect(() => {
     (async () => {
-      const saved =
-        (await AsyncStorage.getItem("session_token")) ||
-        (await AsyncStorage.getItem(SessionKeys.TOKEN));
-
-      if (saved) {
-        await AsyncStorage.setItem("session_token", saved);
-      }
-
-      setTokenState(saved);
+      const session = await getSession();
+      setTokenState(session.token);
       setLoading(false);
     })();
   }, []);

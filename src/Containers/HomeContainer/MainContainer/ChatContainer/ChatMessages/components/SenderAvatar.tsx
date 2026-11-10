@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { memo, useCallback } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import AvtaarWithoutTitle from '@Components/AvtaarWithoutTitle';

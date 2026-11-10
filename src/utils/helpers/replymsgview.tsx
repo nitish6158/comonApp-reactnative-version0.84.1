@@ -17,7 +17,7 @@ import TextMessageComponent from "@/Containers/HomeContainer/MainContainer/ChatC
 function getFileExtension(filePath: string) {
   try {
     const fileName = filePath.split("/").pop();
-    const extension = fileName.split(".").pop();
+    const extension = fileName?.split(".").pop();
     return extension;
   } catch (error) {
     console.error("Error occurred while getting file extension:", error);
@@ -37,7 +37,7 @@ export default function ReplymsgView({
   const { MyProfile } = useSelector((state: RootState) => state.Chat);
   const fileNameText = useMemo(() => {
     const filename = SelectedOptionItem?.file_URL?.split("/")?.pop();
-    return getFileName(filename);
+    return getFileName(filename ?? "");
   }, []);
 
   const FormattedMessage = useMemo(() => {
@@ -147,7 +147,11 @@ export default function ReplymsgView({
       case "VIDEO":
       case "APPLICATION":
       case "DOCUMENT":
-        return <DocumentPreview item={{ ...SelectedOptionItem, fileURL: SelectedOptionItem.file_URL }} />;
+        return (
+          <DocumentPreview
+            item={{ ...SelectedOptionItem, fileURL: SelectedOptionItem.file_URL } as any}
+          />
+        );
       case "contact":
         if (SelectedOptionItem?.message && SelectedOptionItem?.message.length > 0) {
           const message = JSON.parse(SelectedOptionItem?.message);
@@ -157,7 +161,7 @@ export default function ReplymsgView({
             <ChatContactView
             
               ContactInfo={message}
-              MyProfile={MyProfile}
+              MyProfile={MyProfile as any}
               item={message}
             />
           );

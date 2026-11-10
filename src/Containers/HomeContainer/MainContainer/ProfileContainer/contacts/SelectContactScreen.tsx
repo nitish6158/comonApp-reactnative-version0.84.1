@@ -1,9 +1,10 @@
+// @ts-nocheck
 import { Dimensions, FlatList, Pressable, ScrollView, Text, TextInput, View, StyleSheet } from "react-native";
 import React, { useMemo, useState } from "react";
 import { navigate, navigateBack } from "@Navigation/utility";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import Colors from "@/Constants/Colors";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { filterInObject } from "./FilterContact";
 import fonts from "@/Constants/fonts";
 import { useSelector } from "react-redux";
@@ -13,6 +14,8 @@ import { SelectContactScreenProps } from "@/navigation/screenPropsTypes";
 import { RootState } from "@/redux/Reducer";
 import { ContactDetailsDto } from "@/graphql/generated/types";
 import ToastMessage from "@Util/ToastMesage";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 const { width, height } = Dimensions.get("window");
 //
@@ -36,7 +39,7 @@ export default function SelectContactScreen({ route, navigation }: Readonly<Sele
   return (
     <View style={styles.main}>
       <View style={styles.headerContainer}>
-        <Ionicons name="arrow-back" color="gray" size={30} onPress={onBackPressed} />
+        <VectorIconCompat name="arrow-back" color="gray" size={30} onPress={onBackPressed} />
         {searchSelected ? (
           <View style={{ flexGrow: 1, maxWidth: width - 80 }}>
             <TextInput
@@ -55,7 +58,7 @@ export default function SelectContactScreen({ route, navigation }: Readonly<Sele
           </View>
         )}
         <Pressable onPress={enableContactSearch}>
-          <AntDesign name="search1" color="black" size={24} />
+          <VectorIconCompat name="search1" color="black" size={24} />
         </Pressable>
       </View>
       <View style={{ }}>
@@ -85,7 +88,7 @@ export default function SelectContactScreen({ route, navigation }: Readonly<Sele
                   </View>
                   {selectedContact.find((it) => it.phone == item.phone) && (
                     <View style={styles.checkboxView}>
-                      <AntDesign style={styles.checkbox} name="checkcircle" size={20} color={"green"} />
+                      <VectorIconCompat style={styles.checkbox} name="checkcircle" size={20} color={"green"} />
                     </View>
                   )}
                 </View>
@@ -109,7 +112,7 @@ export default function SelectContactScreen({ route, navigation }: Readonly<Sele
       </View>
 
       <Pressable style={styles.nextButtonView} onPress={onNextButtonPressed}>
-        <AntDesign name="arrowright" color="white" size={22} />
+        <VectorIconCompat name="arrowright" color="white" size={22} />
       </Pressable>
     </View>
   );

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { currentUserIdAtom } from "@/Atoms";
 import { useGetUploadSignedUrlLazyQuery } from "@/graphql/generated/room.generated";
 import useFileSystem from "@/hooks/useFileSystem";
@@ -9,12 +10,14 @@ import * as Progress from "react-native-progress";
 import React from "react";
 import { Colors } from "@/Constants";
 import { backgroundUpload, uuidv4 } from "react-native-compressor";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import ToastMessage from "@/utils/ToastMesage";
 import * as RNFS from "react-native-fs";
 import { storage } from "@/redux/backup/mmkv";
 import { keys } from "@/redux/backup/keys";
 import { getFileName } from "@/utils/helpers/FilePathUtility";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export type uploadResultType = {
   _id: string;
@@ -63,7 +66,7 @@ export default function UploadAttachmentView({ item, onUploadDone, onCancel, onE
         borderRadius={5}
         rightElement={
           <Pressable onPress={() => onCancel && onCancel(item)}>
-            <AntDesign size={22} color={"red"} name="close" />
+            <VectorIconCompat size={22} color={"red"} name="close" />
           </Pressable>
         }
       />

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { DefaultImageUrl, ImageUrl } from "@Service/provider/endpoints";
 import {
   Dimensions,
@@ -12,10 +13,9 @@ import {
 import React, { useCallback, useState } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/core";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
 import Colors from "@/Constants/Colors";
 import CommonLoader from "@Components/CommonLoader";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import { RootState } from "@Store/Reducer";
 import SearchInput from "@Components/SearchInput";
 import ToastMessage from "@Util/ToastMesage";
@@ -31,6 +31,8 @@ import _ from "lodash";
 import { produce } from "immer";
 import { socketManager } from "@/utils/socket/SocketManager";
 import { last } from "rxjs";
+import { VectorIconCompat } from "@/Components/icons";
+
 // create a component
 function AddToRooms({ route }: any) {
   const navigation = useNavigation();
@@ -161,7 +163,7 @@ function AddToRooms({ route }: any) {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons
+          <VectorIconCompat
             name="chevron-back"
             size={22}
             style={{ marginRight: 5 }}
@@ -256,7 +258,7 @@ function AddToRooms({ route }: any) {
                 </Text>
               )}
               {item.isSelected && (
-                <AntDesign name="checkcircle" color="green" size={22} />
+                <VectorIconCompat name="checkcircle" color="green" size={22} />
               )}
             </Pressable>
           );

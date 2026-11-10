@@ -2,11 +2,13 @@ import { ActivityIndicator, Platform, Pressable, View } from "react-native";
 import React, { useEffect, useState } from "react";
 
 import Colors from "@/Constants/Colors";
-import Feather from "react-native-vector-icons/Feather";
+
 import useFileSystem from "@Hooks/useFileSystem";
 import { Conversation } from "@/models/chatmessage";
 import { useAtomValue } from "jotai";
 import { singleRoom } from "@/Atoms";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type props = {
   item: Conversation;
@@ -66,7 +68,7 @@ export default function ImageDownloadView({ item }: props) {
         }}
       >
         {!loading ? (
-          <Feather name="download" size={25} color="white" />
+          <VectorIconCompat name="download" size={25} color="white" />
         ) : (
           <ActivityIndicator color="white" />
         )}

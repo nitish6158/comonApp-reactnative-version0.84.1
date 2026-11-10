@@ -48,10 +48,10 @@ export async function refreshAuthToken() {
   };
   return await client
     .query<RefreshSessionQuery, RefreshSessionQueryVariables>(payload)
-    .then(({ data }) => {
+    .then(async ({ data }) => {
       const refreshSession = data?.refreshSession;
       // console.log("Refresh sessiion response", JSON.stringify(data));
-      setSession({
+      await setSession({
         token: refreshSession.token,
         refresh: refreshSession.refresh,
         mode: refreshSession.mode,

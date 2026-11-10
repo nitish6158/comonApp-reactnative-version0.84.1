@@ -177,7 +177,7 @@ declare module 'react-native-voips-calls' {
        * Request permissions for PushKit notifications with the specified options.
        * @param permissions - The permissions options.
        */
-      static requestPermissions(permissions: {
+      requestPermissions(permissions?: {
         alert?: boolean;
         badge?: boolean;
         sound?: boolean;

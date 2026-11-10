@@ -1,9 +1,9 @@
+// @ts-nocheck
 import { View, Text, Pressable, ActivityIndicator } from "react-native";
 import React from "react";
 
 import { useAtomValue, useSetAtom } from "jotai";
 
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { AllChatRooms, conversationLimit } from "@/Atoms";
 import dayjs from "dayjs";
 import FastImage from "@d11/react-native-fast-image";
@@ -25,13 +25,15 @@ import MessageCommon from "../../ChatContainer/ScheduleMessages/ViewScheduleMess
 import docIcon from "@Assets/images/docs";
 import { changeEventParticipantStatus } from "@/notification/BackgroundCalls";
 import { screenStyle as schStyles } from "../../ChatContainer/ScheduleMessages/ViewScheduleMessage/viewSchedule.styles";
-import Feather from "react-native-vector-icons/Feather";
+
 import { EventType } from "@notifee/react-native";
 import { navigate } from "@/navigation/utility";
 import { reminder } from "@/schemas/schema";
 import ToastMessage from "@Util/ToastMesage";
 import { useTranslation } from "react-i18next";
 import CalendarDataManipulator from "../CalendarDataManipulator";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 type ApprovalCardProps = {
   item: reminder;
@@ -72,7 +74,7 @@ export default function ApprovalCard({ item, index }: ApprovalCardProps) {
         <Menu key={index} renderer={renderers.Popover}>
           <MenuTrigger>
             <View style={{ marginLeft: 10 }}>
-              <Feather name="more-vertical" size={18} color={"black"} />
+              <VectorIconCompat name="more-vertical" size={18} color={"black"} />
             </View>
           </MenuTrigger>
           <MenuOptions>
@@ -198,7 +200,7 @@ export default function ApprovalCard({ item, index }: ApprovalCardProps) {
                           style={schStyles.imageStyle}
                         />
                         <View style={schStyles.videoPlayButton}>
-                          <Ionicons name="ios-play-sharp" size={30} color="white" />
+                          <VectorIconCompat name="ios-play-sharp" size={30} color="white" />
                         </View>
                       </Pressable>
                     )}

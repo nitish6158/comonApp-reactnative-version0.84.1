@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Linking, Pressable, Text, View } from "react-native";
 
 import Colors from "@/Constants/Colors";

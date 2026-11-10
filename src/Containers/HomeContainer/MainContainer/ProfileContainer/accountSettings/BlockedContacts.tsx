@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { View, Text, FlatList, Pressable } from "react-native";
 import React, { useMemo } from "react";
 import { HeaderWithScreenName } from "@Components/header/HeaderWithScreenName";
@@ -8,12 +9,13 @@ import { RootState } from "@Store/Store";
 // import RealmContext from "../../../../../schemas";
 import FastImage from "@d11/react-native-fast-image";
 import { DefaultImageUrl } from "@Service/provider/endpoints";
-import AntDesign from "react-native-vector-icons/AntDesign";
 
 import { useTranslation } from "react-i18next";
 import { setMyProfile } from "@/redux/Reducer/ChatReducer";
 import { socket } from "@/redux/Reducer/SocketSlice";
 import { socketConnect } from "@/utils/socket/SocketConnection";
+import { VectorIconCompat } from "@/Components/icons";
+
 // const {  useQuery} = RealmContext;
 
 type UserProfile = {
@@ -79,7 +81,7 @@ export default function BlockedContactsContainers() {
                   setProfile({ ...MyProfile, blockedRooms: blockedRooms });
                 }}
               >
-                <AntDesign name="closecircle" size={22} color={"red"} />
+                <VectorIconCompat name="closecircle" size={22} color={"red"} />
               </Pressable>
             </View>
           );

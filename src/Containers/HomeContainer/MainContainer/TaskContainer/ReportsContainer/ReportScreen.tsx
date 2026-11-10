@@ -17,13 +17,14 @@ import { useReportQuery } from "@Service/generated/report.generated";
 import { $space_lg } from "@/Constants";
 
 export const ReportScreen = ({ route }: RootStackScreenProps<ScreensList.Report>) => {
-  const [ImagePreviewImage, setImagePreviewImage] = React.useState<React.SetStateAction<{ url: string; type: string }>>(
-    {}
-  );
+  const [ImagePreviewImage, setImagePreviewImage] = React.useState<{
+    url: string;
+    type: "IMAGE" | "VIDEO" | string;
+  }>({ url: "", type: "IMAGE" });
   const [imageView, setImageView] = React.useState(false);
-  const [imageData, setImageData] = React.useState([]);
+  const [imageData, setImageData] = React.useState<Array<{ uri: string }>>([]);
   const [ImagePreviewVisible, setImagePreviewVisible] = React.useState(false);
-  const [reportData, setReportData] = React.useState([]);
+  const [reportData, setReportData] = React.useState<any[]>([]);
 
   const { reportId } = route.params;
   const { data, loading,error } = useReportQuery({
@@ -40,9 +41,9 @@ export const ReportScreen = ({ route }: RootStackScreenProps<ScreensList.Report>
   React.useEffect(() => {
     const taskData = data?.report?.tasksData;
     if (taskData?.[taskData?.length - 1]?.signatureAttachment) {
-      setReportData(taskData);
+      setReportData(taskData ?? []);
     } else {
-      setReportData(taskData?.slice(0, taskData?.length - 1));
+      setReportData(taskData?.slice(0, taskData?.length - 1) ?? []);
     }
   }, [data?.report?.tasksData?.length]);
 
@@ -68,10 +69,10 @@ export const ReportScreen = ({ route }: RootStackScreenProps<ScreensList.Report>
   if (ImagePreviewVisible) {
     return (
       <VideoFullScreenPreview
-        ImagePreviewImage={ImagePreviewImage}
+        ImagePreviewImage={ImagePreviewImage as any}
         ImagePreviewVisible={ImagePreviewVisible}
         closeImageModal={() => {
-          setImagePreviewVisible(!ImagePreviewImage);
+          setImagePreviewVisible(false);
         }}
       />
     );
@@ -85,7 +86,9 @@ export const ReportScreen = ({ route }: RootStackScreenProps<ScreensList.Report>
         </Layout>
       ) : (
         <View style={[layoutStyle.containerBackground, mainStyles.flex1]}>
-          <HeaderWithScreenName title={data?.report.assignment.scenario.name} />
+          <HeaderWithScreenName
+            title={data?.report?.assignment?.scenario?.name ?? ""}
+          />
           <Timeline
             data={reportData}
             separator
@@ -93,11 +96,10 @@ export const ReportScreen = ({ route }: RootStackScreenProps<ScreensList.Report>
             innerCircle="dot"
             renderDetail={(item) =>
               renderDetail(
-                item,
+                item as any,
                 imageView,
                 onPressImage,
                 setImagePreviewImage,
-                setImagePreviewVisible,
                 setImagePreviewVisible
               )
             }

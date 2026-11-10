@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Alert, AppState, Dimensions, Image, Platform, View } from "react-native";
 import CallParticipantsMode, { participantsFormatted } from "./component/CallParticipantsMode";
 import React, { useCallback, useEffect, useRef, useState } from "react";

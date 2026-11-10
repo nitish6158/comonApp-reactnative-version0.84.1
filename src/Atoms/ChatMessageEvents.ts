@@ -16,7 +16,7 @@ export const PinedMessagesAtom = atom([] as Conversation[]);
 export const MultiSelectionAtom = atom(false);
 export const MultiSelectionTypeAtom = atom("" as selectionType);
 export const chatSearchPaginationIndexAtom = atom(0);
-export const chatSearchResultAtom = atom([]);
+export const chatSearchResultAtom = atom<any[]>([]);
 export const chatSearchEnabledAtom = atom(false);
 export const chatIndexForScroll = atom(null);
 export const chatSearchTextMessage = atom("");
@@ -29,7 +29,7 @@ export const conversationLimit = atom(10);
 
 export const selectedForwardMessagesListAtom = atom([] as Conversation[]);
 
-export const RoomDocsAtom = atom([]);
-export const RoomMediaAtom = atom([]);
-export const RoomAudioAtom = atom([]);
-export const RoomLinksAtom = atom([]);
+export const RoomDocsAtom = atom<any[]>([]);
+export const RoomMediaAtom = atom<any[]>([]);
+export const RoomAudioAtom = atom<any[]>([]);
+export const RoomLinksAtom = atom<any[]>([]);

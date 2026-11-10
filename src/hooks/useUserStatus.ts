@@ -59,7 +59,11 @@ export default function useUserStatus({
   roomStatus,
   contactReminders = [],
 }: UseUserStatusProps) {
-  const [lastSeen, setLastSeen] = useState({
+  const [lastSeen, setLastSeen] = useState<{
+    time?: string;
+    status: string;
+    isBlocked: boolean;
+  }>({
     time: undefined,
     status: "offline",
     isBlocked: false,

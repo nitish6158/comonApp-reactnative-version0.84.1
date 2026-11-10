@@ -83,7 +83,9 @@ export function calculateMessageHeight(message: any): number {
     }
 
     // Get base height for message type
-    let height = MESSAGE_ITEM_HEIGHTS[type] || MESSAGE_ITEM_HEIGHTS.default;
+    let height =
+      MESSAGE_ITEM_HEIGHTS[type as keyof typeof MESSAGE_ITEM_HEIGHTS] ||
+      MESSAGE_ITEM_HEIGHTS.default;
 
     // Adjust height for text messages based on content length
     if (type === 'text' && content) {

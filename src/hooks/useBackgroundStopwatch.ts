@@ -7,7 +7,7 @@ export const addZero = (num: number) => {
 
 function useBackgroundStopWatch() {
   const [seconds, setSeconds] = useState(0);
-  const intervalRef = useRef<number | undefined>();
+  const intervalRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     return () => {

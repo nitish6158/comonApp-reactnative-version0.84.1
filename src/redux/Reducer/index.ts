@@ -13,7 +13,7 @@ const Reducers = combineReducers({
   Chat: persistReducer({key:'Chat',storage:chatPersister},ChatReducer),
   Contact: persistReducer({ key: 'Contact', storage: contactPersister }, ContactReducer),
   Calls: persistReducer({ key: 'Calls', storage: callPersister }, CallReducer),
-  Organisation: persistReducer({ key: 'Calls', storage: organisationPersister }, OrganisationReducer),
+  Organisation: persistReducer({ key: 'Organisation', storage: organisationPersister }, OrganisationReducer),
   appLanguage:persistReducer({ key: 'Language', storage: languagePersister }, languageSlice),
   appSocket:SocketSlice,
   Task: TaskReducer,

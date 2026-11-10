@@ -2,7 +2,6 @@
 // import React, { useState, useEffect } from "react";
 // // import RealmContext from "../../../../../schemas";
 // import { View, Text, StyleSheet, Pressable, BackHandler } from "react-native";
-// import AntDesign from "react-native-vector-icons/AntDesign";
 // import { Conversation } from "@/models/chatmessage";
 // import { useTranslation } from "react-i18next";
 // import { useAtom, useAtomValue, useSetAtom } from "jotai";

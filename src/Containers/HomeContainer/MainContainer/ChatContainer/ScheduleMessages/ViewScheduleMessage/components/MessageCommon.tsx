@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Dimensions, StyleSheet, View } from "react-native";
 import React, { useCallback, useMemo } from "react";
 

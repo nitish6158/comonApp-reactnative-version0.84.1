@@ -39,6 +39,7 @@ export type callAtomType = {
   token?: string;
   callId?: string;
   channelId?: string;
+  channelName?: string;
   roomType: string;
   roomId: string;
   participants: Array<{
@@ -48,13 +49,13 @@ export type callAtomType = {
     userName: string;
     micEnable: boolean;
     callStatus: string;
-  }>;
+  }> | any[];
   callBackground: string;
   roomName: string;
   endCall?: boolean;
   appKilled?: {
     status: boolean;
-    startTime: number;
+    startTime: number | string;
     participantUid: number[];
   };
 };

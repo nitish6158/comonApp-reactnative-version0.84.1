@@ -33,20 +33,22 @@ function AttachFile({
   mediaRequiredOnOptions,
   isSignatureDone,
 }: {
-  task: Task;
+  task: any;
   addTaskLoading: boolean;
-  edge: Edge;
+  edge: any;
   onAddTaskResult: onAddTaskResultType;
-  mediaRequiredOnOptions?: boolean;
-  isSignatureDone: string;
+  mediaRequiredOnOptions?: any;
+  isSignatureDone?: string;
 }) {
   const { t } = useTranslation();
-  const [file, setFile] = useState<TaskDocumentPickerTypes>();
+  const [file, setFile] = useState<any>();
   const [modal, setModal] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [signature, setSignature] = useState("");
 
   const mediaType = task.mediaType === MediaType.Photo ? "photo" : "video";
+  const isAudioOrDoc =
+    String(task.mediaType) === AttachmentType.Audio || String(task.mediaType) === AttachmentType.Document;
 
   // console.log("Media type check", task.mediaType);
 
@@ -79,17 +81,17 @@ function AttachFile({
   };
 
   const pickImage = async () => {
-    if (task.mediaType == AttachmentType.Audio) {
+    if (String(task.mediaType) == AttachmentType.Audio) {
       const AudioData = await DocumentPicker.pickSingle({
         copyTo: "cachesDirectory",
         type: DocumentPicker.types.audio,
       });
       if (AudioData) {
-        setFile({ ...AudioData, uri: AudioData.fileCopyUri, fileName: AudioData.name });
+        setFile({ ...AudioData, uri: AudioData.fileCopyUri ?? "", fileName: AudioData.name });
       }
 
       return;
-    } else if (task.mediaType == AttachmentType.Document) {
+    } else if (String(task.mediaType) == AttachmentType.Document) {
       const DocumentData = await DocumentPicker.pickSingle({
         copyTo: "cachesDirectory",
         type: [
@@ -101,7 +103,7 @@ function AttachFile({
         ],
       });
       if (DocumentData) {
-        setFile({ ...DocumentData, uri: DocumentData.fileCopyUri, fileName: DocumentData.name });
+        setFile({ ...DocumentData, uri: DocumentData.fileCopyUri ?? "", fileName: DocumentData.name });
       }
       return;
     }
@@ -182,14 +184,8 @@ function AttachFile({
     setModal(false);
   };
 
-  const checkType =
-    task.mediaType == AttachmentType.Audio || task.mediaType == AttachmentType.Document
-      ? file?.uri
-      : file?.assets?.[0]?.uri;
-  const fileType =
-    task.mediaType == AttachmentType.Audio || task.mediaType == AttachmentType.Document
-      ? file?.type
-      : file?.assets?.[0]?.type;
+  const checkType = isAudioOrDoc ? file?.uri : file?.assets?.[0]?.uri;
+  const fileType = isAudioOrDoc ? file?.type : file?.assets?.[0]?.type;
 
   return (
     <View style={{ flex: 1 }}>
@@ -203,7 +199,7 @@ function AttachFile({
       )}
 
       <View style={{ flexDirection: "row", alignItems: "center", marginTop: 15, marginBottom: 10 }}>
-        {task.mediaType == AttachmentType.Audio || task.mediaType == AttachmentType.Document ? (
+        {isAudioOrDoc ? (
           <Pressable onPress={pickImage} style={styles.button}>
             <Text style={{ color: "white" }}>{t("btn.attach-file")}</Text>
           </Pressable>
@@ -267,7 +263,7 @@ function AttachFile({
                   isSignatureDoneFromParent ? isSignatureDone : signature
                 );
                 setSignature("");
-                setFile({});
+                setFile(undefined);
               }}
               containerStyle={[]}
             />

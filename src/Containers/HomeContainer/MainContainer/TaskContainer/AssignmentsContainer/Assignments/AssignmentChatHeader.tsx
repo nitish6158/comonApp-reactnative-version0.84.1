@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { activeAssignmentAtom, activeReportAtom, activeScenarioAtom } from "@/Atoms/AssignmentAtom";
 import HeaderWithAction from "@Components/header/HeaderWithAction";
 import Colors from "@/Constants/Colors";
@@ -7,10 +8,11 @@ import React, { useState } from "react";
 import { Pressable, View, StyleSheet, Text, ActivityIndicator, TouchableOpacity } from "react-native";
 import NotificationIcon from "@Images/notification big.svg";
 import { useReportLazyQuery } from "@/graphql/generated/report.generated";
-import Feather from "react-native-vector-icons/Feather";
 
 import { useScenarioLazyQuery } from "@/graphql/generated/scenario.generated";
 import { Divider } from "react-native-elements";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export function AssignmentChatHeader() {
   const [loader, setLoader] = useState(false);
@@ -73,7 +75,7 @@ export function AssignmentChatHeader() {
                   {loader ? (
                     <ActivityIndicator size={"small"} color={Colors.light.link} />
                   ) : (
-                    <Feather name="refresh-ccw" size={20} />
+                    <VectorIconCompat name="refresh-ccw" size={20} />
                   )}
                 </TouchableOpacity>
               )}

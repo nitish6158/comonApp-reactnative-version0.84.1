@@ -5,8 +5,7 @@ import { Text, View } from "react-native";
 import { BottomTabParamsList } from "./screenPropsTypes";
 import CallTabNavigator from "./CallTabNavigator";
 import Colors from "@/Constants/Colors";
-import Entypo from "react-native-vector-icons/Entypo";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import TaskTabNavigator from "./TaskTabNavigator";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTranslation } from "react-i18next";
@@ -19,9 +18,11 @@ import { OverlayLoader } from "@/Components";
 import { windowWidth } from "@/utils/ResponsiveView";
 import { socketManager } from "@/utils/socket/SocketManager";
 
+import { AppIcon } from "@/Components/icons";
+
 const BottomTabNavigator = createBottomTabNavigator<BottomTabParamsList>();
 export const initialBottomTabScreenAtom = atom<{ name: string; payload: any }>({
-  name: "TaskTabScreen",
+  name: "ChatTabScreen",
   payload: null,
 });
 
@@ -67,7 +68,7 @@ const BottomTabScreen = () => {
             elevation: 5,
           },
         }}
-        initialRouteName={initialScreen.name}
+        initialRouteName={initialScreen.name as keyof BottomTabParamsList}
       >
         <BottomTabNavigator.Screen
           name="TaskTabScreen"
@@ -90,11 +91,7 @@ const BottomTabScreen = () => {
                     height: 30,
                   }}
                 >
-                  <Ionicons
-                    name={focused ? "briefcase" : "briefcase-outline"}
-                    size={22}
-                    color={"black"}
-                  />
+                  <AppIcon name="briefcase" size={22} color={"black"} />
                 </View>
                 <Text
                   style={{
@@ -139,15 +136,7 @@ const BottomTabScreen = () => {
                     height: 30,
                   }}
                 >
-                  <Ionicons
-                    name={
-                      focused
-                        ? "chatbubble-ellipses"
-                        : "chatbubble-ellipses-outline"
-                    }
-                    size={22}
-                    color={"black"}
-                  />
+                  <AppIcon name={focused ? "chatFilled" : "chat"} size={22} color={"black"} />
                 </View>
                 <Text
                   style={{
@@ -193,11 +182,7 @@ const BottomTabScreen = () => {
                     height: 30,
                   }}
                 >
-                  <Ionicons
-                    name={focused ? "call-sharp" : "call-outline"}
-                    size={22}
-                    color={"black"}
-                  />
+                  <AppIcon name="phone" size={22} color={"black"} />
                 </View>
                 <Text
                   style={{
@@ -241,11 +226,7 @@ const BottomTabScreen = () => {
                     height: 30,
                   }}
                 >
-                  <Ionicons
-                    name={focused ? "calendar" : "calendar-outline"}
-                    size={22}
-                    color={"black"}
-                  />
+                  <AppIcon name="calendar" size={22} color={"black"} />
                 </View>
                 <Text
                   style={{

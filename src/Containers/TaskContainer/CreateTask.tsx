@@ -27,8 +27,8 @@ import {
   View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-const MaterialCommunityIcons =
-  require("react-native-vector-icons/MaterialCommunityIcons").default;
+
+import { VectorIconCompat } from "@/Components/icons";
 
 const CreateTask = ({
   navigation,
@@ -211,7 +211,7 @@ const CreateTask = ({
   //           style={styles.backBtn}
   //           onPress={() => navigation.goBack()}
   //         >
-  //           <MaterialCommunityIcons
+  //           <VectorIconCompat
   //             name="arrow-left"
   //             size={26}
   //             color="#007bff"
@@ -221,7 +221,7 @@ const CreateTask = ({
   //       <View style={styles.listHeaderRow}>
   //         <Text style={styles.header}>{t('create-workflow.Tasks')}</Text>
   //         <TouchableOpacity style={styles.addTaskBtn} onPress={handleAddTask}>
-  //           <MaterialCommunityIcons
+  //           <VectorIconCompat
   //             name="plus-circle-outline"
   //             size={28}
   //             color="#007bff"
@@ -230,7 +230,7 @@ const CreateTask = ({
   //       </View>
   //       {tasks.length === 0 ? (
   //         <View style={styles.centerContent}>
-  //           <MaterialCommunityIcons
+  //           <VectorIconCompat
   //             name="clipboard-list-outline"
   //             size={64}
   //             color="#007bff"
@@ -250,7 +250,7 @@ const CreateTask = ({
   //               activeOpacity={0.8}
   //             >
   //               <View style={styles.cardHeaderRow}>
-  //                 <MaterialCommunityIcons
+  //                 <VectorIconCompat
   //                   name="file-document-edit-outline"
   //                   size={24}
   //                   color="#007bff"
@@ -275,7 +275,7 @@ const CreateTask = ({
     >
       <View>
         <TouchableOpacity style={styles.backBtn} onPress={navigation.goBack}>
-          <MaterialCommunityIcons name="arrow-left" size={26} />
+          <VectorIconCompat name="arrow-left" size={26} />
         </TouchableOpacity>
         <Text style={styles.header}>{t("create-workflow.create-new-workflow")}</Text>
       </View>

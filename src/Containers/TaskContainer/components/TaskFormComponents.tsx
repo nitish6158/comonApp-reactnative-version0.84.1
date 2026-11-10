@@ -12,8 +12,7 @@ import { Colors } from "@/Constants";
 import { EXPRESSION_OPTIONS, LOGIC_OPTIONS } from "../TaskUtils";
 import { taskFormStyles } from "../styles/TaskFormStyles";
 
-const MaterialCommunityIcons =
-  require("react-native-vector-icons/MaterialCommunityIcons").default;
+import { VectorIconCompat } from "@/Components/icons";
 
 interface EmptyStateProps {
   // Empty state component
@@ -24,7 +23,7 @@ export const EmptyState: React.FC<EmptyStateProps> = () => {
   
   return (
     <View style={taskFormStyles.emptyState}>
-      <MaterialCommunityIcons
+      <VectorIconCompat
         name="clipboard-list-outline"
         size={80}
         color={Colors.light.grayText}
@@ -67,7 +66,7 @@ export const AddTaskButton: React.FC<AddTaskButtonProps> = ({
         ]}
         disabled={hasUnsavedTasks}
       >
-        <MaterialCommunityIcons
+        <VectorIconCompat
           name="plus-circle"
           size={24}
           color={hasUnsavedTasks ? Colors.light.grayText : Colors.light.White}

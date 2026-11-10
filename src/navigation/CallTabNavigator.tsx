@@ -16,7 +16,7 @@ import { SurveyEventType } from "@/graphql/generated/types";
 
 const CallTabStack = createMaterialTopTabNavigator<CallTabStackParamsList>();
 
-export default function CallTabNavigator(props) {
+export default function CallTabNavigator(props: { navigation?: any }) {
   const { t } = useTranslation();
   const navigation = useNavigation();
 
@@ -28,8 +28,8 @@ export default function CallTabNavigator(props) {
           width: 0,
           height: 0,
         }}
-        options={undefined}
-        route={undefined}
+        options={{} as any}
+        route={{} as any}
         navigation={props.navigation}
       />
 

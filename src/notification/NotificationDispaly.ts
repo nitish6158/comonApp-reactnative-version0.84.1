@@ -47,7 +47,7 @@ export async function onMessageReceived(message: Message) {
     const isCustomRoom = await notifee.getChannel(dataQ.myMessage.roomId);
     // console.log(`global.roomId:- ${global.roomId}`);
     if (global.roomId != dataQ.myMessage.roomId) {
-      let extraConfig = {
+      let extraConfig: { body: string; subtitle?: string } = {
         body: formateBody(dataQ.notification.body),
       };
       let androidConfig = {};
@@ -233,7 +233,7 @@ export async function onMessageReceived(message: Message) {
       }
     }
   } else {
-    let res = await getNotificationPayload(dataObject.data.notificationId);
+    let res = await getNotificationPayload((dataObject as any).data?.notificationId);
     let result = JSON.parse(res.payload);
 
     //TASK Notifications not have result.data
@@ -759,7 +759,7 @@ export async function setChannelGroups() {
   });
 }
 
-export async function DisplayMissedCall(data) {
+export async function DisplayMissedCall(data: any) {
   console.log("DisplayMissedCall", data);
 
   let payload = { data: JSON.stringify(data) };
@@ -807,7 +807,7 @@ export async function DisplayMissedCall(data) {
   }
 }
 
-export async function displayOnGoingCall(payload) {
+export async function displayOnGoingCall(payload: any) {
   let id = notifee.displayNotification({
     id: payload.callId,
     title: payload.roomName,

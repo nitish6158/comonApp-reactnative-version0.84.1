@@ -76,7 +76,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { AppState, Linking, Platform, View } from "react-native";
 import { useAtom } from "jotai";
 import { appStateAtom } from "@/Atoms/appLifeCycleAtom";
-import RBSheet, { RBSheetProps } from "react-native-raw-bottom-sheet";
+import RBSheet from "react-native-raw-bottom-sheet";
 import OtaModal from "react-native-ota-modal";
 import { ANDROID_URL, IOS_URL } from "@/graphql/provider/endpoints";
 import VersionCheck from "react-native-version-check";
@@ -91,7 +91,7 @@ type VersionType = {
 export function CheckAppVersion() {
   const [appState, setAppState] = useAtom(appStateAtom);
   const [versionText, setVersionText] = useState("");
-  const RBSheetRef = useRef<RBSheetProps>(null);
+  const RBSheetRef = useRef<any>(null);
 
   // ✅ TEMP DATA (Backend / Realm ki jagah)
   const TEMP_VERSIONS: VersionType[] = [
@@ -131,9 +131,11 @@ export function CheckAppVersion() {
     <View>
       <RBSheet
         height={350}
-        closeOnDragDown={false}
-        closeOnPressMask={false}
-        closeOnPressBack={false}
+        {...({
+          closeOnDragDown: false,
+          closeOnPressMask: false,
+          closeOnPressBack: false,
+        } as object)}
         customStyles={{
           container: {
             borderTopRightRadius: 30,

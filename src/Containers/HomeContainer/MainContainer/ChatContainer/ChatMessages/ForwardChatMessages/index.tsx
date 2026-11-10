@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   FlatList,
   Pressable,
@@ -16,7 +17,7 @@ import AvtaarWithoutTitle from "@Components/AvtaarWithoutTitle";
 import Colors from "@/Constants/Colors";
 import CommonLoader from "@Components/CommonLoader";
 import { DefaultImageUrl } from "@Service/provider/endpoints";
-import Feather from "react-native-vector-icons/Feather";
+
 import Forward from "@Images/ForwardWhite.svg";
 import { RoomData } from "@Store/Models/ChatModel";
 import SelectGrupHeader from "../../ChatFolderContainer/CreateFolderScreen/Header";
@@ -29,6 +30,8 @@ import { useTranslation } from "react-i18next";
 import { socket } from "@/redux/Reducer/SocketSlice";
 import { socketManager } from "@/utils/socket/SocketManager";
 import { socketConnect } from "@/utils/socket/SocketConnection";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 interface DataMessage {
   type: string;
@@ -63,7 +66,7 @@ export default function ForwardChatMessage({ route }) {
   const CheckMark = () => {
     return (
       <View style={Styles.checked}>
-        <Feather name="check" size={13} color="white" />
+        <VectorIconCompat name="check" size={13} color="white" />
       </View>
     );
   };

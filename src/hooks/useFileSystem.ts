@@ -50,7 +50,7 @@ const useFileSystem = () => {
           const alldownloadeditemlist = await readComonDirectory();
           const extractExtention = files[i].split(".");
           const type = extractExtention[extractExtention.length - 1];
-          if (!DocsTypes[type] && !isEmpty(saveToCameraRole)) {
+          if (!(DocsTypes as Record<string, string>)[type] && !isEmpty(saveToCameraRole)) {
             await saveFileToCameraRoll(downloadDest);
           }
 
@@ -179,7 +179,7 @@ const useFileSystem = () => {
     return `${user?.firstName ?? "N/A"} ${user?.lastName ?? ""}`;
   }
 
-  async function exportChat(room: any, query, filterRequire?: boolean) {
+  async function exportChat(room: any, query: any, filterRequire?: boolean) {
     const allMessages = Array.isArray(query)
       ? query
       : query?.filtered
@@ -194,13 +194,13 @@ const useFileSystem = () => {
 
     const path = `${RNFS.DocumentDirectoryPath}/Chat-with-${
       roomType === "individual"
-        ? getFileName(participants, MyProfile?._id)
+        ? getFileName(participants, MyProfile?._id ?? "")
         : roomName?.replace(/\s/g, "_") ?? "N/A"
     }.txt`;
 
     let currentUserUtiles: any[] = [];
     if (!filterRequire) {
-      currentUserUtiles = participants.filter((pn) => pn.user_id == MyProfile?._id);
+      currentUserUtiles = participants.filter((pn: any) => pn.user_id == MyProfile?._id);
     } else {
       currentUserUtiles = participants;
     }
@@ -209,7 +209,8 @@ const useFileSystem = () => {
       (chat: any) =>
         chat?.deleted?.findIndex(
           (item: any) =>
-            item.type == Hidemessage[item.type] && item.user_id == MyProfile?._id
+            item.type == (Hidemessage as Record<string, string>)[item.type] &&
+            item.user_id == MyProfile?._id
         ) === -1 &&
         ((currentUserUtiles && currentUserUtiles?.[0]?.left_at == 0) ||
           chat?.created_at < currentUserUtiles?.[0]?.left_at)

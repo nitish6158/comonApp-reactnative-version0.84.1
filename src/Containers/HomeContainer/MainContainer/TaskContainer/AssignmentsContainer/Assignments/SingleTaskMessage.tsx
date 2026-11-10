@@ -33,7 +33,10 @@ export const SingleTaskMessage = ({ item }: { item: TaskData }) => {
   const DownloadFileStore = useSelector((state: any) => state.Chat.DownloadFileStore);
   const documentData = { fileURL: item?.resultAttachment?.filename, filename: item?.resultAttachment?.filename };
   const [ImagePreviewVisible, setImagePreviewVisible] = React.useState(false);
-  const [ImagePreviewImage, setImagePreviewImage] = React.useState<{ url: string; type: string }>({});
+  const [ImagePreviewImage, setImagePreviewImage] = React.useState<{ url: string; type: string }>({
+    url: "",
+    type: "",
+  });
   const closeImageModal = () => {
     setImagePreviewVisible(!ImagePreviewImage);
   };
@@ -75,7 +78,7 @@ export const SingleTaskMessage = ({ item }: { item: TaskData }) => {
 
   const userProfile = useMemo(() => {
     if (item?.memberId) {
-      return item?.memberId?.user.profile_img;
+      return item?.memberId?.user?.profile_img;
     }
   }, []);
 
@@ -97,7 +100,7 @@ export const SingleTaskMessage = ({ item }: { item: TaskData }) => {
           {userProfile && (
             <FastImage
               style={{ height: 30, width: 30, borderRadius: 30, marginRight: 10 }}
-              source={{ uri: `${DefaultImageUrl}${item.memberId.user.profile_img}` }}
+              source={{ uri: `${DefaultImageUrl}${item.memberId?.user?.profile_img}` }}
             />
           )}
           <Text>{myTaskData ? (item?.memberId ? "You" : "") : userName ?? "___"}</Text>

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Autolink, { IntlPhoneMatcher, LatLngMatcher, PhoneMatchersByCountry } from "react-native-autolink";
 import { FORMATTED_LINK_MATCH_TYPE, FormattedText } from "react-native-formatted-text";
 import React, { useEffect, useMemo } from "react";

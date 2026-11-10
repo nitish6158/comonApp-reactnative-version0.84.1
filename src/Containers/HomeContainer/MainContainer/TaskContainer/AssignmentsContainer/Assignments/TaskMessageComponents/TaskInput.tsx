@@ -4,15 +4,16 @@ import React, { useEffect, useState } from "react";
 
 import AttachFile from "./AttachFile";
 import { Button, Input } from "react-native-elements";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import TaskPermissionView from "./TaskPermissionView";
 import ToastMessage from "@Util/ToastMesage";
 import { TextInput, View, Keyboard, Image, Dimensions } from "react-native";
 
-
 import { useTranslation } from "react-i18next";
 import { InputWithFocus } from "@Components/input/Input";
 import DigitalSignature from "@/Components/DigitalSignature";
+
+import { VectorIconCompat } from "@/Components/icons";
 
 export function TaskInput({
   task,
@@ -28,7 +29,7 @@ export function TaskInput({
   const { t } = useTranslation();
   const [value, setValue] = useState("");
   const [selected, setselected] = useState({});
-  const [media, setMedia] = useState();
+  const [media, setMedia] = useState<any>();
   const [modalVisible, setModalVisible] = useState(false);
   const [signature, setSignature] = useState("");
 
@@ -70,19 +71,19 @@ export function TaskInput({
       {edge?.location && (
         <TaskPermissionView
           message={t("task.useLocation")}
-          icon={<FontAwesome name="map-marker" size={24} color="gray" />}
+          icon={<VectorIconCompat name="map-marker" size={24} color="gray" />}
         />
       )}
 
       {edge?.media && (
         <AttachFile
-          task={{ mediaType: edge?.media }}
+          task={{ mediaType: edge?.media } as any}
           addTaskLoading={addTaskLoading}
           edge={edge}
-          onAddTaskResult={(edge, task, undefined, file) => {
+          onAddTaskResult={(_edge, _task, _opts, file) => {
             setMedia(file);
           }}
-          mediaRequiredOnOptions={edge?.media}
+          mediaRequiredOnOptions={edge?.media as any}
         />
       )}
       {edge?.signature && (

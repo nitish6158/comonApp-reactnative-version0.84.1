@@ -10,8 +10,7 @@ import { useWatch } from "react-hook-form";
 import { Colors } from "@/Constants";
 import { taskSummaryCardStyles } from "../styles/TaskSummaryCardStyles";
 
-const MaterialCommunityIcons =
-  require("react-native-vector-icons/MaterialCommunityIcons").default;
+import { VectorIconCompat } from "@/Components/icons";
 
 interface TaskSummaryCardProps {
   index: number;
@@ -82,14 +81,14 @@ export const TaskSummaryCard: React.FC<TaskSummaryCardProps> = ({
             </View>
           </View>
           <View style={taskSummaryCardStyles.summaryActions}>
-            <MaterialCommunityIcons
+            <VectorIconCompat
               name={row.saved ? "check-circle" : "circle-outline"}
               size={24}
               color={
                 row.saved ? Colors.light.alertSuccess : Colors.light.grayText
               }
             />
-            <MaterialCommunityIcons
+            <VectorIconCompat
               name="chevron-down"
               size={24}
               color={Colors.light.grayText}

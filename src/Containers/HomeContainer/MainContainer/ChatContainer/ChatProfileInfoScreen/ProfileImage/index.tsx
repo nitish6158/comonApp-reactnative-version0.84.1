@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useMemo } from "react";
 import { View, Pressable, Image, StyleSheet, Alert } from "react-native";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";

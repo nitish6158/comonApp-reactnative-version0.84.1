@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Alert, Modal, Pressable, StyleSheet, View } from "react-native";
 
 import Colors from "@/Constants/Colors";

@@ -5,12 +5,12 @@ import { Button, FloatingButton } from "react-native-ui-lib";
 import HeaderWithSearch from "@/Components/header/HeaderWithSearch";
 import { useTranslation } from "react-i18next";
 import { Colors } from "@/Constants";
-import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { windowHeight } from "@/utils/ResponsiveView";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import dayjs from "dayjs";
 import { Menu, MenuOption, MenuOptions, MenuTrigger, renderers } from "react-native-popup-menu";
-import Feather from "react-native-vector-icons/Feather";
+
 import {
   useDeleteRecordMutation,
   useDeleteUserFolderMutation,
@@ -19,6 +19,8 @@ import {
 import { useFocusEffect } from "@react-navigation/core";
 import ToastMessage from "@/utils/ToastMesage";
 import HeaderWithAction from "@Components/header/HeaderWithAction";
+import { VectorIconCompat } from "@/Components/icons";
+
 import _ from 'lodash'
 
 let history = [] as Array<{ title: string; parentId: string | null }>;
@@ -61,7 +63,7 @@ export default function ViewDatabaseScreen({ navigation, route }: ViewDatabaseSc
 
     if (
       getFolderList.data?.getMyFolders.subFolders?.length == 0 &&
-      getFolderList.data?.getMyFolders.records.length == 0
+      (getFolderList.data?.getMyFolders.records?.length ?? 0) == 0
     ) {
       return (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center", height: 500 }}>
@@ -87,7 +89,7 @@ export default function ViewDatabaseScreen({ navigation, route }: ViewDatabaseSc
                 }}
               >
                 <View style={styles.categoryDetails}>
-                  <FontAwesome name="file-text-o" size={32} color={Colors.light.PrimaryColor} />
+                  <VectorIconCompat name="file-text-o" size={32} color={Colors.light.PrimaryColor} />
                   <View style={{ marginLeft: 20 }}>
                     <Text style={{ fontSize: 16 }}>{item.title}</Text>
                     <Text style={{ fontSize: 12, color: "gray", marginTop: 3 }}>
@@ -98,14 +100,14 @@ export default function ViewDatabaseScreen({ navigation, route }: ViewDatabaseSc
                 <Menu key={index} renderer={renderers.Popover}>
                   <MenuTrigger>
                     <View style={{ marginLeft: 10 }}>
-                      <Feather name="more-vertical" size={18} color={"black"} />
+                      <VectorIconCompat name="more-vertical" size={18} color={"black"} />
                     </View>
                   </MenuTrigger>
                   <MenuOptions>
                     <MenuOption
                       onSelect={() => {
                         navigation.navigate("CreateRecordScreen", {
-                          parentId: getFolderList.data?.getMyFolders.parent,
+                          parentId: getFolderList.data?.getMyFolders.parent ?? "",
                           recordId: item._id,
                           mode: "update",
                         });
@@ -194,18 +196,18 @@ export default function ViewDatabaseScreen({ navigation, route }: ViewDatabaseSc
                   style={styles.categoryContainer}
                   onPress={() => {
                     history.push({
-                      title: item.name,
+                      title: item.name ?? "",
                       parentId: item._id,
                     });
                     history = _.uniqBy(history,(a)=> a.parentId)
                     navigation.setParams({
-                      title: item.name,
+                      title: item.name ?? "",
                       parentId: item._id,
                     });
                   }}
                 >
                   <View style={styles.categoryDetails}>
-                    <FontAwesome name="folder" size={32} color={Colors.light.PrimaryColor} />
+                    <VectorIconCompat name="folder" size={32} color={Colors.light.PrimaryColor} />
                     <View style={{ marginLeft: 20 }}>
                       <Text style={{ fontSize: 16 }}>{item.name}</Text>
                       <Text style={{ fontSize: 12, color: "gray", marginTop: 3 }}>
@@ -216,17 +218,17 @@ export default function ViewDatabaseScreen({ navigation, route }: ViewDatabaseSc
                   <Menu key={index} renderer={renderers.Popover}>
                     <MenuTrigger>
                       <View style={{ marginLeft: 10 }}>
-                        <Feather name="more-vertical" size={18} color={"black"} />
+                        <VectorIconCompat name="more-vertical" size={18} color={"black"} />
                       </View>
                     </MenuTrigger>
                     <MenuOptions>
                       <MenuOption
                         onSelect={() => {
                           navigation.navigate("CreateCategoryScreen", {
-                            parentId: getFolderList.data?.getMyFolders.parent,
+                            parentId: getFolderList.data?.getMyFolders.parent ?? "",
                             categoryId: item._id,
                             mode: "update",
-                            text: item.name,
+                            text: item.name ?? "",
                           });
                         }}
                       >
@@ -297,7 +299,10 @@ export default function ViewDatabaseScreen({ navigation, route }: ViewDatabaseSc
   }
 
   function onNewRecordPressed() {
-    navigation.navigate("CreateRecordScreen", { mode: "create", parentId: getFolderList.data?.getMyFolders._id });
+    navigation.navigate("CreateRecordScreen", {
+      mode: "create",
+      parentId: getFolderList.data?.getMyFolders._id ?? "",
+    });
   }
 }
 

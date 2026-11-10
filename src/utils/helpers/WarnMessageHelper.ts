@@ -1,6 +1,8 @@
 import { DoubleUserAction, SingleUserAction } from "../../../types/types";
 import ReplaceNameWithLocal from "../replaceNameWithLocalName";
 
+type WarnMsgPayload = { msg?: string; pid?: string };
+
 export const warnMessageHelper = (
   activeroom: {
     last_msg: any;
@@ -14,38 +16,44 @@ export const warnMessageHelper = (
     type: string | number;
     message: string;
   },
-  Getalluserlist: string | any[],
+  Getalluserlist: any,
   MyProfileId: string | number
 ) => {
-  let warnMessageText = "";
+  let warnMessageText: string | WarnMsgPayload = "";
   let textMessage = "";
-  if (DoubleUserAction[activeroom?.last_msg?.[0]?.type] || SingleUserAction[activeroom?.last_msg?.[0]?.type]) {
+  const msgType = activeroom?.last_msg?.[0]?.type as keyof typeof DoubleUserAction &
+    keyof typeof SingleUserAction;
+  if (DoubleUserAction[msgType] || SingleUserAction[msgType]) {
     warnMessageText = activeroom?.last_msg?.[0]?.message
       ? activeroom?.last_msg?.[0]?.message?.includes("_id")
         ? JSON.parse(activeroom?.last_msg?.[0]?.message)
         : activeroom?.last_msg?.[0]?.message
       : "";
-    textMessage = warnMessageText?.msg ?? "";
+    textMessage =
+      typeof warnMessageText === "object" ? (warnMessageText?.msg ?? "") : "";
   } else {
     textMessage = activeroom?.last_msg?.[0]?.message;
   }
 
+  const warnPid =
+    typeof warnMessageText === "object" ? warnMessageText?.pid : undefined;
+
   const TowhomAddedName = activeroom?.participants?.findIndex(
-    (roomitem: { user_id: any; participants: any; _id: any; pid: any }) => roomitem?.user_id == warnMessageText?.pid
+    (roomitem) => roomitem?.user_id == warnPid
   );
 
-  let NamePid = "";
+  let NamePid: string | number | undefined = "";
 
-  let singleActionUserName = "";
+  let singleActionUserName: string | number | undefined = "";
   const Participants = activeroom?.participants;
-  //console.log(MyProfileId);
+  const userList = Array.isArray(Getalluserlist) ? Getalluserlist : [];
   if (activeroom?.sender == MyProfileId) {
     singleActionUserName = "You";
   } else {
     singleActionUserName = ReplaceNameWithLocal({
       Id: activeroom?.sender,
       phoneNo: Participants?.[TowhomAddedName]?.phone,
-      UserList: Getalluserlist,
+      UserList: userList,
     });
   }
 
@@ -57,25 +65,21 @@ export const warnMessageHelper = (
     NamePid = ReplaceNameWithLocal({
       Id: Participants?.[TowhomAddedName]?.user_id,
       phoneNo: Participants?.[TowhomAddedName]?.phone,
-      UserList: Getalluserlist,
+      UserList: userList,
     });
   }
 
   const sendernameadded = activeroom?.participants?.find(
-    (roomitem: { user_id: any; participants: any; _id: any; pid: any }) =>
-      roomitem?.user_id == activeroom?.last_msg[0]?.sender
+    (roomitem) => roomitem?.user_id == activeroom?.last_msg[0]?.sender
   );
-  let sendernameaddedshow = "";
+  let sendernameaddedshow: string | number | undefined = "";
   if (sendernameadded?.user_id == MyProfileId) {
     sendernameaddedshow = "You";
   } else {
-    const tempuserlistdata = Getalluserlist?.find(
-      (userlist: { _id: any }) => userlist?.userId?._id == sendernameadded?.user_id
+    const tempuserlistdata = userList?.find(
+      (userlist: any) => userlist?.userId?._id == sendernameadded?.user_id
     );
 
-    sendernameaddedshow = `${tempuserlistdata?.firstName ?? sendernameadded?.phone} ${
-      tempuserlistdata?.lastName ?? ""
-    }`;
     sendernameaddedshow = tempuserlistdata?.firstName
       ? `${tempuserlistdata?.firstName} ${tempuserlistdata?.lastName}`
       : sendernameadded?.phone;

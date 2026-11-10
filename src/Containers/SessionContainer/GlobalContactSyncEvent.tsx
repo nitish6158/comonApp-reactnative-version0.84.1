@@ -4,7 +4,7 @@ import {
   useGetUserPhoneBookLazyQuery,
   useUpdateContactProfileMutation,
 } from "@/graphql/generated/contact.generated";
-import { addContact, usePhoneContext } from "@/hooks";
+import { loadContactsIfPermitted, usePhoneContext } from "@/hooks";
 import { useAppSelector } from "@/redux/Store";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -35,7 +35,7 @@ export default function GlobalContactSyncEvent() {
   const [deleteMyContactRequest, deleteResponse] = useDeleteMyContactMutation();
   const [updateContactProfileRequest] = useUpdateContactProfileMutation();
   const [error, setError] = useState<boolean>(false);
-  const [payload, setPayload] = useState(null);
+  const [payload, setPayload] = useState<{ region: string; contacts: any[] } | null>(null);
   const [syncTrigger, setSyncTrigger] = useState(0);
   const appStateRef = useRef(AppState.currentState);
   const syncInProgressRef = useRef(false);
@@ -74,7 +74,7 @@ export default function GlobalContactSyncEvent() {
     ContactSync()
       .then((list) => {
         if (list) {
-          syncContactsToDb(list);
+          syncContactsToDb(list as any);
           lastSyncAtRef.current = Date.now();
         }
       })
@@ -107,7 +107,7 @@ export default function GlobalContactSyncEvent() {
         const contactsRaw = res.data?.getUserPhoneBook?.contacts ?? [];
 
         if (contactsRaw.length > 0) {
-          dispatch(updateContact(contactsRaw));
+          dispatch(updateContact(contactsRaw as any));
           return contactsRaw;
         } else {
           dispatch(updateContact([]));
@@ -124,7 +124,10 @@ export default function GlobalContactSyncEvent() {
   }
 
   async function syncContactsToDb(serverContact: serverContactType[]) {
-    addContact(t).then(async (phonebook) => {
+    loadContactsIfPermitted().then(async (phonebook) => {
+      if (!phonebook.length) {
+        return;
+      }
       const RemoveFromServer = serverContact.filter((e: { localId: string }) => {
         //If contact not found on server then add to the list
         let isFound = phonebook.find((v) => v.localId === e.localId);
@@ -193,7 +196,7 @@ export default function GlobalContactSyncEvent() {
           .then((response) => {
             if (response.data?.addMyContact) {
               console.log(response.data?.addMyContact.contacts?.length);
-              dispatch(addServerContact(response.data?.addMyContact.contacts));
+              dispatch(addServerContact((response.data?.addMyContact.contacts ?? []) as any));
               refreshChatRooms();
             }
           })
@@ -217,7 +220,7 @@ export default function GlobalContactSyncEvent() {
                 },
               });
               if (res.data?.updateContactProfile) {
-                dispatch(updateContactProfile([res.data.updateContactProfile]));
+                dispatch(updateContactProfile([res.data.updateContactProfile] as any));
               }
             } catch (err) {
               console.log("Error updating contact profile", err);
@@ -304,7 +307,7 @@ export default function GlobalContactSyncEvent() {
                 .then((response) => {
                   if (response.data?.addMyContact) {
                     console.log(response.data?.addMyContact.contacts?.length);
-                    dispatch(addServerContact(response.data?.addMyContact.contacts));
+                    dispatch(addServerContact((response.data?.addMyContact.contacts ?? []) as any));
                     setPayload(null);
                     refreshChatRooms();
                   }
