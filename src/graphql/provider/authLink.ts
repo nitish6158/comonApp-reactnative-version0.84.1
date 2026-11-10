@@ -17,51 +17,68 @@ import { setContext } from "@apollo/client/link/context";
 let applicationStarted = true;
 
 const isRefreshNeeded = async () => {
-  const { expireAt: sessionExpireAt } = await getSession();
+  const { expireAt: sessionExpireAt, refresh } = await getSession();
 
-  if (!sessionExpireAt) {
+  if (!sessionExpireAt || !refresh) {
     return false;
   }
 
   const expireAt = Number(sessionExpireAt);
-  const now = getNewDate();
-
-  if (now >= expireAt) {
+  if (isNaN(expireAt) || expireAt <= 0) {
     return false;
   }
 
-  return false;
+  const now = getNewDate();
+  // Refresh if token has expired or is expiring in less than 5 minutes
+  const bufferMs = 5 * 60 * 1000;
+  return now >= expireAt - bufferMs;
 };
 
+let activeRefreshPromise: Promise<any> | null = null;
+
 export async function refreshAuthToken() {
-  const { refresh } = await getSession();
-  const currentOrganization = await getCurrentOrganization();
-  const payload = {
-    query: RefreshSessionDocument,
-    variables: {
-      input: {
-        refresh: refresh!,
-        orgId: currentOrganization?._id,
-        plateform: Platform.OS ? PlateformType.IOs : PlateformType.Android,
-      },
-    },
-  };
-  return await client
-    .query<RefreshSessionQuery, RefreshSessionQueryVariables>(payload)
-    .then(async ({ data }) => {
-      const refreshSession = data?.refreshSession;
-      // console.log("Refresh sessiion response", JSON.stringify(data));
-      await setSession({
-        token: refreshSession.token,
-        refresh: refreshSession.refresh,
-        mode: refreshSession.mode,
-        expireAt: refreshSession.expiredAt,
-      });
-      return refreshSession;
-    })
-    .catch((e) => {
-      // navigateAndSimpleReset("Auth", {});
-    });
+  if (activeRefreshPromise) {
+    return activeRefreshPromise;
+  }
+
+  activeRefreshPromise = (async () => {
+    try {
+      const { refresh } = await getSession();
+      if (!refresh) return null;
+
+      const currentOrganization = await getCurrentOrganization();
+      const payload = {
+        query: RefreshSessionDocument,
+        variables: {
+          input: {
+            refresh: refresh,
+            orgId: currentOrganization?._id,
+            plateform: Platform.OS === "ios" ? PlateformType.IOs : PlateformType.Android,
+          },
+        },
+      };
+
+      const res = await client.query<RefreshSessionQuery, RefreshSessionQueryVariables>(payload);
+      const refreshSession = res.data?.refreshSession;
+      if (refreshSession) {
+        await setSession({
+          token: refreshSession.token,
+          refresh: refreshSession.refresh,
+          mode: refreshSession.mode,
+          expireAt: refreshSession.expiredAt,
+        });
+        return refreshSession;
+      }
+      return null;
+    } catch (e: any) {
+      console.warn("[authLink] Token refresh warning:", e?.message);
+      return null;
+    } finally {
+      activeRefreshPromise = null;
+    }
+  })();
+
+  return activeRefreshPromise;
 }
 
 // (vasyl.p: 06.12.2021) Be careful, if you gonna update enum operation names something can be broken
@@ -80,13 +97,13 @@ const authLink = setContext(async (request, { headers }) => {
 
     if (token && isRefresh) {
       const refresh = await refreshAuthToken();
-      token = refresh?.token;
+      token = refresh?.token || token;
     } else if (request.operationName === OperationNames.GET_MY_ROLE) {
       const refresh = await refreshAuthToken();
-      token = refresh?.token;
+      token = refresh?.token || token;
     }
   }
-  console.log("Token is",token)
+
   const authHeaders: Record<string, string> = {
     "ngrok-skip-browser-warning": "true",
   };

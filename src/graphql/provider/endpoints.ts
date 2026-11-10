@@ -8,7 +8,6 @@ export const PUBLIC_JWT_EXPIRE: number = env.publicJwtExpire;
 export const SOCKET_URL: string = env.socketUrl;
 export const BACKGROUND_API: string = env.backgroundApi;
 export const PRIVACY_POLICY: string = env.privacyPolicy;
-export const AGORA_APP_ID: string = env.agoraAppId;
 export const LIVEKIT_URL: string = env.livekitUrl;
 export const USE_LIVEKIT: boolean = env.useLivekit;
 export const GOOGLE_PLACE_API_KEY: string = env.googlePlaceApiKey;

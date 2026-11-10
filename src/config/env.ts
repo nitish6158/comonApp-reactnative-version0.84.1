@@ -22,7 +22,6 @@ const DEFAULT_PUBLIC_URL = 'https://comon.axiusstaging.in';
 const DEFAULT_SOCKET_URL = 'https://comon.axiusstaging.in?token=';
 const DEFAULT_BACKGROUND_API = 'https://comon.axiusstaging.in';
 const DEFAULT_PRIVACY_POLICY = 'https://fe-pr-preview-pb2r7hxayq-ez.a.run.app/privacy-policy';
-const DEFAULT_AGORA_APP_ID = '86c93a4f76bc4f069cd51ffed38048e5';
 const DEFAULT_GOOGLE_PLACE_API_KEY = 'AIzaSyAHJGLj2qeJwuI96x7T3Hz_-Q6LV5DKhUk';
 const DEFAULT_IMAGE_URL = 'https://storage.googleapis.com/comon-bucket/';
 const DEFAULT_USER_MANUAL_URL = 'https://axius-staging.com/wp/comon_user_manual';
@@ -51,7 +50,6 @@ export const env = {
   socketUrl: normalizeUrl(Config.SOCKET_URL, DEFAULT_SOCKET_URL),
   backgroundApi: normalizeUrl(Config.BACKGROUND_API, DEFAULT_BACKGROUND_API),
   privacyPolicy: Config.PRIVACY_POLICY ?? DEFAULT_PRIVACY_POLICY,
-  agoraAppId: Config.AGORA_APP_ID ?? DEFAULT_AGORA_APP_ID,
   livekitUrl: resolveLiveKitUrl(Config.LIVEKIT_URL),
   useLivekit: Config.USE_LIVEKIT !== undefined ? toBoolean(Config.USE_LIVEKIT) : true,
   googlePlaceApiKey: Config.GOOGLE_PLACE_API_KEY ?? DEFAULT_GOOGLE_PLACE_API_KEY,
