@@ -322,13 +322,19 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
       const deviceToken = await AsyncStorage.getItem(
         asyncStorageKeys.deviceToken,
       );
-      const fcmToken = await getFirebaseMessagingToken().catch(() => "");
+      let fcmToken = await getFirebaseMessagingToken().catch(() => "");
+      if (!fcmToken) {
+        // Quick retry in case Firebase is still initializing
+        await new Promise((resolve) => setTimeout(resolve, 600));
+        fcmToken = await getFirebaseMessagingToken().catch(() => "");
+      }
       const uniqueId = await DeviceInfo.getUniqueId();
       const loginDeviceToken =
         Platform.OS === "ios" ? deviceToken || uniqueId || fcmToken : uniqueId;
+      const effectiveFcmToken = fcmToken || loginDeviceToken;
       const tokenCheck = Platform.select({
         ios: loginDeviceToken,
-        android: fcmToken,
+        android: effectiveFcmToken,
       });
 
       if (!tokenCheck) {
@@ -343,7 +349,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
         keys.device,
         JSON.stringify({
           token: loginDeviceToken,
-          fcmToken: fcmToken,
+          fcmToken: effectiveFcmToken,
           type: platformType,
         }),
       );
@@ -351,7 +357,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
         "COM_ON_LOGIN_DEVICE",
         JSON.stringify({
           token: loginDeviceToken,
-          fcmToken: fcmToken,
+          fcmToken: effectiveFcmToken,
           type: platformType,
         }),
       );
