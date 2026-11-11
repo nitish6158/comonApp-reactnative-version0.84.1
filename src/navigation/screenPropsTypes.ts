@@ -235,6 +235,15 @@ export type MainNavigatorParamList = {
   SubTopicScreen: {};
   CreateChatRooms: {};
   UserPrivacySettings: {};
+  StatusPrivacySettings: undefined;
+  StatusComposerScreen: undefined;
+  StatusViewerScreen: {
+    authorId: string;
+    startIndex?: number;
+  };
+  StatusViewersScreen: {
+    itemId: string;
+  };
   SelectParticipantForGroup: {
     roomName: string;
     roomImage: string;
@@ -292,6 +301,10 @@ export type ViewDatabaseScreenProps = StackScreenProps<MainNavigatorParamList, "
 export type SelectParticipantForGroupProps = StackScreenProps<MainNavigatorParamList, "SelectParticipantForGroup">;
 
 export type UserPrivacySettingsProps = StackScreenProps<MainNavigatorParamList, "UserPrivacySettings">;
+export type StatusPrivacySettingsProps = StackScreenProps<MainNavigatorParamList, "StatusPrivacySettings">;
+export type StatusComposerScreenProps = StackScreenProps<MainNavigatorParamList, "StatusComposerScreen">;
+export type StatusViewerScreenProps = StackScreenProps<MainNavigatorParamList, "StatusViewerScreen">;
+export type StatusViewersScreenProps = StackScreenProps<MainNavigatorParamList, "StatusViewersScreen">;
 
 export type CreateChatRoomsProps = StackScreenProps<MainNavigatorParamList, "CreateChatRooms">;
 
@@ -392,6 +405,7 @@ export type BottomTabParamsList = {
   ChatTabScreen: undefined;
   CallTabScreen: undefined;
   CalendarTabScreen: undefined;
+  UpdatesTabScreen: undefined;
 };
 
 export type TaskTabScreenProps = BottomTabScreenProps<BottomTabParamsList, "TaskTabScreen">;

@@ -58,7 +58,7 @@ export default function AccountSettingsScreen({ navigation }: ProfileScreenProps
           </View>
           <View>
             <Text style={styles.settingTitle}>{t("privacy")}</Text>
-            <Text style={styles.settingDescription}>{`${t("navigation.BlockedContacts")}, ${t("readReceipts")}`}</Text>
+            <Text style={styles.settingDescription}>{`${t("navigation.BlockedContacts")}, ${t("status")}, ${t("readReceipts")}`}</Text>
           </View>
         </Pressable>
         <Pressable

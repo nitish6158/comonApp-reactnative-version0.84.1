@@ -36,6 +36,10 @@ export default function UserPrivacySettings({ navigation }: UserPrivacySettingsP
             {MyProfile?.blockedRooms ? MyProfile?.blockedRooms.length : 0}
           </Text>
         </Pressable>
+        <Pressable onPress={() => navigation.navigate("StatusPrivacySettings")} style={styles.settingContainer}>
+          <Text style={styles.headingTextStyle}>{t("status")}</Text>
+          <Text style={styles.descriptionTextStyle}>{t("statusPrivacy")}</Text>
+        </Pressable>
         <View style={styles.settingContainer}>
           <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
             <View style={{ width: "80%" }}>

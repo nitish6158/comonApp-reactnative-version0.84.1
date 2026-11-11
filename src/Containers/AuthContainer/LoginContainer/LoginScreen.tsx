@@ -104,7 +104,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
 
   const [LoginRequest, LoginResponse] = useSigninMutation();
   const [updateAgreeStatus] = useUpdateUserMutation();
-  const [logoutDevicesRequest, {}] = useLogoutDevicesMutation();
+  const [logoutDevicesRequest, { }] = useLogoutDevicesMutation();
   const setCurrentId = useSetAtom(currentUserIdAtom);
   const [tempPayload, setTeamPayload] = useState<payloadType | null>(null);
   const [waitingPayload, setWaitingPayload] = useState<{
@@ -446,12 +446,10 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
           case 3:
             Alert.alert(
               "Force Logout ?",
-              `${t("account-already-login")} ${
-                error?.extensions?.exception?.response?.buildId ??
-                "other device"
-              }, ${t("account-logout")} ${
-                error?.extensions?.exception?.response?.buildId ??
-                "other device"
+              `${t("account-already-login")} ${error?.extensions?.exception?.response?.buildId ??
+              "other device"
+              }, ${t("account-logout")} ${error?.extensions?.exception?.response?.buildId ??
+              "other device"
               }.`,
               [
                 {

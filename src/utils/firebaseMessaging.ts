@@ -21,5 +21,12 @@ export async function ensureRemoteMessagesRegistered() {
 export async function getFirebaseMessagingToken() {
   const messaging = getMessaging();
   await ensureRemoteMessagesRegistered();
-  return getToken(messaging);
+  try {
+    return await getToken(messaging);
+  } catch (error) {
+    const code = (error as { code?: string })?.code;
+    const message = (error as { message?: string })?.message;
+    console.warn("FCM token request failed", code || "", message || error);
+    throw error;
+  }
 }

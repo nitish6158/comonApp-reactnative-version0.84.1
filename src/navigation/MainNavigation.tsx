@@ -80,6 +80,10 @@ import ViewScheduleMessage from "@/Containers/HomeContainer/MainContainer/ChatCo
 import CalenderNotifications from "@/Containers/HomeContainer/MainContainer/Calendar/CalenderNotifications";
 import CreateChatRooms from "@/Containers/HomeContainer/MainContainer/ChatContainer/CreateChatRooms";
 import UserPrivacySettings from "@/Containers/HomeContainer/MainContainer/ProfileContainer/UserPrivacySettings";
+import StatusPrivacySettings from "@/Containers/HomeContainer/MainContainer/ProfileContainer/StatusPrivacySettings";
+import StatusComposerScreen from "@/Containers/HomeContainer/MainContainer/StatusContainer/StatusComposerScreen";
+import StatusViewerScreen from "@/Containers/HomeContainer/MainContainer/StatusContainer/StatusViewerScreen";
+import StatusViewersScreen from "@/Containers/HomeContainer/MainContainer/StatusContainer/StatusViewersScreen";
 import { getCurrentRoute, navigate } from "./utility";
 import ViewDatabaseScreen from "@/Containers/HomeContainer/MainContainer/UserDatabaseContainer/ViewDatabaseScreen";
 import CreateCategoryScreen from "@/Containers/HomeContainer/MainContainer/UserDatabaseContainer/CreateCategoryScreen";
@@ -200,6 +204,35 @@ export function MainNavigator() {
         <MainStack.Screen
           name="UserPrivacySettings"
           component={UserPrivacySettings}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <MainStack.Screen
+          name="StatusPrivacySettings"
+          component={StatusPrivacySettings}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <MainStack.Screen
+          name="StatusComposerScreen"
+          component={StatusComposerScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <MainStack.Screen
+          name="StatusViewerScreen"
+          component={StatusViewerScreen}
+          options={{
+            headerShown: false,
+            animation: "fade",
+          }}
+        />
+        <MainStack.Screen
+          name="StatusViewersScreen"
+          component={StatusViewersScreen}
           options={{
             headerShown: false,
           }}

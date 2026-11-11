@@ -90,9 +90,11 @@ enum OperationNames {
 
 const authLink = setContext(async (request, { headers }) => {
   const session = await getSession();
-  let { token } = headers?.token ? { token: headers.token } : session;
+  // Explicit token (logoutDevices confirm token) must not be replaced by a stored session.
+  const explicitToken = headers?.token;
+  let token = explicitToken || session.token;
 
-  if (request.operationName !== OperationNames.REFRESH_SESSION) {
+  if (!explicitToken && request.operationName !== OperationNames.REFRESH_SESSION) {
     const isRefresh = await isRefreshNeeded();
 
     if (token && isRefresh) {

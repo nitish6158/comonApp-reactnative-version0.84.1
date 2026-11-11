@@ -19,6 +19,7 @@ import { windowWidth } from "@/utils/ResponsiveView";
 import { socketManager } from "@/utils/socket/SocketManager";
 
 import { AppIcon } from "@/Components/icons";
+import StatusFeedScreen from "@/Containers/HomeContainer/MainContainer/StatusContainer/StatusFeedScreen";
 
 const BottomTabNavigator = createBottomTabNavigator<BottomTabParamsList>();
 export const initialBottomTabScreenAtom = atom<{ name: string; payload: any }>({
@@ -152,6 +153,52 @@ const BottomTabScreen = () => {
               </View>
             ),
           })}
+          listeners={{
+            tabPress: (e) => {
+              if (taskNotification) {
+                e.preventDefault();
+              }
+            },
+          }}
+        />
+
+        <BottomTabNavigator.Screen
+          name="UpdatesTabScreen"
+          component={StatusFeedScreen}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  width: windowWidth / 5,
+                }}
+              >
+                <View
+                  style={{
+                    paddingHorizontal: 15,
+                    paddingVertical: 4,
+                    borderRadius: 20,
+                    backgroundColor: focused ? Colors.light.tabColor : "white",
+                    height: 30,
+                  }}
+                >
+                  <AppIcon name="radioOn" size={22} color={"black"} />
+                </View>
+                <Text
+                  style={{
+                    color: "black",
+                    width: "100%",
+                    fontWeight: focused ? "500" : "400",
+                    fontSize: 14,
+                    textAlign: "center",
+                  }}
+                >
+                  {t("updates")}
+                </Text>
+              </View>
+            ),
+          }}
           listeners={{
             tabPress: (e) => {
               if (taskNotification) {
