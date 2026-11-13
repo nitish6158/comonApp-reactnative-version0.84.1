@@ -1,11 +1,12 @@
 # Auth
 
 ## Purpose
-Login, signup, OTP/confirm, forgot/reset password, and secure session persistence for ComOn mobile.
+Login, signup, OTP/confirm, forgot/reset password, and secure session persistence for MeetUs mobile.
 
 ## Main entry points
 - `LoginContainer/LoginScreen.tsx`
-- `NewSignUpContainer`, `ConfirmOTPContainer`, `ForgotPasswordContainer`, `ResetPasswordContainer`
+- `NewSignUpContainer/SignUpScreen.tsx` — Safe-area aware, padded signup form with inline tooltip and clean branding
+- `ConfirmOTPContainer`, `ForgotPasswordContainer`, `ResetPasswordContainer`
 - `src/utils/session.ts` — Keychain-backed `setSession` / `getSession` / `removeSession`
 - `src/Components/AuthContext.tsx` — React `tokenLogin` flag synced from Keychain
 - `src/graphql/provider/authLink.ts` — Bearer token from `getSession()` + refresh

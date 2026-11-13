@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 
 const PhoneInputStyle = StyleSheet.create({
   container: {
-    marginBottom: 22,
+    marginBottom: 16,
   },
   containerError: {
     borderColor: Colors.light.error,

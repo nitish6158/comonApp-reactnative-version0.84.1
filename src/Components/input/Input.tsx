@@ -68,10 +68,11 @@ interface LabelInputProps extends InputWithFocusType {
   label?: string;
   required?: boolean;
   children?: React.ReactNode;
+  rightLabelElement?: React.ReactNode;
 }
 
 export const LabelInput: React.FC<LabelInputProps> = forwardRef(
-  ({ label, required, children, onChangeText, error, errorMessage, value, ...props }, ref) => {
+  ({ label, required, children, rightLabelElement, onChangeText, error, errorMessage, value, ...props }, ref) => {
     const { t } = useTranslation();
     const [text, setText] = useState("");
     const [isSubmited, setIsSubmited] = useState(false);
@@ -102,7 +103,7 @@ export const LabelInput: React.FC<LabelInputProps> = forwardRef(
 
     return (
       <View>
-        {required || label ? (
+        {required || label || rightLabelElement ? (
           <View style={InputStyle.labelContainer}>
             {required ? (
               <Text size="sm" style={InputStyle.labelIcon}>
@@ -114,6 +115,7 @@ export const LabelInput: React.FC<LabelInputProps> = forwardRef(
                 {label}
               </Text>
             ) : null}
+            {rightLabelElement}
           </View>
         ) : null}
         {children || (

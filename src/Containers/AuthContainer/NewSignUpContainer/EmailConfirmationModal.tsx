@@ -24,7 +24,7 @@ const EmailConfirmationModal: React.FC<EmailConfirmationModalProps> = ({
 
           <Text style={styles.message}>
             A link has been sent to your email address. Please click on the link
-            to complete your sign-up. You can then login to ComOn.
+            to complete your sign-up. You can then login to MeetUs.
           </Text>
 
           <Pressable style={styles.button} onPress={onClose}>

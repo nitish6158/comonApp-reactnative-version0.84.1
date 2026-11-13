@@ -41,6 +41,8 @@ import { DefaultStorageKeys, setStorage } from "@Util/storage";
 import { branchAtom } from "@/navigation/AuthNavigator";
 import HeaderWithBack from "@Components/header/HeaderWithBack";
 import EmailConfirmationModal from "./EmailConfirmationModal";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Colors from "@/Constants/Colors";
 
 import { VectorIconCompat } from "@/Components/icons";
 
@@ -57,6 +59,7 @@ export const SignUpScreen = ({
   route,
   navigation,
 }: RegistrationScreenProps) => {
+  const insets = useSafeAreaInsets();
   const { phoneNumber, region } = useAtomValue(branchAtom);
   const { t } = useTranslation();
   const { phone, setPhone, setCode } = usePhoneContext();
@@ -156,156 +159,153 @@ export const SignUpScreen = ({
   }, [phoneNumber, region]);
 
   return (
-    <View style={{ flex: 1 }}>
-      <Layout withPadding={false}>
-        <KeyboardAwareScrollView
-          enableOnAndroid={true}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          extraScrollHeight={50}
-        >
-          <EmailConfirmationModal
-            visible={showModal}
-            onClose={() => {
-              setShowModal(false);
-              navigation.goBack();
-            }}
+    <View style={{ flex: 1, backgroundColor: Colors.light.background, paddingTop: Math.max(insets.top, Platform.OS === "android" ? 12 : 0) }}>
+      <EmailConfirmationModal
+        visible={showModal}
+        onClose={() => {
+          setShowModal(false);
+          navigation.goBack();
+        }}
+      />
+      {phoneNumber == "" ? (
+        <HeaderWithBack customStyle={{ paddingHorizontal: 16, backgroundColor: Colors.light.background }} />
+      ) : null}
+
+      <KeyboardAwareScrollView
+        enableOnAndroid={true}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        extraScrollHeight={50}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingTop: 8,
+          paddingBottom: Math.max(insets.bottom, 20) + 24,
+        }}
+      >
+        <Image style={styles.icon} source={Logo} />
+        <View style={{ alignItems: "center", marginBottom: 20 }}>
+          {phoneNumber != "" ? (
+            <Text style={[styles.welcomeStyle, { marginBottom: 6 }]}>
+              {t("welcomeSignup")}
+            </Text>
+          ) : null}
+
+          <Text style={styles.subtitleStyle}>
+            {t("mandatorySignupFields")}
+          </Text>
+
+          <Text style={[styles.welcomeStyle, { marginTop: 6 }]}>
+            {t("goodluck")}
+          </Text>
+        </View>
+
+        <View>
+          <LabelInput
+            required
+            label={t("form.label.first-name")}
+            value={form?.firstName}
+            caretHidden={false}
+            placeholder={t("form.label.first-name")}
+            onChangeText={onChange("firstName")}
+            error={!!errors?.firstName}
+            errorMessage={errors?.firstName}
+            autoCompleteType="off"
           />
-          <Layout>
-            {phoneNumber == "" ? (
-              <HeaderWithBack customStyle={{ paddingHorizontal: 5 }} />
-            ) : null}
+          <LabelInput
+            required
+            label={t("form.label.last-name")}
+            value={form?.lastName}
+            caretHidden={false}
+            placeholder={t("form.label.last-name")}
+            onChangeText={onChange("lastName")}
+            error={!!errors?.lastName}
+            errorMessage={errors?.lastName}
+            autoCompleteType="off"
+          />
+          <LabelInput
+            required
+            label={t("form.label.phone")}
+            value={phone?.number}
+            caretHidden={false}
+            placeholder={t("form.label.phone")}
+          >
+            <PhoneInputMemo />
+          </LabelInput>
+          <LabelInput
+            required
+            label={t("form.label.email")}
+            value={form?.email}
+            caretHidden={false}
+            placeholder={t("form.label.email")}
+            onChangeText={onChange("email")}
+            error={!!errors?.email}
+            errorMessage={errors?.email}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
 
-            <Image style={[styles.icon, { marginTop: 10 }]} source={Logo} />
-            <View style={[mainStyles.center, { marginBottom: $space_xxl }]}>
-              {phoneNumber != "" ? (
-                <Text style={[styles.subtitleStyle, { fontSize: 12 }]}>
-                  {t("welcomeSignup")}
-                </Text>
-              ) : null}
-
-              <Text style={[styles.subtitleStyle, { fontSize: 12 }]}>
-                {"\n"}
-                {t("mandatorySignupFields")}
-              </Text>
-
-              <Text style={[styles.subtitleStyle, { fontSize: 12 }]}>
-                {"\n"}
-                {t("goodluck")}
-              </Text>
-            </View>
-
-            <View>
-              <LabelInput
-                required
-                label={t("form.label.first-name")}
-                value={form?.firstName}
-                caretHidden={false}
-                placeholder={t("form.label.first-name")}
-                onChangeText={onChange("firstName")}
-                error={!!errors?.firstName}
-                errorMessage={errors?.firstName}
-                autoCompleteType="off"
-              />
-              <LabelInput
-                required
-                label={t("form.label.last-name")}
-                value={form?.lastName}
-                caretHidden={false}
-                placeholder={t("form.label.last-name")}
-                onChangeText={onChange("lastName")}
-                error={!!errors?.lastName}
-                errorMessage={errors?.lastName}
-                autoCompleteType="off"
-              />
-              <LabelInput
-                required
-                label={t("form.label.phone")}
-                value={phone?.number}
-                caretHidden={false}
-                placeholder={t("form.label.phone")}
-              >
-                <PhoneInputMemo />
-              </LabelInput>
-              <LabelInput
-                required
-                label={t("form.label.email")}
-                value={form?.email}
-                caretHidden={false}
-                placeholder={t("form.label.email")}
-                onChangeText={onChange("email")}
-                error={!!errors?.email}
-                errorMessage={errors?.email}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-
+          <LabelInput
+            required
+            label={t("form.label.password")}
+            rightLabelElement={
               <TooltipInfo popOverText={t("errors.strong-password")}>
-                <View style={{ marginLeft: windowWidth * 0.85, top: 10 }}>
-                  <VectorIconCompat name="infocirlce" size={15} />
+                <View style={{ marginLeft: 6 }}>
+                  <VectorIconCompat name="infocirlce" size={14} color="#64748B" />
                 </View>
               </TooltipInfo>
-
-              <LabelInput
-                required
-                label={t("form.label.password")}
-                value={form?.password}
-                placeholder={t("form.placeholder.password-for-mobile")}
-                onChangeText={onChange("password")}
-                secureTextEntry={secureTextEntry}
-                error={!!errors?.password}
-                errorMessage={errors?.password}
-                rightIcon={
-                  <SwitchIcon
-                    active={secureTextEntry}
-                    icon="eye"
-                    activeIcon="eye-off"
-                    onPress={onSwitchSecureTextEntry}
-                  />
-                }
+            }
+            value={form?.password}
+            placeholder={t("form.placeholder.password-for-mobile")}
+            onChangeText={onChange("password")}
+            secureTextEntry={secureTextEntry}
+            error={!!errors?.password}
+            errorMessage={errors?.password}
+            rightIcon={
+              <SwitchIcon
+                active={secureTextEntry}
+                icon="eye"
+                activeIcon="eye-off"
+                onPress={onSwitchSecureTextEntry}
               />
-              <Text
-                style={[
-                  styles.subtitleStyle,
-                  { fontSize: 12, textAlign: "left", marginTop: -15 },
-                ]}
-              >
-                ({t("passwordCharacterstics")})
-              </Text>
+            }
+          />
+          <Text style={styles.helperText}>
+            ({t("passwordCharacterstics")})
+          </Text>
+
+          <LabelInput
+            required
+            label={t("form.label.confirm-password")}
+            rightLabelElement={
               <TooltipInfo popOverText={t("errors.strong-password")}>
-                <View style={{ marginLeft: windowWidth * 0.85, top: 15 }}>
-                  <VectorIconCompat name="infocirlce" size={15} />
+                <View style={{ marginLeft: 6 }}>
+                  <VectorIconCompat name="infocirlce" size={14} color="#64748B" />
                 </View>
               </TooltipInfo>
-
-              <LabelInput
-                required
-                label={t("form.label.confirm-password")}
-                value={form?.confirmPassword}
-                placeholder={t("form.label.confirm-password")}
-                onChangeText={onChange("confirmPassword")}
-                secureTextEntry={secureTextEntry}
-                error={!!errors?.confirmPassword}
-                errorMessage={errors?.confirmPassword}
-                rightIcon={
-                  <SwitchIcon
-                    active={secureTextEntry}
-                    icon="eye"
-                    activeIcon="eye-off"
-                    onPress={onSwitchSecureTextEntry}
-                  />
-                }
+            }
+            value={form?.confirmPassword}
+            placeholder={t("form.label.confirm-password")}
+            onChangeText={onChange("confirmPassword")}
+            secureTextEntry={secureTextEntry}
+            error={!!errors?.confirmPassword}
+            errorMessage={errors?.confirmPassword}
+            rightIcon={
+              <SwitchIcon
+                active={secureTextEntry}
+                icon="eye"
+                activeIcon="eye-off"
+                onPress={onSwitchSecureTextEntry}
               />
-            </View>
-            <ElementButton
-              loading={signUpResponse.loading}
-              title={t("btn.sign-up")}
-              onPress={onSubmit}
-              buttonStyle={{ borderRadius: 10, height: 45, marginBottom: 20 }}
-            />
-          </Layout>
-        </KeyboardAwareScrollView>
-      </Layout>
+            }
+          />
+        </View>
+        <ElementButton
+          loading={signUpResponse.loading}
+          title={t("btn.sign-up")}
+          onPress={onSubmit}
+          buttonStyle={{ borderRadius: 10, height: 48, marginTop: 8, marginBottom: 16 }}
+        />
+      </KeyboardAwareScrollView>
     </View>
   );
 

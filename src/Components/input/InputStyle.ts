@@ -17,7 +17,7 @@ const inputStyle = {
 
 export const InputStyle = StyleSheet.create({
   containerStyleInputEl: {
-    marginBottom: $space_xl,
+    marginBottom: 16,
     ...padding(0),
   },
   error: {
