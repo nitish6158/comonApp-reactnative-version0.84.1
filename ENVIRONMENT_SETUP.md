@@ -8,10 +8,14 @@ The app uses `react-native-config` for development, staging, and production envi
 
 | Environment | File | Description |
 | :--- | :--- | :--- |
-| **Development** | `.env.development` | Local / Development API (`comon.axiusstaging.in` / local) |
-| **Staging** | `.env.staging` | Cloud Run Staging API (`api-pr-preview-...`) |
-| **Production** | `.env.production` | Production API & Live configs |
-| **Default Fallback** | `.env` | Default active environment fallback |
+| **Development** | `.env.development` | Active Development API & LiveKit Cloud |
+| **Staging** | `.env.staging` | Aligned to Development for unified QA testing |
+| **Production** | `.env.production` | Aligned to Development for unified QA testing |
+| **Default Fallback** | `.env` | Default active environment fallback (matches development) |
+| **Template** | `.env.example` | Repository template and CI/CD fallback config |
+
+> [!NOTE]
+> Currently, `.env.staging`, `.env.production`, and `.env` are mirrored from `.env.development` so all builds and local runs point to the active ngrok backend and LiveKit cloud.
 
 ---
 
