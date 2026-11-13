@@ -34,7 +34,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies (with postinstall native patches)
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: TypeScript typecheck
         run: npm run typecheck
