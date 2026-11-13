@@ -116,11 +116,11 @@ const GroupChatSetting = ({ navigation, route }) => {
             {
               title: t("group-info.all-participants"),
               onPress: () => {
-                socketConnect.emit("changeRoomPermission", {
+                void socketConnect.emit("changeRoomPermission", {
                   roomId: display.roomId,
                   access: { type: permissionType, permit: "common" },
                 });
-                socketManager.chatRoom.fetchAndUpdateRooms();
+                void socketManager.chatRoom.fetchAndUpdateRooms();
                 setSendMessageVisible(false);
                 ChangeRoleHandler(permissionType, "common");
               },
@@ -128,11 +128,11 @@ const GroupChatSetting = ({ navigation, route }) => {
             {
               title: t("group-info.only-admins"),
               onPress: () => {
-                socketConnect.emit("changeRoomPermission", {
+                void socketConnect.emit("changeRoomPermission", {
                   roomId: display.roomId,
                   access: { type: permissionType, permit: "admin" },
                 });
-                socketManager.chatRoom.fetchAndUpdateRooms();
+                void socketManager.chatRoom.fetchAndUpdateRooms();
                 ChangeRoleHandler(permissionType, "admin");
 
                 setSendMessageVisible(false);

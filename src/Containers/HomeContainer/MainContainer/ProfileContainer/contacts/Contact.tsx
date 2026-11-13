@@ -166,7 +166,7 @@ function Contact({
   );
 
   function onDialerPressed(phone: string) {
-    Linking.openURL(`tel:${phone}`);
+    void Linking.openURL(`tel:${phone}`);
   }
 }
 

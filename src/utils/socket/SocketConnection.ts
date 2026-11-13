@@ -231,7 +231,7 @@ class SocketConnection {
       setTimeout(() => {
         console.log("Resetting reconnection attempts after timeout");
         this.reconnectAttempts = 0;
-        this.attemptReconnect();
+        void this.attemptReconnect();
       }, SocketConnection.RECONNECT_DELAY_MAX);
       return;
     }
@@ -315,22 +315,25 @@ class SocketConnection {
       return this.socket;
     }
 
-    this.connectionPromise = new Promise(async (resolve, reject) => {
-      try {
-        const { token } = await getSession();
-        if (!token) {
-          throw new Error("No token found for socket connection");
-        }
+    this.connectionPromise = this.connectInternal();
+    return this.connectionPromise;
+  }
 
-        const Remote = `${SOCKET_URL}${token}`;
-        this.connectionStatus = "connecting";
+  private async connectInternal(): Promise<Socket> {
+    try {
+      const { token } = await getSession();
+      if (!token) {
+        throw new Error("No token found for socket connection");
+      }
 
-        // Clear any existing timeout
+      const Remote = `${SOCKET_URL}${token}`;
+      this.connectionStatus = "connecting";
+
+      return await new Promise<Socket>((resolve, reject) => {
         if (this.connectionTimeout) {
           clearTimeout(this.connectionTimeout);
         }
 
-        // Set connection timeout
         this.connectionTimeout = setTimeout(() => {
           if (this.socket && !this.socket.connected) {
             console.log("Connection attempt timed out");
@@ -380,18 +383,16 @@ class SocketConnection {
           this.connectionPromise = null;
           reject(error);
         });
-      } catch (error) {
-        if (this.connectionTimeout) {
-          clearTimeout(this.connectionTimeout);
-        }
-        this.connectionStatus = "error";
-        this.connectionPromise = null;
-        console.error("Socket connection error", error);
-        reject(error);
+      });
+    } catch (error) {
+      if (this.connectionTimeout) {
+        clearTimeout(this.connectionTimeout);
       }
-    });
-
-    return this.connectionPromise;
+      this.connectionStatus = "error";
+      this.connectionPromise = null;
+      console.error("Socket connection error", error);
+      throw error;
+    }
   }
 
   private setupBaseListeners() {
@@ -441,14 +442,14 @@ class SocketConnection {
       console.log(`Socket disconnected: ${reason}`);
       // Only attempt reconnect for certain disconnect reasons
 
-      this.handleDisconnect(reason);
+      void this.handleDisconnect(reason);
     });
 
     this.socket.on("connect_error", (error) => {
       console.error("Connection error:", error);
       // Trigger reconnection on connection error
       if (!this.manuallyDisconnected) {
-        this.handleDisconnect("connect_error");
+        void this.handleDisconnect("connect_error");
       }
     });
 
@@ -462,7 +463,7 @@ class SocketConnection {
       this.connectionStatus = "error";
       // Trigger our custom reconnection logic
       if (!this.manuallyDisconnected) {
-        this.attemptReconnect();
+        void this.attemptReconnect();
       }
     });
 

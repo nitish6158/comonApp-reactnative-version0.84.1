@@ -64,7 +64,6 @@ interface ContactlistProps {
     lastSeen?: number;
   }>;
 }
-[];
 
 const HeaderTitle = ({ Name }: String | undefined) => {
   return (
@@ -111,7 +110,7 @@ function Contactlist({ setLoading, otherUsers, onlychat, navigation, otherUsersP
         }
       };
 
-      socketManager.chatRoom.getFormattedRoomById(roomId, (data) => {
+      void socketManager.chatRoom.getFormattedRoomById(roomId, (data) => {
         settleOnce(data);
       });
 
@@ -129,7 +128,7 @@ function Contactlist({ setLoading, otherUsers, onlychat, navigation, otherUsersP
     // Some socket backends expect object payload and some expect raw id.
     await socketConnect.emit("undeleteRoom", { roomId } as any);
     await socketConnect.emit("undeleteRoom", roomId as any);
-    socketManager.chatRoom.fetchAndUpdateRooms(() => {});
+    void socketManager.chatRoom.fetchAndUpdateRooms(() => {});
 
     // Wait until room participant status is updated.
     for (let attempt = 0; attempt < 8; attempt++) {
@@ -185,19 +184,14 @@ function Contactlist({ setLoading, otherUsers, onlychat, navigation, otherUsersP
 
       case "addedUser":
         return (message = sameUser ? `${LastMessageSenderName} ${t("addedYou")}` : t("userAdded"));
-        break;
       case "changedName":
         return (message = t("groupNameChange"));
-        break;
       case "removedUser":
         return (message = t("userRemoved"));
-        break;
       case "changedDescription":
         return (message = t("groupDesc"));
-        break;
       case "createdRoom":
         return (message = t("groupCreated"));
-        break;
       case "leftRoom":
         return (message = t("leftRoom"));
       case "invited":
@@ -245,30 +239,8 @@ function Contactlist({ setLoading, otherUsers, onlychat, navigation, otherUsersP
     return data.findIndex((item: { user_id: any }) => item.user_id._id == MyProfile?._id) !== -1;
   }
 
-  function checkUserStatusVisibility(room: RoomData) {
-    switch (room.type) {
-      case "broadcast":
-      case "group":
-        return false;
-      case "individual":
-        if (!room?.participants) {
-          return false;
-        }
-
-        if (room.blocked) {
-          return false;
-        }
-
-        const currentUser = room.participants.find((e) => e.user_id !== MyProfile?._id);
-
-        if (currentUser) {
-         
-          return  false;
-        }
-        return false;
-      default:
-        return false;
-    }
+  function checkUserStatusVisibility(_room: RoomData) {
+    return false;
   }
 
   function resolveRoomTimestamp(room: RoomData): string {

@@ -82,7 +82,7 @@ function AddToRooms({ route }: any) {
     );
     const users = selectedGroupData.map((ap) => ap.userId?._id);
 
-    socketManager.chatRoom.addParticioants(
+    void socketManager.chatRoom.addParticioants(
       {
         roomId: display.roomId,
         user_type: "common",
@@ -98,51 +98,10 @@ function AddToRooms({ route }: any) {
         };
         setDisplay(room);
         ToastMessage("Particioant added successfully");
-        socketManager.chatRoom.fetchAndUpdateRooms();
+        void socketManager.chatRoom.fetchAndUpdateRooms();
         navigation.goBack();
       }
     );
-
-    return;
-    const selectedGroup = availableParticipants.filter(
-      (ap) => ap.isSelected == true
-    );
-
-    console.log(selectedGroup);
-    // return
-    if (selectedGroup.length > 0) {
-      const payload = {
-        roomId: display.roomId,
-        user_type: "common",
-        users: selectedGroup.map((mp) => mp.userId?._id),
-      };
-      console.log("Payload", payload);
-      onJoinRoom({
-        variables: {
-          input: payload,
-        },
-      })
-        .then((res) => {
-          console.log("res----->", res);
-          if (res.data?.joinRoom.success) {
-            socketManager.chatRoom.fetchAndUpdateRooms();
-
-            // setDisplay(
-            //   produce(display, (draftDisplay) => {
-            //     draftDisplay.participantsNotLeft =
-            //       display.participantsNotLeft?.filter(
-            //         (el) => el.user_id == item.user_id
-            //       );
-            //   })
-            // );
-            ToastMessage(res.data?.joinRoom.message);
-            navigation.goBack();
-          }
-        })
-        .catch((er) => { });
-    } else {
-      ToastMessage(`${t("toastmessage.select-participants-message")}`);
-    }
   }, [availableParticipants]);
 
   const filtered = filterInObject({

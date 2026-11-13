@@ -46,7 +46,7 @@ export default function CalendarEventItem({
       dayjs.locale(language);
     };
 
-    initLocale();
+    void initLocale();
   }, []);
 
   const currentUser = React.useMemo(() => {

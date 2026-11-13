@@ -107,7 +107,7 @@ export default function UserPrivacySettings({ navigation }: UserPrivacySettingsP
   );
 
   function handleGlobalReminder(value: number) {
-    updateGlobalReminder({
+    void updateGlobalReminder({
       variables: {
         input: {
           Unit: GlobalFrequencyUnit.Minute,
@@ -122,7 +122,7 @@ export default function UserPrivacySettings({ navigation }: UserPrivacySettingsP
   }
 
   function handleSurveyStatus(value: string) {
-    changeSurveyPreferenceRequest({
+    void changeSurveyPreferenceRequest({
       variables: {
         input: {
           isSurvey: value == "Enable" ? true : false,
@@ -139,7 +139,7 @@ export default function UserPrivacySettings({ navigation }: UserPrivacySettingsP
   }
 
   function handleGlobalStatus(value) {
-    updateUserStatus({
+    void updateUserStatus({
       variables: {
         input: {
           userAvailability: value,
@@ -158,7 +158,7 @@ export default function UserPrivacySettings({ navigation }: UserPrivacySettingsP
   function handlePressToggle() {
     setReadReceiptsStatus(!readReceiptStatus);
 
-    updateGlobalReadReceipts({
+    void updateGlobalReadReceipts({
       variables: {
         input: {
           action: !readReceiptStatus,

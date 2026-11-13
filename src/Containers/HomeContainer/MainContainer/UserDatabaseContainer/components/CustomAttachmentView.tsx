@@ -102,7 +102,7 @@ export default function CustomAttachmentView({ attachment }: ViewAttachmentProps
         file = await saveFileToDownloads(`${DefaultImageUrl}${attachment.url}`, attachment.name);
       }
       console.log("file", file);
-      FileViewer.open(file, {
+      void FileViewer.open(file, {
         showOpenWithDialog: true,
         showAppsSuggestions: true,
       });

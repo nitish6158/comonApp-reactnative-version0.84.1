@@ -81,7 +81,7 @@ const SearchInput = ({
         round={round}
         {...(props as any)}
       />
-      {props.value && (
+      {Boolean(props.value) && (
         <Pressable onPress={() => onChangeText("")} hitSlop={8}>
           <AppIcon name="close" size={22} color="gray" />
         </Pressable>

@@ -48,7 +48,7 @@ type MediaPreviewAtomProps = {
 } | null;
 
 export const MediaPreviewAtom = atom<MediaPreviewAtomProps>(null);
-export let renderFirst = false;
+export const renderFirst = false;
 
 /**
  * Main component for displaying chat messages with optimized rendering
@@ -99,7 +99,7 @@ export default function ChatListData() {
       dispatch(setDownloadFileStore(response));
     };
 
-    getDownloaded();
+    void getDownloaded();
   }, []);
 
 

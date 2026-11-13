@@ -151,7 +151,7 @@ export function CheckAppVersion() {
             RBSheetRef.current?.close();
           }}
           onUpdatePress={() => {
-            Linking.openURL(
+            void Linking.openURL(
               Platform.OS === "android" ? ANDROID_URL : IOS_URL
             );
           }}

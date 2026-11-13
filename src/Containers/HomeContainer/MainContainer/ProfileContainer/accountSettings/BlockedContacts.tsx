@@ -75,7 +75,7 @@ export default function BlockedContactsContainers() {
               <Pressable
                 onPress={() => {
                   const blockedRooms = MyProfile?.blockedRooms?.filter((br) => br.room_Id != item.room_Id);
-                  socketConnect.emit("unblockRoom", { roomId: item.room_Id });
+                  void socketConnect.emit("unblockRoom", { roomId: item.room_Id });
 
                   dispatch(setMyProfile({ ...MyProfile, blockedRooms: blockedRooms }));
                   setProfile({ ...MyProfile, blockedRooms: blockedRooms });

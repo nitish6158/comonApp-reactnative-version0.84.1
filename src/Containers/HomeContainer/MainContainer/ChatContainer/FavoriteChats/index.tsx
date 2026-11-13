@@ -321,7 +321,7 @@ export default function Favorite() {
   // Handle load more on scroll end
   const handleLoadMore = useCallback(() => {
     if (pagination.hasMore && !pagination.isLoadingMore && !isLoading) {
-      loadMoreFavouriteMessages();
+      void loadMoreFavouriteMessages();
     }
   }, [pagination.hasMore, pagination.isLoadingMore, isLoading, loadMoreFavouriteMessages]);
 

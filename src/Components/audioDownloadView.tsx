@@ -26,7 +26,7 @@ const AudioDownloadView = ({ item, TextColor }: any) => {
 
   useEffect(() => {
     if (Platform.OS !== "android" && isSaveToCameraRollActive) {
-      downloadAudio();
+      void downloadAudio();
     }
   }, [isSaveToCameraRollActive]);
 

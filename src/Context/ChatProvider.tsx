@@ -254,7 +254,7 @@ export const ChatProvider = ({
     if (!display?.roomId) return;
     let isActive = true;
     // Adding Offline Messages here
-    readCachedConversation(display.roomId).then((offlineMessages) => {
+    void readCachedConversation(display.roomId).then((offlineMessages) => {
       if (!isActive || !offlineMessages) {
         return;
       }
@@ -278,9 +278,9 @@ export const ChatProvider = ({
   useEffect(() => {
     if (!internet) return;
     // Flush queued (offline) messages when connectivity/socket comes back.
-    socketManager.conversation.flushOutbox?.();
+    void socketManager.conversation.flushOutbox?.();
     const intervalId = setInterval(() => {
-      socketManager.conversation.flushOutbox?.();
+      void socketManager.conversation.flushOutbox?.();
     }, 3000);
     return () => clearInterval(intervalId);
   }, [internet]);
@@ -361,7 +361,7 @@ export const ChatProvider = ({
         type === "deleteChat"
       ) {
         // Always update the room list regardless of which room user is in
-        socketManager.chatRoom.fetchAndUpdateRooms((data) => {
+        void socketManager.chatRoom.fetchAndUpdateRooms((data) => {
           if (!data.rooms) {
             console.error("Room update error: Missing rooms");
             return;
@@ -538,7 +538,7 @@ export const ChatProvider = ({
           const id = userStore.getString(keys.userId);
 
           if (message.sender !== id) {
-            socketManager.conversation.markMessagesRead(roomId, message._id);
+            void socketManager.conversation.markMessagesRead(roomId, message._id);
           }
 
           setConversation(chats);
@@ -932,7 +932,7 @@ export const ChatProvider = ({
       setSearchResults([]);
     } else if (searchEnabled && searchText && searchText.length >= 2) {
       // If search is enabled and has sufficient text, trigger search
-      searchMessages();
+      void searchMessages();
     }
   }, [
     searchEnabled,
@@ -946,7 +946,7 @@ export const ChatProvider = ({
   const debouncedSearch = useCallback(
     _.debounce(() => {
       if (searchEnabled && searchText && searchText.length >= 2) {
-        searchMessages();
+        void searchMessages();
       }
     }, 400), // Increased debounce time to reduce frequency of searches
     [searchMessages, searchEnabled, searchText]

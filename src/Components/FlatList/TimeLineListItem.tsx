@@ -77,7 +77,7 @@ export const renderDetail = (
         android: `${scheme}${latLng}(${label})`,
       });
 
-      Linking.openURL(url);
+      void Linking.openURL(url);
     }
   };
 
@@ -115,7 +115,7 @@ export const renderDetail = (
       </View>
 
       <View style={{ flex: 1, backgroundColor: Colors.light.formItemBorderFocused, borderRadius: 5, padding: 5 }}>
-        {rangeType && (
+        {Boolean(rangeType) && (
           <Text size="md" lineNumber={10} style={[mainStyles.bold, { color: Colors.light.White, paddingTop: 10 }]}>
             {rangeType}``
           </Text>
@@ -129,12 +129,12 @@ export const renderDetail = (
           {/* </View> */}
         </View>
 
-        {isImageAttachment(rowData?.attachment) && taskAttachmentUri && (
+        {isImageAttachment(rowData?.attachment) && Boolean(taskAttachmentUri) && (
           <Pressable style={{ alignSelf: "flex-end", padding: 5 }} onPress={() => setImageView(taskAttachmentUri)}>
             <Image source={{ uri: taskAttachmentUri }} style={{ height: windowHeight / 4, width: windowWidth / 3 }} resizeMode="contain" />
           </Pressable>
         )}
-        {isVideoAttachment(rowData?.attachment) && taskAttachmentUri && (
+        {isVideoAttachment(rowData?.attachment) && Boolean(taskAttachmentUri) && (
           <TaskVideoPlayer
             isFullScreen={true}
             filename={taskAttachmentUri}
@@ -142,7 +142,7 @@ export const renderDetail = (
             setImagePreviewVisible={setImagePreviewVisible}
           />
         )}
-        {isVideoAttachment(rowData?.resultAttachment) && resultAttachmentUri && (
+        {isVideoAttachment(rowData?.resultAttachment) && Boolean(resultAttachmentUri) && (
           <TaskVideoPlayer
             isFullScreen={true}
             filename={resultAttachmentUri}
@@ -150,7 +150,7 @@ export const renderDetail = (
             setImagePreviewVisible={setImagePreviewVisible}
           />
         )}
-        {isImageAttachment(rowData?.resultAttachment) && resultAttachmentUri && (
+        {isImageAttachment(rowData?.resultAttachment) && Boolean(resultAttachmentUri) && (
           <Pressable style={{ alignSelf: "flex-end", padding: 5 }} onPress={() => setImageView(resultAttachmentUri)}>
             <Image source={{ uri: resultAttachmentUri }} style={{ height: windowHeight / 4, width: windowWidth / 3 }} resizeMode="contain" />
           </Pressable>

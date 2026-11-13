@@ -69,7 +69,7 @@ function CallParticipant(props: CallParticipantProps) {
     isAllCalls,
   } = props;
 
-  const { time: date } = useTimeHook(parseInt(time));
+  const { time: date } = useTimeHook(Number.parseInt(time, 10));
   const [onGoingCallsData] = useAtom(groupCallActiveData);
   const [callRequest, setCallRequest] = useAtom(callAtom);
   const [, toggleFullScreenMode] = useAtom(callFullScreenState);

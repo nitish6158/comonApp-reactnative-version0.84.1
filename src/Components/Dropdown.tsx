@@ -72,19 +72,18 @@ export default function Dropdown(props: IDropdown) {
         },
         fetchPolicy: "no-cache",
       })
-        .then((res) => {
-          res.refetch().then((res) => {
-            if (res.data?.myReports?.data?.length) {
-              setMyReports(res.data.myReports.data);
-            } else {
-              setMyReports([]);
-            }
-            return resolve(true);
-          });
+        .then(async (res) => {
+          const refetched = await res.refetch();
+          if (refetched.data?.myReports?.data?.length) {
+            setMyReports(refetched.data.myReports.data);
+          } else {
+            setMyReports([]);
+          }
+          resolve(true);
         })
         .catch((err) => {
           console.log("Error in fetching my reports", err);
-          return reject(false);
+          reject(err instanceof Error ? err : new Error(String(err)));
         });
     });
   };
@@ -95,18 +94,14 @@ export default function Dropdown(props: IDropdown) {
       setSelectedOrganisation(organization?.name);
       global.activeOrg = organisations?._id;
       setActiveOrganisation(organization?._id);
-      switchOrganization(organization?._id)
-        .then(async (res) => {
-          await fetchMyReports();
-          await fetchAllAssigment(res);
-          setSwitchLoader(false);
-          setToggleDropdown(false);
-          setPrimeLoader(true);
-        })
-        .catch((err) => {
-          console.log("Err in switching organisation", err);
-        });
-    } catch (error) {
+      const res = await switchOrganization(organization?._id);
+      await fetchMyReports();
+      await fetchAllAssigment(res);
+      setSwitchLoader(false);
+      setToggleDropdown(false);
+      setPrimeLoader(true);
+    } catch (err) {
+      console.log("Err in switching organisation", err);
       setSwitchLoader(false);
       setToggleDropdown(false);
       setPrimeLoader(true);

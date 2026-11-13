@@ -34,7 +34,7 @@ function ChatMessages({ navigation, route }: any) {
   const refreshMessages = useCallback(() => {
     const roomId = route?.params?.RoomId;
     if (!roomId) return;
-    socketManager.chatRoom.getChatMeesagesByDays(roomId, 1, 100, (data) => {
+    void socketManager.chatRoom.getChatMeesagesByDays(roomId, 1, 100, (data) => {
       if (Array.isArray(data?.chats)) {
         setConversation(data.chats);
       }

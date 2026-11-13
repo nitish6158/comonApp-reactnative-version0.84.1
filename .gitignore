@@ -100,3 +100,8 @@ replay_pid*
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# SonarQube local scanner output, cache & token
+.sonar/
+.scannerwork/
+.env.sonar.local

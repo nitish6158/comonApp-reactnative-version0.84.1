@@ -148,20 +148,14 @@ export class LiveKitCallService {
       // Process existing remote participants already in the room
       this.room.remoteParticipants.forEach((participant) => {
         console.log("[LiveKit] Existing participant in room on connect:", participant.identity);
-        const uid = parseInt(participant.identity, 10);
-        if (!isNaN(uid)) {
+        const uid = this.parseUid(participant.identity);
+        if (uid !== null) {
           this.listeners.onUserJoined?.(uid);
         }
         participant.trackPublications.forEach((pub) => {
           if (pub.track) {
             console.log("[LiveKit] Existing track on connect:", pub.kind, "from", participant.identity);
-            if (!isNaN(uid)) {
-              if (pub.kind === Track.Kind.Video) {
-                this.listeners.onUserMuteVideo?.(uid, pub.isMuted);
-              } else if (pub.kind === Track.Kind.Audio) {
-                this.listeners.onUserMuteAudio?.(uid, pub.isMuted);
-              }
-            }
+            this.notifyTrackMute(participant.identity, pub.kind, pub.isMuted);
           }
         });
       });
@@ -176,68 +170,61 @@ export class LiveKitCallService {
     }
   }
 
+  private parseUid(identity: string): number | null {
+    const uid = Number.parseInt(identity, 10);
+    return Number.isNaN(uid) ? null : uid;
+  }
+
+  private notifyTrackMute(identity: string, kind: Track.Kind | undefined, muted: boolean) {
+    const uid = this.parseUid(identity);
+    if (uid === null) {
+      return;
+    }
+    if (kind === Track.Kind.Video) {
+      this.listeners.onUserMuteVideo?.(uid, muted);
+    } else if (kind === Track.Kind.Audio) {
+      this.listeners.onUserMuteAudio?.(uid, muted);
+    }
+  }
+
   private attachRoomEvents(room: Room) {
     room.on(RoomEvent.ParticipantConnected, (participant: RemoteParticipant) => {
       console.log("[LiveKit] Participant connected:", participant.identity);
-      const uid = parseInt(participant.identity, 10);
-      if (!isNaN(uid)) {
+      const uid = this.parseUid(participant.identity);
+      if (uid !== null) {
         this.listeners.onUserJoined?.(uid);
       }
     });
 
     room.on(RoomEvent.ParticipantDisconnected, (participant: RemoteParticipant) => {
       console.log("[LiveKit] Participant disconnected:", participant.identity);
-      const uid = parseInt(participant.identity, 10);
-      if (!isNaN(uid)) {
+      const uid = this.parseUid(participant.identity);
+      if (uid !== null) {
         this.listeners.onUserLeft?.(uid);
       }
     });
 
     room.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
       console.log("[LiveKit] Track subscribed:", track.kind, "from", participant.identity);
-      const uid = parseInt(participant.identity, 10);
-      if (!isNaN(uid)) {
-        if (track.kind === Track.Kind.Video) {
-          this.listeners.onUserMuteVideo?.(uid, false);
-        } else if (track.kind === Track.Kind.Audio) {
-          this.listeners.onUserMuteAudio?.(uid, false);
-        }
-      }
+      this.notifyTrackMute(participant.identity, track.kind, false);
       this.listeners.onTracksChanged?.();
     });
 
     room.on(RoomEvent.TrackUnsubscribed, (track, publication, participant) => {
       console.log("[LiveKit] Track unsubscribed:", track.kind, "from", participant.identity);
-      const uid = parseInt(participant.identity, 10);
-      if (!isNaN(uid)) {
-        if (track.kind === Track.Kind.Video) {
-          this.listeners.onUserMuteVideo?.(uid, true);
-        }
+      if (track.kind === Track.Kind.Video) {
+        this.notifyTrackMute(participant.identity, track.kind, true);
       }
       this.listeners.onTracksChanged?.();
     });
 
     room.on(RoomEvent.TrackMuted, (publication, participant) => {
-      const uid = parseInt(participant.identity, 10);
-      if (!isNaN(uid)) {
-        if (publication.kind === Track.Kind.Video) {
-          this.listeners.onUserMuteVideo?.(uid, true);
-        } else if (publication.kind === Track.Kind.Audio) {
-          this.listeners.onUserMuteAudio?.(uid, true);
-        }
-      }
+      this.notifyTrackMute(participant.identity, publication.kind, true);
       this.listeners.onTracksChanged?.();
     });
 
     room.on(RoomEvent.TrackUnmuted, (publication, participant) => {
-      const uid = parseInt(participant.identity, 10);
-      if (!isNaN(uid)) {
-        if (publication.kind === Track.Kind.Video) {
-          this.listeners.onUserMuteVideo?.(uid, false);
-        } else if (publication.kind === Track.Kind.Audio) {
-          this.listeners.onUserMuteAudio?.(uid, false);
-        }
-      }
+      this.notifyTrackMute(participant.identity, publication.kind, false);
       this.listeners.onTracksChanged?.();
     });
 

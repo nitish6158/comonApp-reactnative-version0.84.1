@@ -75,7 +75,7 @@ export default function CalendarScheduleItem({
       dayjs.locale(language);
     };
 
-    initLocale();
+    void initLocale();
   }, []);
 
   if (!currentRoom) {

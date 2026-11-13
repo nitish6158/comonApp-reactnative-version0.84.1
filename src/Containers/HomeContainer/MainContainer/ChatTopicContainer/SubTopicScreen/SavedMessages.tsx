@@ -202,7 +202,7 @@ export default function SavedMessages({ messages, onMessageDelete,topicId }: Rea
   );
 
   function deleteMessage(topicId: string, chatId: string) {
-    removeMessageRequest({
+    void removeMessageRequest({
       variables: {
         input: {
           topicId,

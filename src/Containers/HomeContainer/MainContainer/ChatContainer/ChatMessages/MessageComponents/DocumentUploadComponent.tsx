@@ -141,7 +141,7 @@ function DocumentUploadPreview({
   useEffect(() => {
     if (isConnected) {
       setError("");
-      uploadDocument(
+      void uploadDocument(
         message.fileURL,
         message.type.replace("LOADING/DOCUMENT/", ""),
         message.duration
@@ -178,7 +178,7 @@ function DocumentUploadPreview({
       const size = await RNFS.stat(file);
       setDocumentSize(size.size);
       const uploadContentType = e2e ? "application/octet-stream" : type;
-      getUrl({
+      void getUrl({
         variables: {
           input: {
             path: path,
@@ -240,7 +240,7 @@ function DocumentUploadPreview({
 
             if (uploadResult) {
               // console.log("duration", parseInt(duration.toPrecision()), typeof duration);
-              copyFile(file, path);
+              void copyFile(file, path);
               const payload: UdpateChatInput = {
                 isSent: true,
                 data: {
@@ -313,10 +313,10 @@ function DocumentUploadPreview({
         copyTo: "documentDirectory",
       });
       if (result) {
-        uploadDocument(result.fileCopyUri, result.type, 0);
+        void uploadDocument(result.fileCopyUri, result.type, 0);
       }
     } catch (error) {
-      uploadDocument(
+      void uploadDocument(
         message.fileURL,
         message.type.replace("LOADING/DOCUMENT/", ""),
         message.duration
@@ -343,7 +343,7 @@ function DocumentUploadPreview({
           {error.length > 0 ? (
             <VectorIconCompat
               onPress={() => {
-                reSelectDocument();
+                void reSelectDocument();
               }}
               name="pencil-circle-outline"
               size={32}
@@ -366,7 +366,7 @@ function DocumentUploadPreview({
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             {duration > 0 && (
               <Text style={{ fontSize: 12, color: "rgba(51,51,51,.8)" }}>
-                {secondsToMinutesAndSeconds(parseInt(duration.toFixed()))}
+                {secondsToMinutesAndSeconds(Number.parseInt(duration.toFixed(), 10))}
               </Text>
             )}
 

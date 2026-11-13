@@ -180,7 +180,7 @@ export default function SelectChatRoomScreen({ route, navigation }: Readonly<Sel
         : display.participants[0];
 
     if (userToShare) {
-      socketConnect.emit("shareContact", {
+      void socketConnect.emit("shareContact", {
         contacts: [
           {
             _id: userToShare.user_id,

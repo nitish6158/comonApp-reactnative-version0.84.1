@@ -1,19 +1,16 @@
 // @ts-nocheck
-import { CallListQuery, MyCallListReponse, useGetMyCallListLazyQuery } from "@Service/generated/call.generated";
+import { MyCallListReponse, useGetMyCallListLazyQuery } from "@Service/generated/call.generated";
 import { Center, Typography } from "rnmuilib";
 import { Dimensions, FlatList, RefreshControl, Text, View } from "react-native";
-import { GroupUrl, ImageUrl } from "@Service/provider/endpoints";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { incoming, outgoing } from "@Util/CallHistoryIcon";
-import { useDispatch, useSelector } from "react-redux";
-import { useFocusEffect, useIsFocused } from "@react-navigation/core";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useIsFocused } from "@react-navigation/core";
 
 import { AllCallListScreenProps } from "@/navigation/screenPropsTypes";
-import CallParticipant from "./components/CallParticipant";
+import SingleCallItem from "./components/SingleCallItem";
 
 import { Loader } from "@Components/Loader";
-import { ParticipantType } from "@Service/generated/types";
-import { RootState, useAppSelector } from "@Store/Store";
+import { useAppSelector } from "@Store/Store";
 
 import { useTranslation } from "react-i18next";
 import { updateCallList } from "@/redux/Reducer/CallReducer";
@@ -39,7 +36,7 @@ export default function AllCallsScreen({}: AllCallListScreenProps) {
   const isFocus = useIsFocused();
   useEffect(() => {
     setLoader(true);
-    allCallsRequest({
+    void allCallsRequest({
       variables: {
         input: {
           callStatus: "all",
@@ -131,8 +128,8 @@ export default function AllCallsScreen({}: AllCallListScreenProps) {
             />
           }
           data={allCallsData}
-          renderItem={({ item, index }) => {
-            return <SingleCallItem item={item} index={index} />;
+          renderItem={({ item }) => {
+            return <SingleCallItem item={item} isAllCalls={true} />;
           }}
           ListEmptyComponent={() => (
             <Center flex={1}>
@@ -144,7 +141,7 @@ export default function AllCallsScreen({}: AllCallListScreenProps) {
           onEndReached={() => {
             if (callList.length > 12) {
               setCallListLoading(true);
-              allCallsResponse
+              void allCallsResponse
                 .fetchMore({
                   variables: {
                     input: {
@@ -159,8 +156,11 @@ export default function AllCallsScreen({}: AllCallListScreenProps) {
                     console.error("Error in refetching call response", res.error);
                   }
                   if (res.data?.getMyCallList != null) {
-                    dispatch(updateCallList([...callList, ...res.data?.getMyCallList]));
+                    dispatch(updateCallList([...callList, ...res.data.getMyCallList]));
                   }
+                  setCallListLoading(false);
+                })
+                .catch(() => {
                   setCallListLoading(false);
                 });
             }
@@ -183,203 +183,4 @@ export default function AllCallsScreen({}: AllCallListScreenProps) {
       )}
     </View>
   );
-}
-
-type SingleCallItemProps = {
-  item: MyCallListReponse;
-  index: number;
-};
-
-function SingleCallItem({ item, index }: SingleCallItemProps) {
-  const MyProfile = useSelector((state: RootState) => state.Chat.MyProfile);
-  const { comonContact } = useSelector((state: RootState) => state.Contact);
-  //extractCallDetails
-  const { initiator, status, participants } = useMemo(
-    () => ExtractCallDetails(),
-    [item?.call?.callParticipants, comonContact, item?.call?.origin]
-  );
-  //checkCallStatus for current call
-  const callStatus = useMemo(() => checkCallStatus(), [initiator, status]);
-  //modify call Type
-  const type = useMemo(() => item?.call?.type.toUpperCase(), [item?.call?.type]);
-  //construct Item UI data
-  const { name, phone, profile_img, callRequestData, lastSeen } = useMemo(
-    () => getItemDetails(item, participants),
-    [item, participants]
-  );
-
-  return (
-    <CallParticipant
-      item={item}
-      name={name}
-      phone={phone}
-      lastSeen={lastSeen}
-      ProfileImage={profile_img}
-      callCount={item.count ? item.count.toString() : 0}
-      type={callStatus}
-      roomType={item?.call?.roomType}
-      callRequestData={callRequestData}
-      mode={type}
-      time={item.call?.callStartedAt ? item.call?.callStartedAt.toString() : ""}
-      categoryId={item.categoryId ? item.categoryId : ""}
-      isAllCalls={true}
-    />
-  );
-  function getItemDetails(item: MyCallListReponse, participants: ParticipantType[]) {
-    switch (item?.call?.roomType) {
-      case "group":
-        // console.log("roomid", item.call.roomId == null ? item.categoryId : "");
-        return {
-          name: item.call.roomId != null ? item.call.roomId.name : "Group call",
-          profile_img: item.call.roomId != null ? item.call.roomId.profile_img : GroupUrl,
-          phone: "",
-          lastSeen: "",
-          callRequestData: {
-            callType: item.call.type,
-            roomType: item.call.roomType,
-            roomId: item.call.roomId?._id,
-            callBackground: item.call.roomId != null ? item.call.roomId.profile_img : "",
-            roomName: item.call.roomId != null ? item.call.roomId.name : "Group call",
-            participants: [],
-            isReceiver: false,
-          },
-        };
-
-      case "contact_group":
-        const participantNames = participants.reduce((accumulator, participant, index) => {
-          if (index === 0) {
-            return participant.userId.firstName;
-          } else {
-            return accumulator + ", " + participant.userId.firstName;
-          }
-        }, null);
-
-        return {
-          name: participantNames !== null ? participantNames : "Contact Group call",
-          profile_img: `${ImageUrl}`,
-          phone: "",
-          lastSeen: "",
-          callRequestData: {
-            callType: item.call.type,
-            roomType: item.call.roomType,
-            roomId: null,
-            callBackground: `${ImageUrl}`,
-            roomName: participantNames !== null ? participantNames : "Contact Group call",
-            participants: participants.map((par) => par.userId._id),
-            isReceiver: false,
-          },
-        };
-
-      case "contact":
-        const participantWithoutMe = participants.filter((e) => e?.userId?._id != MyProfile?._id);
-        let participantName = "";
-        if (participantWithoutMe.length > 1) {
-          participantName = `${participants[0]?.userId?.firstName} ${participants[0]?.userId?.lastName}(+${
-            participantWithoutMe?.length - 1
-          })`;
-        } else {
-          participantName = participants[0]?.userId?.firstName + " " + participants[0]?.userId?.lastName;
-        }
-        return {
-          name: participantName,
-          profile_img: participants.length > 0 ? participants[0].userId.profile_img : "",
-          phone: participants.length > 0 ? participants[0].userId.phone : "",
-          lastSeen: participants.length > 0 ? participants[0].userId.lastSeen : "0",
-          callRequestData: {
-            callType: item.call.type,
-            roomType: item.call.roomType,
-            roomId: null,
-            callBackground: participants.length > 0 ? participants[0].userId.profile_img : "",
-            roomName:
-              participants.length > 0
-                ? participants[0]?.userId?.firstName + " " + participants[0]?.userId?.lastName
-                : "",
-            participants: participants.map((par) => par.userId._id),
-            isReceiver: false,
-          },
-        };
-
-      case "individual":
-        const participantExcludingMe = participants.filter((e) => e?.userId?._id != MyProfile?._id);
-        let name = "";
-        if (participantExcludingMe.length > 1) {
-          name = `${participants[0]?.userId?.firstName} ${participants[0]?.userId?.lastName}(+${
-            participantExcludingMe?.length - 1
-          })`;
-        } else {
-          name = participants[0]?.userId?.firstName + " " + participants[0]?.userId?.lastName;
-        }
-        return {
-          name: name,
-          profile_img: participants.length > 0 ? participants[0].userId.profile_img : "",
-          phone: participants.length > 0 ? participants[0].userId.phone : "",
-          lastSeen: participants.length > 0 ? participants[0].userId.lastSeen : "0",
-          callRequestData: {
-            callType: item.call.type,
-            roomType: item.call.roomType,
-            roomId: participantExcludingMe.length > 1 ? null : item.call.roomId?._id,
-            callBackground: participants.length > 0 ? participants[0].userId.profile_img : "",
-            roomName:
-              participants.length > 0 ? participants[0].userId?.firstName + " " + participants[0].userId?.lastName : "",
-            participants:
-              participantExcludingMe.length > 1 ? item?.call?.callParticipants.map((e) => e.userId._id) : [],
-            isReceiver: false,
-          },
-        };
-      default:
-        return {
-          name: "",
-          profile_img: "",
-          phone: "",
-          participantsData: [],
-        };
-    }
-  }
-
-  function checkCallStatus() {
-    return initiator ? outgoing[status == "missed" ? "initiator" : status] : incoming[status];
-  }
-
-  function ExtractCallDetails() {
-    const participants: ParticipantType[] = [];
-    let initiator = false;
-    let status = "";
-    let myCall = null;
-
-    item?.call?.callParticipants.forEach((it) => {
-      if (it.userId._id != MyProfile?._id) {
-        const cc = comonContact.filter((item) => {
-          if (item.userId?._id == it.userId._id) {
-            return true;
-          }
-        });
-
-        if (cc.length > 0) {
-          const { firstName, lastName } = cc[0];
-          participants.push({
-            ...it,
-            userId: {
-              ...it.userId,
-              firstName: firstName ? firstName : "",
-              lastName: lastName ? lastName : "",
-            },
-          });
-        } else {
-          participants.push({
-            ...it,
-            userId: {
-              ...it.userId,
-              firstName: it.userId.phone,
-              lastName: "",
-            },
-          });
-        }
-      } else {
-        initiator = MyProfile?._id === item?.call?.origin;
-        status = it.callStatus;
-        myCall = it;
-      }
-    });
-    return { initiator, status, participants };
-  }
 }

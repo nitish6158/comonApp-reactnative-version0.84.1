@@ -50,7 +50,7 @@ export const usePinnedMessages = (
     // Fetch pinned messages when roomId changes
     useEffect(() => {
         if (roomId && currentUserUtility?.user_id) {
-            getPinnedMessages().then(setPinnedMessages);
+            void getPinnedMessages().then(setPinnedMessages);
         }
 
         return () => {
@@ -62,7 +62,7 @@ export const usePinnedMessages = (
 
     // Refresh pinned messages
     const refreshPinnedMessages = useCallback(() => {
-        getPinnedMessages().then(setPinnedMessages);
+        void getPinnedMessages().then(setPinnedMessages);
     }, [getPinnedMessages, setPinnedMessages]);
 
     return {

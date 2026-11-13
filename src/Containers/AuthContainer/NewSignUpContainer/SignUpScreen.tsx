@@ -73,7 +73,7 @@ export const SignUpScreen = ({
   useEffect(() => {
     console.log("phoneNumber=", phoneNumber);
     console.log("region=", region);
-    setGlobalPhoneCode({
+    void setGlobalPhoneCode({
       PhoneCode: phoneNumber,
       Country: region.toUpperCase(),
     });
@@ -346,7 +346,7 @@ export const SignUpScreen = ({
     console.log("payload", payload);
     if (!errors) {
       setPhone(phoneNumber);
-      signUp({
+      void signUp({
         variables: {
           input: payload,
         },
@@ -360,7 +360,7 @@ export const SignUpScreen = ({
     const countryCode = phoneInput?.current?.state?.countryCode?.toUpperCase();
 
     if (countryCode) {
-      setStorage(DefaultStorageKeys.COUNTRY_CODE, countryCode);
+      void setStorage(DefaultStorageKeys.COUNTRY_CODE, countryCode);
       setCode(countryCode);
     }
   }

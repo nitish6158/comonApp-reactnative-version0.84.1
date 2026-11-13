@@ -41,7 +41,7 @@ export default function SeniorProfileScreen({ navigation }: SeniorProfileScreenP
 
   // const user = useUser();
 
-  const [logoutRequest, { }] = useLogoutLazyQuery();
+  const [logoutRequest] = useLogoutLazyQuery();
   const sessionStatus = useSetAtom(SessionStatus);
   const comonSyncStatus = useSetAtom(ComonSyncStatus);
 
@@ -49,7 +49,7 @@ export default function SeniorProfileScreen({ navigation }: SeniorProfileScreenP
     try {
       setLoader(true);
       const { mode } = await getSession();
-      logoutRequest({ variables: { input: {} } }).then(async (res) => {
+      void logoutRequest({ variables: { input: {} } }).then(async (res) => {
         if (res.data?.logout) {
           // user?.logOut();
           await messaging()

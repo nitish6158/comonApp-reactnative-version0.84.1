@@ -223,7 +223,7 @@ function ActiveCallModel() {
                   { text: t("btn.ok"), onPress: () => {} },
                 ]);
               }
-              closeCall();
+              void closeCall();
             }
           }
         }
@@ -284,7 +284,7 @@ function ActiveCallModel() {
                   pId: ur.userId,
                 };
                 // console.log(data);
-                activeCallData.current.participants = [...activeCallData.current?.participants, data];
+                activeCallData.current.participants = [...(activeCallData.current?.participants ?? []), data];
               }
             });
           }
@@ -294,7 +294,7 @@ function ActiveCallModel() {
           const parsedData = typeof msg === "string" ? JSON.parse(msg) : msg;
           if (activeCallData.current?.callId === parsedData.data.callId) {
             player.current?.stop();
-            resetCall();
+            void resetCall();
             await notifee.stopForegroundService();
             await notifee.cancelNotification(onGoingNotificationId.current);
           }
@@ -347,12 +347,12 @@ function ActiveCallModel() {
         setInternet(false);
         ToastMessage(t("others.No internet connection, try again"));
 
-        resetCall();
-        notifee.stopForegroundService();
+        void resetCall();
+        void notifee.stopForegroundService();
         dispatch(removeActiveCall());
-        notifee.cancelNotification(onGoingNotificationId.current);
+        void notifee.cancelNotification(onGoingNotificationId.current);
         clearTimeout(NoAnswerCallAutoCutRef.current);
-        callService.current.leave();
+        void callService.current.leave();
       }
     });
     let subs = { remove: () => {} };
@@ -361,7 +361,7 @@ function ActiveCallModel() {
       setAppState(state);
       if (Platform.OS == "android") {
         if (joined.current && state == "background") {
-          AsyncStorage.setItem("activeCallData", JSON.stringify(activeCallData.current));
+          void AsyncStorage.setItem("activeCallData", JSON.stringify(activeCallData.current));
           dispatch(addActiveCall(activeCallData.current));
         } else {
           // console.log("removing to kill");
@@ -382,7 +382,7 @@ function ActiveCallModel() {
     // Check that app foreground get reject event
     const foregroundUnsubscribe = notifee.onForegroundEvent(async ({ type, detail }: any) => {
       if (type === EventType.ACTION_PRESS && detail.pressAction.id === "reject") {
-        closeCall();
+        void closeCall();
         await notifee.cancelNotification(detail.notification?.id);
       }
     });
@@ -399,7 +399,7 @@ function ActiveCallModel() {
       onJoinSuccess: () => {
         console.log("[LiveKit] Successfully joined room");
         if (Platform.OS == "android") {
-          OutgoingCall();
+          void OutgoingCall();
         }
 
         if (!activeCallData.current?.isReceiver) {
@@ -411,7 +411,7 @@ function ActiveCallModel() {
         player.current?.stop();
         handleRemoteUser(uid);
         if (Platform.OS == "android") {
-          OngoingCall();
+          void OngoingCall();
         }
       },
       onUserLeft: (uid: number) => {
@@ -429,7 +429,7 @@ function ActiveCallModel() {
       onUserMuteAudio: (uid: number, muted: boolean) => {
         if (activeCallData.current?.participants) {
           activeCallData.current.participants = activeCallData.current.participants.map((cp) => {
-            return commonCondition(uid, parseInt(cp.uid)) ? { ...cp, micEnable: !muted } : cp;
+            return commonCondition(uid, Number.parseInt(cp.uid, 10)) ? { ...cp, micEnable: !muted } : cp;
           });
 
           updatePart((prev) =>
@@ -462,7 +462,7 @@ function ActiveCallModel() {
 
   useEffect(() => {
     if (callRequest && Object.keys(callRequest)?.length) {
-      stopAllPlayers();
+      void stopAllPlayers();
     }
   }, [callRequest]);
 
@@ -487,7 +487,7 @@ function ActiveCallModel() {
         callTimer({ type: "SPECIFIC", duration: Number(callRequest?.appKilled?.startTime ?? 0) });
 
         if (callRequest?.callType === "video") {
-          callService.current.setCamera(true);
+          void callService.current.setCamera(true);
           setVideoCameraOn(true);
         }
         return;
@@ -495,13 +495,13 @@ function ActiveCallModel() {
       if (callRequest.isReceiver) {
         const startTime = performance.now();
         callStatus.current = `${t("joiningCall")}...`;
-        initializeBackgroundTask();
+        void initializeBackgroundTask();
         const endTime = performance.now();
         console.log(`Call to doSomething took ${endTime - startTime} milliseconds.`);
       } else {
         console.log(callRequest);
         callStatus.current = `MeetUs ${callRequest?.callType == "audio" ? t("audio") : t("video")} ${t("call")}`;
-        createNewCall(callRequest, CloseCallONError).then(async (data) => {
+        void createNewCall(callRequest, CloseCallONError).then(async (data) => {
           console.log("[GlobalCallContainer] createNewCall result:", JSON.stringify(data));
           console.log("[GlobalCallContainer] MyProfile _id:", MyProfile?._id);
           if (typeof data == "object" && data !== null) {
@@ -538,24 +538,24 @@ function ActiveCallModel() {
                   token: data?.token,
                   callId: data?.callId,
                   channelName: data?.channelId,
-                  uid: parseInt(uid?.uid, 10) || 1,
+                  uid: Number.parseInt(uid?.uid, 10) || 1,
                   callType: data?.callType as "audio" | "video",
                 });
                 console.log("[GlobalCallContainer] callService.join returned:", joined);
 
                 if (joined) {
-                  MyuidRef.current = parseInt(uid?.uid);
+                  MyuidRef.current = Number.parseInt(uid?.uid, 10);
                   player.current?.play();
                   setConnectedWithAgora(true);
                 } else {
                   console.warn("[GlobalCallContainer] Join failed, showing cannot-join-call toast");
                   ToastMessage(t("label.cannot-join-call"));
-                  resetCall();
+                  void resetCall();
                 }
               } else {
                 console.warn("[GlobalCallContainer] Current user not found in participants!");
                 ToastMessage(t("label.current-user-not-found"));
-                resetCall();
+                void resetCall();
               }
             }
           } else {
@@ -571,7 +571,7 @@ function ActiveCallModel() {
     if (isTokenGenerated) {
       if (typeof activeCallData?.current?.callId == "string") {
         setTimeout(() => {
-          (async () => {
+          void (async () => {
             if (mounted.current) {
               if (activeCallData.current?.callType === "video") {
                 await requestCameraPermission();
@@ -617,7 +617,7 @@ function ActiveCallModel() {
             })
             .finally(() => {
               player.current?.stop();
-              resetCall();
+              void resetCall();
               ToastMessage(t("callNotAnswered"));
             });
         }
@@ -626,7 +626,7 @@ function ActiveCallModel() {
   }
 
   function initiateJoinCalls(isBackground?: boolean) {
-    joinCall(callRequest, CloseCallONError).then(async (data) => {
+    void joinCall(callRequest, CloseCallONError).then(async (data) => {
       console.log("CALLER joinCall result", data);
       if (typeof data == "object") {
         activeCallData.current = data;
@@ -661,12 +661,12 @@ function ActiveCallModel() {
               token: data?.token,
               callId: data?.callId,
               channelName: data?.channelId,
-              uid: parseInt(uid?.uid, 10) || 1,
+              uid: Number.parseInt(uid?.uid, 10) || 1,
               callType: data?.callType as "audio" | "video",
             });
 
             if (joinedRoom) {
-              MyuidRef.current = parseInt(uid?.uid);
+              MyuidRef.current = Number.parseInt(uid?.uid, 10);
 
               setConnectedWithAgora(true);
               if (isBackground) {
@@ -694,7 +694,7 @@ function ActiveCallModel() {
             } else {
               ToastMessage(t("label.cannot-join-call"));
 
-              resetCall();
+              void resetCall();
 
               if (isBackground) {
                 BackgroundTimer.stop();
@@ -703,7 +703,7 @@ function ActiveCallModel() {
           } else {
             console.warn("[GlobalCallContainer] initiateJoinCalls: current user not found in participants!");
             ToastMessage(t("label.cannot-join-call"));
-            resetCall();
+            void resetCall();
           }
         }
       } else {
@@ -725,7 +725,7 @@ function ActiveCallModel() {
       });
       if (ok) return true;
     }
-    closeCall();
+    void closeCall();
   }
 
   function getChannelStatus(data: callAtomType) {
@@ -753,7 +753,7 @@ function ActiveCallModel() {
               }
               if (!joinedStatus) {
                 ToastMessage(t("label.no-one-is-available-in-call"));
-                closeCall();
+                void closeCall();
               }
             }
           }
@@ -790,7 +790,7 @@ function ActiveCallModel() {
           if (err?.message) {
             const errorMessage = typeof err?.message === "string" ? JSON.parse(err?.message) : err?.message;
             if (errorMessage?.code === "already-joined") {
-              resetCall();
+              void resetCall();
               ToastMessage(errorMessage?.message);
             }
           }
@@ -802,7 +802,7 @@ function ActiveCallModel() {
       console.log("Matching");
       const particpantData = [...activeCallData.current.participants];
       activeCallData.current.participants = particpantData.map((cp) => {
-        return commonCondition(localUid, parseInt(cp.uid)) ? { ...cp, callStatus: "In call" } : cp;
+        return commonCondition(localUid, Number.parseInt(cp.uid, 10)) ? { ...cp, callStatus: "In call" } : cp;
       });
 
       updatePart((prev) =>
@@ -831,7 +831,7 @@ function ActiveCallModel() {
 
     if (activeCallData.current?.participants) {
       activeCallData.current.participants = activeCallData.current.participants.map((cp) => {
-        return commonCondition(localUid, parseInt(cp.uid)) ? { ...cp, callStatus: "Left call" } : cp;
+        return commonCondition(localUid, Number.parseInt(cp.uid, 10)) ? { ...cp, callStatus: "Left call" } : cp;
       });
 
       updatePart((prev) =>
@@ -849,14 +849,14 @@ function ActiveCallModel() {
     }, 200);
     if (currentList.length == 0) {
       console.log("removeRemoteUser");
-      closeCall();
+      void closeCall();
     }
   }
 
   function CloseCallONError() {
     player.current?.stop();
 
-    resetCall();
+    void resetCall();
     clearTimeout(NoAnswerCallAutoCutRef.current);
   }
 
@@ -871,7 +871,7 @@ function ActiveCallModel() {
         callId: data.callId,
         body: `On going ${data.callType == "audio" ? "audio" : "video"} call`,
       };
-      displayOnGoingCall(callRequestPayload);
+      void displayOnGoingCall(callRequestPayload);
     }
   }
 
@@ -886,7 +886,7 @@ function ActiveCallModel() {
         callId: data.callId,
         body: `Out going ${data.callType == "audio" ? "audio" : "video"} call`,
       };
-      displayOnGoingCall(callRequestPayload);
+      void displayOnGoingCall(callRequestPayload);
     }
   }
 
@@ -905,7 +905,7 @@ function ActiveCallModel() {
 
   async function resetCall() {
     updatePart([]);
-    AsyncStorage.removeItem("activeCallData");
+    void AsyncStorage.removeItem("activeCallData");
     clearTimeout(getChannelStatusTimerRef.current);
     inProgress.current = false;
     dispatch(removeActiveCall());
@@ -992,7 +992,7 @@ function ActiveCallModel() {
             console.log("res.data?.endCall", res.data?.endCall);
             if (res.data?.endCall) {
               console.log(`call ended ${Platform.OS}`);
-              resetCall();
+              void resetCall();
               RNVoipCall.endAllCalls();
               RNVoipCall.stopRingtune();
               dispatch(removeActiveCall());
@@ -1006,14 +1006,14 @@ function ActiveCallModel() {
             console.error("Error in ending call", err);
           })
           .finally(() => {
-            resetCall();
+            void resetCall();
           });
       } else {
         leftUserRequest({ variables: { input: { _id: activeCallData?.current?.callId } } })
           .then(async (res) => {
             if (res.data?.leftCall) {
               console.log(`call left ${Platform.OS}`);
-              resetCall();
+              void resetCall();
               RNVoipCall.endAllCalls();
               RNVoipCall.stopRingtune();
               await notifee.stopForegroundService();
@@ -1025,15 +1025,15 @@ function ActiveCallModel() {
             console.error("Error in ending call", err);
           })
           .finally(() => {
-            resetCall();
+            void resetCall();
           });
       }
     } else {
-      resetCall();
+      void resetCall();
     }
 
     setTimeout(() => {
-      checkForCallSurvey();
+      void checkForCallSurvey();
     }, 1000);
   }
 

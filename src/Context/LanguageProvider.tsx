@@ -33,8 +33,8 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   const onSelect = (locale: any) => {
     console.log(locale)
     const code = typeof locale === "string" ? locale : locale?.code;
-    i18n.changeLanguage(code ?? undefined).then(() => {
-      setStorage(DefaultStorageKeys.LANGUAGE, code ?? "en");
+    void i18n.changeLanguage(code ?? undefined).then(() => {
+      void setStorage(DefaultStorageKeys.LANGUAGE, code ?? "en");
       setCurrentLanguage(code ?? "en");
       onClose();
     });

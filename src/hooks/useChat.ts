@@ -40,7 +40,7 @@ export const useChat = (
 
 
   const getConversations = async (page: number) => {
-    socketManager.chatRoom.getChatMeesagesByDays(
+    void socketManager.chatRoom.getChatMeesagesByDays(
       roomId,
       page,
       messagesPerPage,
@@ -102,7 +102,7 @@ export const useChat = (
         conversationRef.current = chatsa;
       }
 
-      getConversations(page);
+      void getConversations(page);
     }
 
     return () => {
@@ -122,7 +122,7 @@ export const useChat = (
   const loadMoreMessages = () => {
     if (totalPages > page) {
       setPage((prevPage) => prevPage + 1);
-      getConversations(page + 1);
+      void getConversations(page + 1);
     }
   };
 

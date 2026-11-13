@@ -57,7 +57,7 @@ const LanguageSelector = ({ visible, onClose, onSelect }: LanguageProps) => {
 
   const handleSelect = (locale: Language) => () => {
     onSelect(locale);
-    updateLanguageRequest({
+    void updateLanguageRequest({
       variables: {
         input: {
           language: locale._id,

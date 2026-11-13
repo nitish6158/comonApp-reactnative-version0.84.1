@@ -109,7 +109,7 @@ export default function ImagePrevModal({
   >([]);
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       const preImages = await Promise.all(
         image.map(async (item, index) => {
           const stableUri = item?.type?.includes("image")
@@ -415,7 +415,7 @@ export default function ImagePrevModal({
         },
         reply_msg: null
       };
-      socketManager.conversation.sendChat(conversation);
+      void socketManager.conversation.sendChat(conversation);
     });
     setVisible(false);
     setImage([]);
@@ -427,7 +427,7 @@ export default function ImagePrevModal({
       <Pressable
         onPress={() => {
           if (imageWithCaptionList.length != 5) {
-            addImages(5 - imageWithCaptionList.length);
+            void addImages(5 - imageWithCaptionList.length);
           } else {
             ToastMessage(t("label.max-limit"));
           }

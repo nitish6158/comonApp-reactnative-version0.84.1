@@ -158,7 +158,7 @@ function PollView({ questions, chatMessage }: PollViewType) {
       reply_msg: null,
     };
 
-    updateChat({
+    void updateChat({
       variables: {
         input: payload,
       },

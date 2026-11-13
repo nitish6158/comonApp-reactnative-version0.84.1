@@ -132,10 +132,10 @@ function VideoComponent({
     if (message.fileURL.startsWith("file:")) {
       if (isConnected) {
         setRetry(false);
-        uploadVideo();
+        void uploadVideo();
       } else {
         setRetry(true);
-        createVideoThumbnail(message.fileURL).then((thumbnail) => {
+        void createVideoThumbnail(message.fileURL).then((thumbnail) => {
           setThumbnail(thumbnail.path);
         });
       }
@@ -194,7 +194,7 @@ function VideoComponent({
         return;
       }
 
-      getUrl({
+      void getUrl({
         variables: {
           input: {
             path: bucketVideoUrl,
@@ -282,7 +282,7 @@ function VideoComponent({
           );
 
           if (uploadResult) {
-            copyFile(compressedUrl, bucketVideoUrl);
+            void copyFile(compressedUrl, bucketVideoUrl);
             setProgress(1);
             const payload: UdpateChatInput = {
               isSent: true,
@@ -323,8 +323,8 @@ function VideoComponent({
                     totalMedia: prev.totalMedia + 1,
                   }));
 
-                  unlinkFile(thumbnail.path);
-                  unlinkFile(compressedUrl);
+                  void unlinkFile(thumbnail.path);
+                  void unlinkFile(compressedUrl);
                 }
               })
               .catch((err) => {

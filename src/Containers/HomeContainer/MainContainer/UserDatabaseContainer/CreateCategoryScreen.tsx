@@ -43,7 +43,7 @@ export default function CreateCategoryScreen({ navigation, route }: CreateCatego
           if (name.length > 3) {
 
             if (route.params.mode == "create") {
-              createNewCategory({
+              void createNewCategory({
                 variables: {
                   input: {
                     name: trimmed,
@@ -59,7 +59,7 @@ export default function CreateCategoryScreen({ navigation, route }: CreateCatego
               });
             }
             if (route.params.mode == "update" && route.params.categoryId) {
-              updateCategoryName({
+              void updateCategoryName({
                 variables: {
                   input: {
                     _id: route.params.categoryId,

@@ -153,14 +153,14 @@ export default function SendMoreOptionModal({ }: SendMoreOptionModalProps) {
           <Button
             Title={t("moreOption.camera")}
             onPress={() => {
-              pickImage("Camera");
+              void pickImage("Camera");
             }}
             Icon={<Camera />}
           />
           <Button
             Title={t("moreOption.videos")}
             onPress={() => {
-              pickImage("Video");
+              void pickImage("Video");
             }}
             Icon={
               <View
@@ -185,21 +185,21 @@ export default function SendMoreOptionModal({ }: SendMoreOptionModalProps) {
           <Button
             Title={t("moreOption.gallery")}
             onPress={() => {
-              pickImage("Gallery");
+              void pickImage("Gallery");
             }}
             Icon={<Gallery />}
           />
           <Button
             Title={t("moreOption.document")}
             onPress={() => {
-              handleDocumentSelection("all");
+              void handleDocumentSelection("all");
             }}
             Icon={<Documents />}
           />
           <Button
             Title={t("moreOption.audio")}
             onPress={() => {
-              handleDocumentSelection("audio");
+              void handleDocumentSelection("audio");
             }}
             Icon={<Audio />}
           />
@@ -276,7 +276,7 @@ export default function SendMoreOptionModal({ }: SendMoreOptionModalProps) {
         document={documentData}
         onClose={() => setDocumentData(null)}
         onMessageSend={(caption) => {
-          sendchat(
+          void sendchat(
             documentData?.file,
             documentData?.filetype,
             documentData?.duration,
@@ -401,7 +401,7 @@ export default function SendMoreOptionModal({ }: SendMoreOptionModalProps) {
         },
       };
       console.log("Conversation payload", conversation);
-      socketManager.conversation.sendChat(conversation);
+      void socketManager.conversation.sendChat(conversation);
       // realm.write(() => {
       //   realm.create("conversations", conversation);
       // });
@@ -616,7 +616,7 @@ export default function SendMoreOptionModal({ }: SendMoreOptionModalProps) {
         {
           text: `${t("btn.ok")}`,
           onPress: () => {
-            openSettings();
+            void openSettings();
           },
         },
       ]

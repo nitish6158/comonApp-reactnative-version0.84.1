@@ -27,11 +27,11 @@ import { getApps, initializeApp } from "@react-native-firebase/app";
 import { atom, useAtom, useSetAtom } from "jotai";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDvU50wv5i__UKBruDoB8xMLQmg_G9ME78",
-  appId: "1:13504575413:android:f313c8dad95e2db6880bfc",
-  messagingSenderId: "13504575413",
-  projectId: "analog-sum-332609",
-  storageBucket: "analog-sum-332609.firebasestorage.app",
+  apiKey: "AIzaSyAklcd4K7w-IDAOvtbj54lkmWINrfAqwHU",
+  appId: "1:825164035184:android:814f0e66c330c6b04b30b5",
+  messagingSenderId: "825164035184",
+  projectId: "meetus-c10a1",
+  storageBucket: "meetus-c10a1.firebasestorage.app",
   databaseURL: "",
 };
 
@@ -40,16 +40,13 @@ function ensureFirebaseApp() {
     return;
   }
 
-  try {
-    initializeApp(firebaseConfig);
-  } catch (error) {
+  Promise.resolve(initializeApp(firebaseConfig)).catch((error) => {
     // If native startup created it while JS was loading, ignore the duplicate init race.
     const message = error?.message || "";
     if (!message.includes("already exists")) {
       console.error("Firebase initialization failed", error);
-      throw error;
     }
-  }
+  });
 }
 
 import {
@@ -102,40 +99,40 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
           "BACKGROUND CALL RECEIVED ANDROID",
           JSON.stringify(invokeVoipCallData, null, 2)
         );
-        AndroidBackgroundCallHandler(invokeVoipCallData);
+        await AndroidBackgroundCallHandler(invokeVoipCallData);
       }
       break;
     case "ON_ACCEPT":
       console.log("ON_ACCEPT", invokeVoipCallData);
       if (invokeVoipCallData?.data?.notificationId) {
-        rejectAndroidCall(invokeVoipCallData);
+        await rejectAndroidCall(invokeVoipCallData);
       }
       break;
     default:
-      onMessageReceived(remoteMessage);
+      await onMessageReceived(remoteMessage);
       break;
   }
 });
 
-setChannelGroups();
-setCategoriesIOS();
-detectDeviceId();
+void Promise.resolve(setChannelGroups()).catch(() => {});
+void Promise.resolve(setCategoriesIOS()).catch(() => {});
+void Promise.resolve(detectDeviceId()).catch(() => {});
 
-notifee.registerForegroundService((notification) => {
-  return new Promise((resolve, reject) => {
+notifee.registerForegroundService(() => {
+  return new Promise(() => {
     notifee.onBackgroundEvent(async ({ type, detail }) => {
       if (
         type === EventType.ACTION_PRESS &&
         detail?.pressAction?.id === "reject"
       ) {
-        leftCallRequest();
+        await leftCallRequest();
         await notifee.stopForegroundService();
         await notifee.cancelNotification(detail.notification?.id);
-        AsyncStorage.setItem(
+        await AsyncStorage.setItem(
           "backgroundCallReject",
           JSON.stringify(detail.notification.data)
         );
-        AsyncStorage.removeItem("activeCallData");
+        await AsyncStorage.removeItem("activeCallData");
         global.engine.leaveChannel();
       }
     });
@@ -143,7 +140,7 @@ notifee.registerForegroundService((notification) => {
 });
 
 notifee.onBackgroundEvent(async ({ type, detail }) => {
-  const { notification, pressAction, data } = detail;
+  const { notification } = detail;
   if (type === EventType.ACTION_PRESS) {
     if (detail.pressAction.id === "reply") {
       await updateChat(detail.notification.data, detail.input);
@@ -169,9 +166,9 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
     } else if (detail.pressAction.id === "dismiss") {
       let contact = JSON.parse(detail.notification?.data.data);
       if (contact.length > 0) {
-        dismissNotification(true, contact[0]._id);
+        await dismissNotification(true, contact[0]._id);
       }
-      notifee.cancelNotification(detail.notification?.id);
+      await notifee.cancelNotification(detail.notification?.id);
     } else if (detail.pressAction.id === "try-now") {
       setAndroidBackgroundPressEvents(detail);
     }
@@ -180,16 +177,15 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
   }
 });
 
-async function setAndroidBackgroundPressEvents(data) {
+function setAndroidBackgroundPressEvents(data) {
   global.androidBackgroundNotificationPress = data;
 }
 
 async function rejectAndroidCall(data) {
-  let userId = storage.getString(keys.userId);
   if (data?.data?.notificationId) {
     RNVoipCall.endAllCalls();
     RNVoipCall.stopRingtune();
-    removeDataFromAsync(asyncStorageKeys.backgroundHandler);
+    await removeDataFromAsync(asyncStorageKeys.backgroundHandler);
   }
 }
 
@@ -205,49 +201,24 @@ async function AndroidBackgroundCallHandler(callData) {
           expiry: new Date().toISOString(),
           fromForeground: false,
         });
-        stopAllPlayers();
-        invokeVoipCall(callData);
+        await stopAllPlayers();
+        await invokeVoipCall(callData);
       } else {
-        RequestCallWaiting(callData?.data?.callId);
+        await RequestCallWaiting(callData?.data?.callId);
       }
       break;
     case "END_CALL":
-
-      let userId = storage.getString(keys.userId);
       const data = await getDataFromAsync(asyncStorageKeys.backgroundHandler);
       RNVoipCall.endAllCalls();
       RNVoipCall.stopRingtune();
 
       if (data && Object.keys(data).length) {
-        AsyncStorage.setItem("endCallQueue", data.data.callId);
-        const diff = dayjs().diff(data.data.callStartedAt, "seconds");
+        await AsyncStorage.setItem("endCallQueue", data.data.callId);
         console.log("callStatus1");
-        //         if (diff < 90) {
-        //           const callStatus = data.data.callParticipants.filter(
-        //             (df) => df.userId == userId
-        //           );
-        //  console.log("callStatus2");
-        //           if (callStatus.length > 0) {
-        //              console.log("callStatus3");
-        //             console.log("callStatus", callStatus[0].callStatus);
-        //             if (callStatus[0].callStatus == "missed") {
-        //               DisplayMissedCall({
-        //                 callId: callData?.data?.callId,
-        //                 callType: callData?.data.type,
-        //                 roomType: callData?.data.roomType,
-        //                 roomId: data?.data?.roomId ?? "",
-        //                 callBackground: callData?.data.callBackground ?? "",
-        //                 roomName: data?.notification.title,
-        //                 participants: data?.data.callParticipants,
-        //                 isReceiver: false,
-        //               });
-        //             }
-        //           }
-        //         }
         if (!data.callAccepted && data.fromForeground === false) {
           console.log("📵 SHOW MISSED CALL UI");
 
-          DisplayMissedCall({
+          await DisplayMissedCall({
             callId: data.data.callId,
             callType: data.data.type,
             roomType: data.data.roomType,
@@ -259,7 +230,7 @@ async function AndroidBackgroundCallHandler(callData) {
           });
         }
         if (data.data.callId == callData?.data?.callId) {
-          AsyncStorage.removeItem(asyncStorageKeys.backgroundHandler);
+          await AsyncStorage.removeItem(asyncStorageKeys.backgroundHandler);
         }
       }
       break;

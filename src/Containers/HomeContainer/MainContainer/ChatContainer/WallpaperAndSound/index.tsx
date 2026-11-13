@@ -102,7 +102,7 @@ function WallpaperAndSound() {
     if (Platform.OS == "ios") {
       setIOSSound(display.roomSound.title != "" ? true : false);
     } else {
-      notifee.getChannel(display.roomId).then((res) => {
+      void notifee.getChannel(display.roomId).then((res) => {
         setAndroidChannel(res);
       });
     }
@@ -112,25 +112,28 @@ function WallpaperAndSound() {
     );
   }, [isFocused]);
 
-  const debouncedChangeRoomWallpaper = debounce((fileUrl, value, roomId) => {
-    setIsUploading(true);
-    socketConnect.emit("changeRoomWallpaper", {
-      fileName: fileUrl,
-      opacity: value,
-      roomId: roomId,
-    });
-    ``;
+  const debouncedChangeRoomWallpaper = React.useMemo(
+    () =>
+      debounce((fileUrl, value, roomId) => {
+        setIsUploading(true);
+        void socketConnect.emit("changeRoomWallpaper", {
+          fileName: fileUrl,
+          opacity: value,
+          roomId: roomId,
+        });
 
-    setDisplay(
-      produce(display, (draftDisplay) => {
-        draftDisplay.roomWallpaper.opacity = value;
-        draftDisplay.roomWallpaper.url = fileUrl;
-      })
-    );
+        setDisplay(
+          produce(display, (draftDisplay) => {
+            draftDisplay.roomWallpaper.opacity = value;
+            draftDisplay.roomWallpaper.url = fileUrl;
+          })
+        );
 
-    setSelectedWallperOpacity(value);
-    setIsUploading(false);
-  }, 1000);
+        setSelectedWallperOpacity(value);
+        setIsUploading(false);
+      }, 1000),
+    [display, setDisplay]
+  );
 
   useEffect(() => {
     if (display.roomWallpaper != null) {
@@ -158,7 +161,7 @@ function WallpaperAndSound() {
         {
           text: `${t("btn.ok")}`,
           onPress: () => {
-            openSettings();
+            void openSettings();
           },
         },
       ]
@@ -167,8 +170,7 @@ function WallpaperAndSound() {
 
   const uploadWallpaer = (fileUrl: string) => {
     setSelectedWallper(fileUrl);
-    setSelectedWallperOpacity(selectedWallpaperOpacity);
-    socketConnect.emit("changeRoomWallpaper", {
+    void socketConnect.emit("changeRoomWallpaper", {
       fileName: fileUrl,
       opacity: selectedWallpaperOpacity,
       roomId: display.roomId,
@@ -183,7 +185,7 @@ function WallpaperAndSound() {
   };
 
   const removeWallpaper = useCallback(() => {
-    socketConnect.emit("changeRoomWallpaper", {
+    void socketConnect.emit("changeRoomWallpaper", {
       fileName: "",
       opacity: 0,
       roomId: display.roomId,
@@ -211,48 +213,46 @@ function WallpaperAndSound() {
         }/${result.assets[0]?.uri.slice(-10)}`;
 
       try {
-        getUrl({
+        const res = await getUrl({
           variables: {
             input: {
               path: path,
               contentType: result.assets[0].type,
             },
           },
-        }).then(async (res) => {
-          if (res.data?.getUploadSignedUrl.url) {
-            const imageUri = result.assets[0]?.uri ?? "";
-            let compressedUrl = imageUri;
-            const canCompress = await shouldCompressImage(imageUri);
-            if (canCompress) {
-              const compressorInputPath = getCompressorInputPath(imageUri);
-              compressedUrl = await ImageCompress.compress(compressorInputPath, {
-                compressionMethod: "manual",
-                maxWidth: 1000,
-                quality: 0.8,
-              });
-            }
-
-            const headers = {
-              "Content-Type": result.assets[0].type,
-            };
-
-            const uploadResult = await backgroundUpload(
-              res.data?.getUploadSignedUrl.url,
-              compressedUrl,
-              { httpMethod: "PUT", headers },
-              (written, total) => {
-                // setProgress(written / (total / 100) / 100 - 0.03);
-                console.log(written, total);
-              }
-            );
-            if (uploadResult) {
-              uploadWallpaer(path);
-              setIsUploading(false);
-            }
-          } else {
-            console.log(res);
-          }
         });
+        if (res.data?.getUploadSignedUrl.url) {
+          const imageUri = result.assets[0]?.uri ?? "";
+          let compressedUrl = imageUri;
+          const canCompress = await shouldCompressImage(imageUri);
+          if (canCompress) {
+            const compressorInputPath = getCompressorInputPath(imageUri);
+            compressedUrl = await ImageCompress.compress(compressorInputPath, {
+              compressionMethod: "manual",
+              maxWidth: 1000,
+              quality: 0.8,
+            });
+          }
+
+          const headers = {
+            "Content-Type": result.assets[0].type,
+          };
+
+          const uploadResult = await backgroundUpload(
+            res.data?.getUploadSignedUrl.url,
+            compressedUrl,
+            { httpMethod: "PUT", headers },
+            (written, total) => {
+              console.log(written, total);
+            }
+          );
+          if (uploadResult) {
+            uploadWallpaer(path);
+            setIsUploading(false);
+          }
+        } else {
+          console.log(res);
+        }
       } catch (err) {
         Alert.alert(
           `${t("errors.error")}`,
@@ -265,11 +265,11 @@ function WallpaperAndSound() {
   const onChooseWallperPress = useCallback(async () => {
     const res = await checkMediaPermission();
     if (res) {
-      lunchGallery();
+      void lunchGallery();
     } else {
       const askGallery = await askMediaPermission();
       if (askGallery) {
-        lunchGallery();
+        void lunchGallery();
       } else {
         PermissionAlert();
       }
@@ -298,10 +298,10 @@ function WallpaperAndSound() {
         onPress={() => {
           if (Platform.OS == "android") {
             if (AndroidChannel != null) {
-              notifee.deleteChannel(display.roomId);
+              void notifee.deleteChannel(display.roomId);
               setAndroidChannel(null);
             } else {
-              notifee
+              void notifee
                 .createChannel({
                   id: display.roomId,
                   name: display.roomName,
@@ -310,7 +310,7 @@ function WallpaperAndSound() {
                   importance: AndroidImportance.HIGH,
                 })
                 .then((res) => {
-                  notifee.getChannel(display.roomId).then((ch) => {
+                  void notifee.getChannel(display.roomId).then((ch) => {
                     setAndroidChannel(ch);
                   });
                 });
@@ -513,7 +513,6 @@ function WallpaperAndSound() {
                       value={selectedWallpaperOpacity}
                       minimumValue={0}
                       maximumValue={1}
-                      value={selectedWallpaperOpacity}
                       onValueChange={(value) => {
                         debouncedChangeRoomWallpaper(
                           selectedWallpaper,

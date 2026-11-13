@@ -206,7 +206,7 @@ export default function CallParticipantsMode({
   }
 
   function getParticipants() {
-    getCallParticipant({
+    void getCallParticipant({
       variables: {
         input: {
           _id: callID,

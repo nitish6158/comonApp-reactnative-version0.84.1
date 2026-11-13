@@ -135,7 +135,7 @@ export default function ModalCaptionInput({
                     };
 
                     console.log("conversation====>", payload);
-                    socketManager.conversation.sendChat(payload as any);
+                    void socketManager.conversation.sendChat(payload as any);
 
                     onClose();
                   }

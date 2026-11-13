@@ -178,7 +178,7 @@ export default function CreateChatRooms({ navigation, route }: CreateChatRoomsPr
   }
 
   function OnContactPressed(userId: string) {
-    createRoomRequest({
+    void createRoomRequest({
       variables: {
         input: {
           type: "individual",

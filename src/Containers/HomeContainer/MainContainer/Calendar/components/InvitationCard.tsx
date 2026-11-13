@@ -150,7 +150,7 @@ export default function InvitationCard({ item, index }: Readonly<InvitationCardP
   );
 
   function updateStatus(status, id) {
-    updateStatusRequest({
+    void updateStatusRequest({
       variables: {
         input: {
           _id: id,

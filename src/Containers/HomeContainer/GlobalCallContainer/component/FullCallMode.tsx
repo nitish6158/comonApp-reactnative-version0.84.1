@@ -91,7 +91,7 @@ export default function FullCallMode({
       disabledRemoteVideo={disabledRemoteVideo}
       mode={MyProfile?.mode}
     >
-      {backgroundHandler && backgroundHandler?.length > 0 && (
+      {Boolean(backgroundHandler?.length) && (
         <View
           style={{
             zIndex: 1,
@@ -153,7 +153,7 @@ export default function FullCallMode({
         <Block height={12} />
         {callRequest?.callId != undefined ? (
           <>
-            <View style={{ flexGrow: Platform.OS === "ios" ? 0.8 : 0.8 }}>
+            <View style={{ flexGrow: 0.8 }}>
               {!joined ? (
                 <Typography
                   fontSize={16}
@@ -237,7 +237,7 @@ export default function FullCallMode({
                   <Pressable
                     style={{ borderRadius: 32 }}
                     onPress={() => {
-                      toggleVideoOnOff();
+                      void toggleVideoOnOff();
                     }}
                   >
                     <Block height={64} width={64} borderRadius={32}>

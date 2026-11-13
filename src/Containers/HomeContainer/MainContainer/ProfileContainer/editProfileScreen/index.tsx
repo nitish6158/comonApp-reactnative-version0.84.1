@@ -233,7 +233,7 @@ export default function EditProfileScreen({
               style={styles.imageActionButton}
               onPress={() => {
                 setImageOptionDialog(false);
-                openCamera();
+                void openCamera();
               }}
             >
               <Text style={styles.imageActionText}>
@@ -244,7 +244,7 @@ export default function EditProfileScreen({
               style={styles.imageActionButton}
               onPress={() => {
                 setImageOptionDialog(false);
-                ImagePickers();
+                void ImagePickers();
               }}
             >
               <Text style={styles.imageActionText}>
@@ -288,13 +288,13 @@ export default function EditProfileScreen({
       {
         text: t("moreOption.camera"),
         onPress: () => {
-          openCamera();
+          void openCamera();
         },
       },
       {
         text: t("moreOption.gallery"),
         onPress: () => {
-          ImagePickers();
+          void ImagePickers();
         },
       },
       {
@@ -359,7 +359,7 @@ export default function EditProfileScreen({
         name: currentTimeinUnix() + "." + ImageData[0].path.split(".").pop(),
       };
       const fileurl: any = generateRNFile(image);
-      Fileupload({
+      void Fileupload({
         variables: {
           file: fileurl,
           thumbnail: null,
@@ -385,7 +385,7 @@ export default function EditProfileScreen({
             profile_img: res?.data?.UploadChatFile?.data?.filename,
           };
         });
-        socketConnect.emit("setProfilePicture", {
+        void socketConnect.emit("setProfilePicture", {
           imageURl: fileres?.filename,
         });
         if (res?.data !== null) {
@@ -413,7 +413,7 @@ export default function EditProfileScreen({
           setProfileImagePath((prev) => {
             return { ...prev, profile_img: ImageUrl };
           });
-          socketConnect.emit("setProfilePicture", { imageURl: ImageUrl });
+          void socketConnect.emit("setProfilePicture", { imageURl: ImageUrl });
           ToastMessage(`${t("toastmessage.profile-photo-updated")}`);
         }
       })

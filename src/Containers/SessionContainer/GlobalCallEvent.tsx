@@ -156,7 +156,7 @@ function AndroidCallManagerContainer() {
           participants: callQueueRef.current?.data.callParticipants as any,
           callBackground: callQueueRef.current?.data.callBackground,
         } as any);
-        callQueueRef.current == null;
+        callQueueRef.current = null;
         setCallQueue(null);
       } else {
         const backData: any = await getDataFromAsync(asyncStorageKeys.backgroundHandler);
@@ -173,9 +173,9 @@ function AndroidCallManagerContainer() {
             participants: backData.data.callParticipants,
             callBackground: backData.data.callBackground,
           } as any);
-          callQueueRef.current == null;
+          callQueueRef.current = null;
           setCallQueue(null);
-          removeDataFromAsync(asyncStorageKeys.backgroundHandler);
+          void removeDataFromAsync(asyncStorageKeys.backgroundHandler);
         }
       }
     } else {
@@ -184,7 +184,7 @@ function AndroidCallManagerContainer() {
         activeCallId: busyCallId,
         queuedCallId: callQueueRef.current?.data?.callId,
       });
-      checkForCallWaiting(callQueueRef.current?.data?.callId ?? "");
+      void checkForCallWaiting(callQueueRef.current?.data?.callId ?? "");
       ToastMessage(`${t("toastmessage.incall-already-message")}`);
     }
   }
@@ -195,7 +195,7 @@ function AndroidCallManagerContainer() {
       busyCallWaitingTimerRef.current = null;
     }
     const callQ = callQueueRef.current;
-    callQueueRef.current == null;
+    callQueueRef.current = null;
     setCallQueue(null);
     RNVoipCall.stopRingtune();
     RNVoipCall.endAllCalls()
@@ -221,7 +221,7 @@ function AndroidCallManagerContainer() {
           err?.data
         )
       );
-      AsyncStorage.removeItem(asyncStorageKeys.backgroundHandler);
+      void AsyncStorage.removeItem(asyncStorageKeys.backgroundHandler);
     } else {
       const callData: any = await getDataFromAsync(asyncStorageKeys.backgroundHandler);
 
@@ -265,16 +265,16 @@ function AndroidCallManagerContainer() {
               err?.data
             )
           );
-          notifee.stopForegroundService();
+          void notifee.stopForegroundService();
         }
-        AsyncStorage.removeItem(asyncStorageKeys.backgroundHandler);
+        void AsyncStorage.removeItem(asyncStorageKeys.backgroundHandler);
       }
     }
   }
 
   function checkForCallWaiting(callID: string) {
     console.log("GLOBAL_CALL_EVENT checkForCallWaiting", callID);
-    requestCallWaiting({
+    void requestCallWaiting({
       variables: {
         input: {
           _id: callID,
@@ -339,7 +339,7 @@ function IOSCallManagerContainer() {
 
     if (callQueue != null) {
       callQueueRef.current = callQueue;
-      stopAllPlayers();
+      void stopAllPlayers();
       const busyCallId = activeCallKeysRef.current?.callId ?? callRequest.current?.callId;
       if (busyCallId && busyCallId !== callQueue?.data?.callId) {
         console.log("GLOBAL_CALL_EVENT iOS auto busy path", {
@@ -472,12 +472,12 @@ function IOSCallManagerContainer() {
       } else if (shouldDelayCallConnection()) {
         setTimeout(() => connectCall(), 1000);
       } else {
-        connectCall();
+        void connectCall();
       }
     }
 
     function handleMultipleCalls() {
-      requestCallWaiting({
+      void requestCallWaiting({
         variables: {
           input: {
             _id: callData.data.callId,
@@ -493,11 +493,11 @@ function IOSCallManagerContainer() {
     function handleDisconnectedEvent() {
       if (callRequest.current != null || activeCallKeysRef.current != null) {
         handleMultipleCalls();
-        changeCallStatus({
+        void changeCallStatus({
           variables: { input: { callId: callData.data.callId, userId: MyProfileRef.current?._id, status: "rejected" } },
         });
       } else {
-        disconnectCall();
+        void disconnectCall();
       }
     }
 
@@ -556,7 +556,7 @@ function IOSCallManagerContainer() {
 
   function checkForCallWaiting(callID: string) {
     console.log("GLOBAL_CALL_EVENT iOS checkForCallWaiting", callID);
-    requestCallWaiting({
+    void requestCallWaiting({
       variables: {
         input: {
           _id: callID,
@@ -661,7 +661,7 @@ function MissedCallHandler() {
           if (isExist.length > 0) {
             if (isExist[0].callStatus == "missed") {
               const missed: any = missedCallData;
-              DisplayMissedCall({
+              void DisplayMissedCall({
                 callType: missedCallData.data.type,
                 roomType: missedCallData.data.roomType,
                 roomId: (missedCallData.data as any).roomId ?? "",

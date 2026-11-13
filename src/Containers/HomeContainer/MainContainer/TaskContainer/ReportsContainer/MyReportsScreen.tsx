@@ -42,7 +42,7 @@ export default function MyReportsScreen() {
 
   useFocusEffect(
     React.useCallback(() => {
-      refetch().then((response) => {
+      void refetch().then((response) => {
         if (response?.data?.myReports?.data?.length) {
           setMyReports((response?.data?.myReports?.data ?? []) as any);
         } else {

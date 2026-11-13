@@ -238,19 +238,11 @@ function commonTaskExecutor(
       isCorrectTime: false,
       executingTime: taskExecutionTime,
     };
-  } else {
-    if (completedDate && completedDate !== currentDate) {
-      return {
-        isCorrectTime: isCorrectTime,
-        executingTime: taskExecutionTime,
-      };
-    } else {
-      return {
-        isCorrectTime: isCorrectTime,
-        executingTime: taskExecutionTime,
-      };
-    }
   }
+  return {
+    isCorrectTime: isCorrectTime,
+    executingTime: taskExecutionTime,
+  };
 }
 
 function onceTaskExecutor(
@@ -314,7 +306,7 @@ function getTotalDays(currentTask: Assignment, isQuaterly: boolean) {
   let totalDays = 0;
   for (let item of allQuaters) {
     if (item.includes(startTimeMonth)) {
-      item.map((e) => {
+      item.forEach((e) => {
         if (e === "FEB" && moment().isLeapYear()) {
           totalDays += allMonthsWithDays[e] + 1;
         } else {

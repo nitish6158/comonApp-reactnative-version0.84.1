@@ -62,7 +62,7 @@ function AddorRemoveParticipants({
 
   const muteChat = (time: string) => {
     setMuteModalVisible(false);
-    muteRoomRequest({
+    void muteRoomRequest({
       variables: {
         input: {
           roomId: display.roomId,
@@ -104,10 +104,10 @@ function AddorRemoveParticipants({
       })
     );
 
-    socketConnect.emit("setRoomName", payload);
+    void socketConnect.emit("setRoomName", payload);
 
     setTimeout(() => {
-      socketManager.chatRoom.fetchAndUpdateRooms();
+      void socketManager.chatRoom.fetchAndUpdateRooms();
     }, 1000);
   }
 
@@ -183,7 +183,7 @@ function AddorRemoveParticipants({
                               );
                           })
                         );
-                        socketManager.chatRoom.fetchAndUpdateRooms();
+                        void socketManager.chatRoom.fetchAndUpdateRooms();
                         // socketManager.chatRoom.fetchAndUpdateRooms();
                         ToastMessage(
                           `${item.firstName + " " + item.lastName} ${t(

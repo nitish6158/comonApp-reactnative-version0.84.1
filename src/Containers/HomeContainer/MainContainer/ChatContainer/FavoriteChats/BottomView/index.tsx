@@ -64,7 +64,7 @@ const BottomView = ({
               <FavStar
                 onPress={() => {
                   refreshFavouriteMessages(true)
-                  socketConnect.emit("removeChatsFromFavourite", { cid: Cid });
+                  void socketConnect.emit("removeChatsFromFavourite", { cid: Cid });
                   resetSelection();
                 }}
               />

@@ -59,7 +59,7 @@ export default function AssignmentChatScreen() {
           );
           const checkingForTaskId = scenario?.tasks.find((e) => e._id == data?.msg?.taskId);
           if (scenario?._id == scenarioId && checkingForTaskId) {
-            refreshActiveReports(scenarioId, currentMember?.activeReportId);
+            void refreshActiveReports(scenarioId, currentMember?.activeReportId);
           }
         }
         if (data?.type == "completeReport") {
@@ -71,9 +71,9 @@ export default function AssignmentChatScreen() {
               : data?.msg;
           if (messageCopy?.organizationId === activeOrganisation) {
             if (messageCopy?.assignmentId === activeAssignment?._id) {
-              completeTask();
+              void completeTask();
             } else {
-              responseAssignment.refetch().then((response) => {
+              void responseAssignment.refetch().then((response) => {
                 if (response.error) {
                   console.error("Error in refetching assignment", response.error);
                   return;

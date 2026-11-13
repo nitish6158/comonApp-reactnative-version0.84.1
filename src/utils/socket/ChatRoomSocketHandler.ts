@@ -96,7 +96,7 @@ export class ChatRoomSocketHandler extends BaseSocketHandler {
     return unsubscribe;
   }
 
-  protected async handleMessage(type: string, data: any): Promise<void> {
+  protected handleMessage(type: string, data: any): void {
     const callbacks = this.roomCallbacks.get(type);
     const parsedData = typeof data === "string" ? JSON.parse(data) : data;
 

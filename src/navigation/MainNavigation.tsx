@@ -112,7 +112,7 @@ export function MainNavigator() {
   useEffect(() => {
     if (killStateTask) {
       setTimeout(() => {
-        handleTaskNotificationTap(killStateTask.orgId, killStateTask.assignId);
+        void handleTaskNotificationTap(killStateTask.orgId, killStateTask.assignId);
       }, 2000);
       setKillStateTask(null);
     }

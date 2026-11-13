@@ -113,7 +113,7 @@ export default function ReminderAttachment({ attachment, onDelete }: ReminderAtt
         file = await saveFileToDownloads(`${DefaultImageUrl}${attachment.url}`, displayName);
       }
       console.log("file", file);
-      FileViewer.open(file, {
+      void FileViewer.open(file, {
         showOpenWithDialog: true,
         showAppsSuggestions: true,
       });

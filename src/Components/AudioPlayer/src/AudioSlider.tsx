@@ -41,7 +41,7 @@ export default function AudioSlider(props: props) {
 
   useEffect(() => {
     if (props.audio.length) {
-      prepareAudioDuration();
+      void prepareAudioDuration();
     }
   }, [props.audio]);
 
@@ -171,7 +171,7 @@ export default function AudioSlider(props: props) {
           }}
           onPress={() => {
             if (!audioError) {
-              onPressPlayPause();
+              void onPressPlayPause();
             } else {
               ToastMessage(t("label.can-not-play-this-file"));
             }

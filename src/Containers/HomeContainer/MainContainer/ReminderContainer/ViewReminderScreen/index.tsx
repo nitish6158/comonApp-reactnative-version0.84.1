@@ -98,12 +98,12 @@ export default function ViewReminderScreen({ navigation, route }: ViewReminderSc
   }, [MyProfile?._id, route?.params?.roomId, filter, getReminderRange]);
 
   useEffect(() => {
-    fetchReminders();
+    void fetchReminders();
   }, [fetchReminders, reminderRefreshKey]);
 
   useFocusEffect(
     useCallback(() => {
-      fetchReminders();
+      void fetchReminders();
       return () => {};
     }, [fetchReminders])
   );
@@ -207,7 +207,7 @@ export default function ViewReminderScreen({ navigation, route }: ViewReminderSc
                                   .then((res) => {
                                     if (res.data?.deleteReminder) {
                                       ToastMessage(t("reminders.event-deleted"));
-                                      fetchReminders();
+                                      void fetchReminders();
                                     }
                                   })
                                   .catch((err) => {
@@ -351,7 +351,7 @@ export default function ViewReminderScreen({ navigation, route }: ViewReminderSc
   );
 
   function updateStatus(value: ParticipantAcceptStatus, _id: string) {
-    updateParticipantStatus({
+    void updateParticipantStatus({
       variables: {
         input: {
           _id,
@@ -363,7 +363,7 @@ export default function ViewReminderScreen({ navigation, route }: ViewReminderSc
         if (value === ParticipantAcceptStatus["Accept"]) {
           ToastMessage(t("label.event-added-to-calender"));
         }
-        fetchReminders();
+        void fetchReminders();
       }
     });
   }

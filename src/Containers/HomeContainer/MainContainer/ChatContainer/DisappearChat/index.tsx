@@ -62,7 +62,7 @@ export default function Disappear({ navigation }: ChatDisappearSettingScreenProp
   function HandleDisappering(DisappearStatus: React.SetStateAction<string>) {
     setActiveTab(DisappearStatus);
     if (DisappearStatus !== activeTab) {
-      socketConnect.emit("setChatDisappeared", { roomId: display.roomId, type: DisappearStatus });
+      void socketConnect.emit("setChatDisappeared", { roomId: display.roomId, type: DisappearStatus });
       setDisplay({
         ...display,
         isCurrentRoomDisappearedMessageOn: DisappearStatus == "On" ? true : false,

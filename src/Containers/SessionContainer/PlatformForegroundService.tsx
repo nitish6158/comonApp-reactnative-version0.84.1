@@ -58,7 +58,7 @@ import { socketManager } from "@/utils/socket/SocketManager";
 
 let assignmentCopy: any[] = [];
 
-export let KillStateTaskAtom = atom<{ orgId: string; assignId: string } | null>(
+export const KillStateTaskAtom = atom<{ orgId: string; assignId: string } | null>(
   null
 );
 
@@ -138,7 +138,7 @@ export default function PlatformForegroundService() {
           const parsedData =
             typeof data?.msg === "string" ? JSON.parse(data?.msg) : data?.msg;
           if (parsedData?.userId === MyProfile?._id) {
-            topicReSubscription();
+            void topicReSubscription();
           }
         }
         if (data?.type === "invited") {
@@ -166,7 +166,7 @@ export default function PlatformForegroundService() {
                 },
               })
                 .then((res) => {
-                  res.refetch().then((res) => {
+                  void res.refetch().then((res) => {
                     dispatch(setAssignments((res.data?.myAssignments.data ?? []) as any));
                   });
                 })
@@ -197,7 +197,7 @@ export default function PlatformForegroundService() {
               (e) => e?._id == parsedData?.assignmentId
             );
             if (assignmentAlreadyExist) {
-              scenarioRequest({
+              void scenarioRequest({
                 variables: {
                   input: {
                     _id: assignmentAlreadyExist?.scenario?._id ?? "",
@@ -219,7 +219,7 @@ export default function PlatformForegroundService() {
                   },
                 })
                   .then((res) => {
-                    res.refetch().then((res) => {
+                    void res.refetch().then((res) => {
                       dispatch(setAssignments((res.data?.myAssignments.data ?? []) as any));
                     });
                   })
@@ -317,10 +317,10 @@ export default function PlatformForegroundService() {
             setSeniorChatAlert(chatRoom);
           }
         }
-        onMessageReceived(message);
+        void onMessageReceived(message);
         break;
       case "CONTACT_REMINDER":
-        onMessageReceived(message);
+        void onMessageReceived(message);
         break;
       case "TASK":
       case "TASK_SUBMIT":
@@ -332,10 +332,10 @@ export default function PlatformForegroundService() {
       case "EVENT_MAIN_CALLREMINDER":
       case "EVENT_BEFORE_REMINDER":
       case "SCHEDULE_BEFORE_REMINDER":
-        onMessageReceived(message);
+        void onMessageReceived(message);
         break;
       case "EVENT_INVITATION_REMINDER":
-        onMessageReceived(message);
+        void onMessageReceived(message);
         break;
       case "CALL":
         try {
@@ -345,10 +345,10 @@ export default function PlatformForegroundService() {
 
           if (result) {
             const dataCall = dataObject as CallNotification;
-            stopAllPlayers();
+            void stopAllPlayers();
             switch (dataCall.notificationType) {
               case "CALL":
-                notificationLog("CALL");
+                void notificationLog("CALL");
                 if (dataCall.data.origin != MyProfile?._id) {
                   if (
                     activeCallRequest != null &&
@@ -359,7 +359,7 @@ export default function PlatformForegroundService() {
                       incomingCallId: dataCall.data.callId,
                       incomingRoomType: dataCall.data.roomType,
                     });
-                    RequestCallWaiting(dataCall.data.callId);
+                    void RequestCallWaiting(dataCall.data.callId);
                     console.log("BUSY_USER callWaiting requested", dataCall.data.callId);
                     break;
                   }
@@ -367,7 +367,7 @@ export default function PlatformForegroundService() {
                   invokeVoipCall(dataCall);
                   setCallQueue(dataCall);
 
-                  setDataInAsync(asyncStorageKeys.backgroundHandler, {
+                  void setDataInAsync(asyncStorageKeys.backgroundHandler, {
                     ...dataCall,
                     expiry: new Date().toISOString(),
                     fromForeground: true,
@@ -375,7 +375,7 @@ export default function PlatformForegroundService() {
                 }
                 break;
               case "END_CALL":
-                notificationLog("END_CALL");
+                void notificationLog("END_CALL");
                 //if end call receive for any other call excluding current active call then need to handle foreground missed call in this function
                 setMissedCall(dataCall as any);
                 break;
@@ -388,7 +388,7 @@ export default function PlatformForegroundService() {
         }
         break;
       case "ON_ACCEPT":
-        notificationLog("ON_ACCEPT");
+        void notificationLog("ON_ACCEPT");
 
         const parsedData = typeof data == "string" ? JSON.parse(data) : data;
         if (parsedData?.data.notificationId) {
@@ -396,7 +396,7 @@ export default function PlatformForegroundService() {
           RNVoipCall.stopRingtune();
           setCallQueue(null);
           setCallRequest(null);
-          removeDataFromAsync(asyncStorageKeys.backgroundHandler);
+          void removeDataFromAsync(asyncStorageKeys.backgroundHandler);
         }
         break;
       default: {
@@ -494,7 +494,7 @@ export default function PlatformForegroundService() {
         break;
       case "reminder":
       case "taskNotification":
-        handleTaskNotification(detail);
+        void handleTaskNotification(detail);
         break;
       case "message":
         await handleMessageNotification(detail);
@@ -514,7 +514,7 @@ export default function PlatformForegroundService() {
     let contact = IOSParse(detail);
     console.log("contact", contact);
     if (contact) {
-      dismissNotification(true, contact._id);
+      void dismissNotification(true, contact._id);
       navigate("ChatMessageScreen", { RoomId: contact.roomId });
     }
   };
@@ -522,7 +522,7 @@ export default function PlatformForegroundService() {
   const handleDismiss = async (detail: any) => {
     let contact = IOSParse(detail);
     if (contact) {
-      dismissNotification(true, contact._id);
+      void dismissNotification(true, contact._id);
     }
   };
 
@@ -596,12 +596,12 @@ export default function PlatformForegroundService() {
     }
 
     if (contact) {
-      dismissNotification(true, contact._id);
+      void dismissNotification(true, contact._id);
       navigate("ChatMessageScreen", {
         RoomId: contact.roomId,
       });
     }
-    notifee.cancelNotification(detail.notification?.id ?? "");
+    void notifee.cancelNotification(detail.notification?.id ?? "");
   };
 
   const handleCalendarReminder = async (detail: any) => {
@@ -666,7 +666,7 @@ export default function PlatformForegroundService() {
     console.log("handleTaskNotification", TaskData);
     if (TaskData?.assignmentId && TaskData?.organizationId) {
       global.activeOrg = TaskData?.organizationId;
-      handleTaskNotificationTap(
+      void handleTaskNotificationTap(
         TaskData?.organizationId,
         TaskData?.assignmentId
       );

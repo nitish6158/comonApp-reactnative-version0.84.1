@@ -117,7 +117,7 @@ export default function ForgotPasswordScreen({}: ForgotPasswordScreenProps) {
     const isPhoneValid = validatePhone();
 
     if (isPhoneValid) {
-      validate({
+      void validate({
         variables: {
           input: {
             phone: phoneNumber?.formattedNumber.replace(/\s+/g, ""),

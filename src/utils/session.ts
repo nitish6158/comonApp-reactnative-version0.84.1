@@ -320,5 +320,5 @@ export const getCurrentOrganization = async (): Promise<
 };
 
 export const removeCurrentOrganization = () => {
-  AsyncStorage.removeItem(SessionOrganizationKeys.DATA);
+  void AsyncStorage.removeItem(SessionOrganizationKeys.DATA);
 };

@@ -18,6 +18,7 @@ import { windowWidth } from "@Util/ResponsiveView";
 import DigitalSignature from "@Components/DigitalSignature";
 
 import { VectorIconCompat } from "@/Components/icons";
+import { evaluateRangeExpression } from "@Util/rangeExpression";
 
 export function RangeSelect({
   task,
@@ -43,23 +44,10 @@ export function RangeSelect({
     let requiredSignature = false;
     if (task?.rangeExpression?.customExp?.length) {
       const customExp = task.rangeExpression.customExp;
-      for (let item of customExp) {
-        if (item?.signature) {
-          const exp = typeof item?.value == "string" ? JSON.parse(item.value) : item.value;
-          if (exp?.length) {
-            let expression = "";
-            exp.forEach((e: any, i: number) => {
-              const operator = e?.operator;
-              const value = e?.value;
-              const gate = e?.gate;
-              expression += range + operator + value + (i == exp.length - 1 ? "" : gate);
-            });
-            const isTrue = eval(expression);
-            if (isTrue) {
-              requiredSignature = true;
-              break;
-            }
-          }
+      for (const item of customExp) {
+        if (item?.signature && evaluateRangeExpression(range, item?.value)) {
+          requiredSignature = true;
+          break;
         }
       }
     }

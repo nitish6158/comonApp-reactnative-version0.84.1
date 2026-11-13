@@ -23,7 +23,7 @@ export default function VideoDownloadView({ item }: props) {
   useEffect(() => {
     if (Platform.OS !== "android" && isSaveToCameraRollActive) {
       setloading(true);
-      downloadMediaToCameraRoll(item?.fileURL, isSaveToCameraRollActive).then((res) => {
+      void downloadMediaToCameraRoll(item?.fileURL, isSaveToCameraRollActive).then((res) => {
         if (res) {
           setloading(false);
         }
@@ -35,7 +35,7 @@ export default function VideoDownloadView({ item }: props) {
     <Pressable
       onPress={() => {
         setloading(true);
-        downloadMediaToCameraRoll(item?.fileURL, isSaveToCameraRollActive).then((res) => {
+        void downloadMediaToCameraRoll(item?.fileURL, isSaveToCameraRollActive).then((res) => {
           if (res) {
             setloading(false);
           }

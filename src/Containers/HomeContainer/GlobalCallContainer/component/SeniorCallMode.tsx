@@ -97,7 +97,7 @@ export default function SeniorCallMode({
       participantsUid={peerIds}
       disabledRemoteVideo={disabledRemoteVideo}
     >
-      {backgroundHandler && backgroundHandler?.length > 0 && (
+      {Boolean(backgroundHandler?.length) && (
         <View
           style={{
             zIndex: 1,

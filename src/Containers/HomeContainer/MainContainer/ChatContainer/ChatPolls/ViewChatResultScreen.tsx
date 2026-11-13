@@ -82,7 +82,7 @@ export default function ViewChatResultScreen({ navigation, route }: ViewChatResu
     if (!chatId || !display?.roomId) return;
 
     const refreshPoll = () => {
-      socketManager.chatRoom.getChatMeesagesByDays(
+      void socketManager.chatRoom.getChatMeesagesByDays(
         display.roomId,
         1,
         100,

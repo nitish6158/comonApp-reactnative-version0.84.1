@@ -121,7 +121,7 @@ function ContactGroupingView({ data }: Readonly<ContactGroupingViewProps>) {
                 {sc.hasComon ? (
                   <Text
                     onPress={() => {
-                      onMessagePressed(sc.userId?._id);
+                      void onMessagePressed(sc.userId?._id);
                     }}
                     style={styles.actionText}
                   >
@@ -131,7 +131,7 @@ function ContactGroupingView({ data }: Readonly<ContactGroupingViewProps>) {
                   <Text
                     onPress={() => {
                       if (isContactInPhonebook) {
-                        onInvitePressed(sc.phone);
+                        void onInvitePressed(sc.phone);
                       } else {
                         onAddContactPressed(sc);
                       }
@@ -170,7 +170,7 @@ function ContactGroupingView({ data }: Readonly<ContactGroupingViewProps>) {
       newContact = { ...newContact, displayName: `${contact?.firstName ?? ""} ${contact.lastName ?? ""}` };
     }
 
-    Contacts.openContactForm(newContact).then((contact) => {
+    void Contacts.openContactForm(newContact).then((contact) => {
       if (contact) {
         const body = {
           id: `${contact?.recordID}_0`,
@@ -201,15 +201,15 @@ function ContactGroupingView({ data }: Readonly<ContactGroupingViewProps>) {
   }
 
   async function onInvitePressed(phone: string) {
-    InviteContactOnApp({
+    void InviteContactOnApp({
       phone: phone,
       code,
       InviteApi: (phone, region, branchUrl) => {
-        NativeShare.share({
+        void NativeShare.share({
           title: t("contacts.sms.title"),
           message: t("contacts.sms.description") + branchUrl,
         });
-        createSmsInvite({
+        void createSmsInvite({
           variables: {
             input: {
               phone,

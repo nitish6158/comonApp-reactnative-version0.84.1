@@ -213,7 +213,7 @@ export default function CreateRecordScreen({
         <View
           style={{
             justifyContent: "space-between",
-            height: windowHeight - (Platform.OS == "ios" ? 150 : 150),
+            height: windowHeight - 150,
           }}
         >
           <KeyboardAwareScrollView
@@ -1002,7 +1002,7 @@ export default function CreateRecordScreen({
                   ToastMessage(t("userDatabase.title-is-request"));
                   return;
                 }
-                handleSubmit(handleForm, (formErrors) => {
+                void handleSubmit(handleForm, (formErrors) => {
                   const firstError = Object.values(formErrors)[0];
                   const message =
                     typeof firstError?.message === "string"
@@ -1190,7 +1190,7 @@ export default function CreateRecordScreen({
   );
 
   function SelectAttachment(type: string, docType: MediaType, index: number) {
-    DocumentPicker.pickSingle({
+    void DocumentPicker.pickSingle({
       type: type,
       copyTo: "documentDirectory",
     }).then(async (res) => {
@@ -1264,7 +1264,7 @@ export default function CreateRecordScreen({
     // return
 
     if (route.params.mode == "create") {
-      createRecordRequest({
+      void createRecordRequest({
         variables: {
           input: { ...payload, parent: route.params.parentId },
         },
@@ -1276,7 +1276,7 @@ export default function CreateRecordScreen({
       });
     }
     if (route.params.mode == "update" && route.params.recordId) {
-      updateRecordRequest({
+      void updateRecordRequest({
         variables: {
           input: {
             _id: route.params.recordId,

@@ -41,7 +41,7 @@ const GroupDescription = () => {
         />
         <Pressable
           onPress={() => {
-            socketConnect.emit("setRoomDescription", {
+            void socketConnect.emit("setRoomDescription", {
               roomId: display.roomId,
               desc: description,
               roomType: display?.roomType,
@@ -52,7 +52,7 @@ const GroupDescription = () => {
               })
             );
             setTimeout(() => {
-              socketManager.chatRoom.fetchAndUpdateRooms();
+              void socketManager.chatRoom.fetchAndUpdateRooms();
               // socketManager.chatRoom.registerStateSetters(
               //   setChatRooms,
               //   setArchiveRooms,

@@ -56,7 +56,7 @@ const DeleteFolderModal = ({ visible, setVisible, folderName }: DeleteModalProps
                 Title="Yes"
                 onPress={() => {
                   setVisible(!visible);
-                  socketConnect.emit("deleteFolder", { folderName: folderName });
+                  void socketConnect.emit("deleteFolder", { folderName: folderName });
                 }}
                 TitleStyle={{ color: "white" }}
               />

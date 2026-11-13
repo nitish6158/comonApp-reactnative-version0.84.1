@@ -47,7 +47,7 @@ export default function GlobalContactSyncEvent() {
   const { t } = useTranslation();
 
   function refreshChatRooms() {
-    socketManager.chatRoom.fetchAndUpdateRooms((data) => {
+    void socketManager.chatRoom.fetchAndUpdateRooms((data) => {
       if (data?.rooms) {
         setAllRooms([...data.rooms]);
       }
@@ -71,10 +71,10 @@ export default function GlobalContactSyncEvent() {
     if (now - lastSyncAtRef.current < 5000) return;
 
     syncInProgressRef.current = true;
-    ContactSync()
+    void ContactSync()
       .then((list) => {
         if (list) {
-          syncContactsToDb(list as any);
+          void syncContactsToDb(list as any);
           lastSyncAtRef.current = Date.now();
         }
       })
@@ -86,7 +86,7 @@ export default function GlobalContactSyncEvent() {
   function deleteContacts(contactsToDelete: ContactDetailsDto[]) {
     if (!contactsToDelete.length) return;
     const deleteContact = contactsToDelete.map((e) => e?.localId);
-    deleteMyContactRequest({
+    void deleteMyContactRequest({
       variables: {
         input: {
           contactIds: deleteContact,
@@ -124,7 +124,7 @@ export default function GlobalContactSyncEvent() {
   }
 
   async function syncContactsToDb(serverContact: serverContactType[]) {
-    loadContactsIfPermitted().then(async (phonebook) => {
+    void loadContactsIfPermitted().then(async (phonebook) => {
       if (!phonebook.length) {
         return;
       }

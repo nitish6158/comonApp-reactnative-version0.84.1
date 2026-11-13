@@ -101,7 +101,7 @@ const ChatMessageInfo = ({ route, navigation }: any) => {
     );
   };
 
-  const { Item } = route?.params;
+  const { Item } = route?.params ?? {};
 
   const Timstamp = moment
     .unix(Math.floor(Item?.created_at / 1000))

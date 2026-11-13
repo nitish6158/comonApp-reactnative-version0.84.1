@@ -109,7 +109,7 @@ function useStartCall() {
         let agoraRes = await AgoraTokenRequest({
           variables: {
             input: {
-              uid: uid ? parseInt(String(uid.uid), 10) || 1 : 1,
+              uid: uid ? Number.parseInt(String(uid.uid), 10) || 1 : 1,
               channelName: channelName,
               type: "publisher",
             },

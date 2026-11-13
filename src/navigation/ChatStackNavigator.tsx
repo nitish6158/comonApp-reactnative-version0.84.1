@@ -75,8 +75,8 @@ export default function ChatStackNavigator() {
 
   useEffect(() => {
     // Initialize cache and create directory
-    initializeCacheFrom();
-    createComonDirectory();
+    void initializeCacheFrom();
+    void createComonDirectory();
   }, []);
 
   return (
@@ -112,7 +112,7 @@ export function useChatRoomFormatter() {
 
       let isActive = true;
 
-      readCachedRooms(MyProfile._id).then((cachedList) => {
+      void readCachedRooms(MyProfile._id).then((cachedList) => {
         if (!isActive || !cachedList) {
           return;
         }
@@ -130,7 +130,7 @@ export function useChatRoomFormatter() {
 
       handleGroupCallOngoingData();
 
-      socketManager.chatRoom.fetchAndUpdateRooms((data) => {
+      void socketManager.chatRoom.fetchAndUpdateRooms((data) => {
         console.log("All Rooms Data: ", data.rooms.length);
 
         if (!data.rooms || !MyProfile?._id) {
@@ -154,7 +154,7 @@ export function useChatRoomFormatter() {
   );
 
   const handleGroupCallOngoingData = useCallback(() => {
-    socketManager.chatRoom.getActiveGroupCalls((data) => {
+    void socketManager.chatRoom.getActiveGroupCalls((data) => {
       console.log("Group Call Ongoing Data: ", data);
       if (data) {
         setGroupOnGoingData(data);

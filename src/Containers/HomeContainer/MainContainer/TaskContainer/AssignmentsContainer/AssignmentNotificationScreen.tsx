@@ -78,7 +78,7 @@ export default function AssignmentNotificationScreen({ route }: AssignmentNotifi
               return false;
             })
             .map((e) => e.id);
-          if (notificationId.length) notifee.cancelAllNotifications(notificationId);
+          if (notificationId.length) void notifee.cancelAllNotifications(notificationId);
         })
         .catch((err) => {
           console.log("Error in getting displayed notifications", err);

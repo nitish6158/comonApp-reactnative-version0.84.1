@@ -308,7 +308,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.comon.comonapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.meetus;
 				PRODUCT_NAME = commonapp;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -338,7 +338,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.comon.comonapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.meetus;
 				PRODUCT_NAME = commonapp;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_VERSION = 5.0;

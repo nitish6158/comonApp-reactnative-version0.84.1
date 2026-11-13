@@ -2,7 +2,10 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 ## Agent / module docs
 
-- Cursor rules: `.cursor/rules/comon-rn-standards.mdc` (SOLID, KISS, YAGNI, perf, socket/storage)
+- Cursor rules: `.cursor/rules/comon-rn-standards.mdc` & `.cursor/rules/docs-and-tests.mdc`
+- Antigravity rules: `.agents/rules/docs-and-tests.md`
+- Automated CI/CD build pipeline (Android/iOS): `BUILD_PIPELINE.md` & `.github/workflows/`
+- SonarQube quality guide: `SONARQUBE_SETUP.md`
 - Module docs index: `src/docs/README.md`
 - Per-module docs: `src/**/docs/README.md` (update when that module changes)
 

@@ -91,11 +91,11 @@ export const Form = ({ onSubmit, loading }: FormProps) => {
 
     setPhoneCode(countryCode);
 
-    setStorage(
+    void setStorage(
       DefaultStorageKeys.COUNTRY_CODE,
       phoneInput?.current?.state?.countryCode,
     );
-    setGlobalPhoneCode({
+    void setGlobalPhoneCode({
       PhoneCode: `+${phoneInput?.current?.state?.code}`,
       Country: phoneInput?.current?.state.countryCode,
     });

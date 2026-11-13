@@ -14,53 +14,32 @@ export default function useUpdateChat() {
   const [sendBroadcast] = useSendBroadcastChatMutation();
   const [sendChat] = useSendChatMutation();
 
-  const updateChatMessage = useCallback((payload: UdpateChatInput): Promise<UpdateChatMutation["updateChat"]> => {
-    return new Promise((resolve, reject) => {
-      updateChat({
-        variables: {
-          input: payload,
-        },
-      })
-        .then((response) => {
-          if (response.errors) return reject(response.errors);
-          if (response.data?.updateChat) return resolve(response.data.updateChat);
-        })
-        .catch((Err) => reject(Err));
-    });
-  }, []);
+  const updateChatMessage = useCallback(async (payload: UdpateChatInput): Promise<UpdateChatMutation["updateChat"]> => {
+    const response = await updateChat({ variables: { input: payload } });
+    if (response.errors) {
+      throw new Error(response.errors.map((e) => e.message).join(", "));
+    }
+    return response.data?.updateChat;
+  }, [updateChat]);
 
   const sendBroadcastChat = useCallback(
-    (payload: SendChatInput): Promise<SendBroadcastChatMutation["sendBroadcastChat"]> => {
-      return new Promise((resolve, reject) => {
-        sendBroadcast({
-          variables: {
-            input: payload,
-          },
-        })
-          .then((response) => {
-            if (response.errors) return reject(response.errors);
-            return resolve(response.data?.sendBroadcastChat);
-          })
-          .catch((err) => reject(err));
-      });
+    async (payload: SendChatInput): Promise<SendBroadcastChatMutation["sendBroadcastChat"]> => {
+      const response = await sendBroadcast({ variables: { input: payload } });
+      if (response.errors) {
+        throw new Error(response.errors.map((e) => e.message).join(", "));
+      }
+      return response.data?.sendBroadcastChat;
     },
-    []
+    [sendBroadcast]
   );
 
   const sendChatToRooms = useCallback(async (payload: SendChatInput): Promise<SendChatMutation["sendChat"]> => {
-    return new Promise((resolve, reject) => {
-      sendChat({
-        variables: {
-          input: payload,
-        },
-      })
-        .then((res) => {
-          if (res.errors) return reject(res.errors);
-          return resolve(res.data?.sendChat);
-        })
-        .catch((err) => reject(err));
-    });
-  }, []);
+    const res = await sendChat({ variables: { input: payload } });
+    if (res.errors) {
+      throw new Error(res.errors.map((e) => e.message).join(", "));
+    }
+    return res.data?.sendChat;
+  }, [sendChat]);
 
   return {
     updateChatMessage,

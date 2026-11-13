@@ -129,7 +129,7 @@ export function CurrentTaskView({ currentReport }: TaskListProps) {
           isApproved={isApproved}
           currentAssignmentTask={CurrentTask}
           onCurrentTaskAnswered={(edge, task, option, file, userLocationRequired, signature) => {
-            onAddTaskResult(edge, task, option, file, userLocationRequired, signature);
+            void onAddTaskResult(edge, task, option, file, userLocationRequired, signature);
           }}
           isCompleteAssignmentVisible={
             CurrentTask?.type === 'OUTPUT'
@@ -139,7 +139,7 @@ export function CurrentTaskView({ currentReport }: TaskListProps) {
               setModalVisible(true);
               return;
             }
-            onCompeleteReport();
+            void onCompeleteReport();
           }}
           t={t}
         />
@@ -151,7 +151,7 @@ export function CurrentTaskView({ currentReport }: TaskListProps) {
         setModalVisible={setModalVisible}
         onPressSave={(image) => {
           setModalVisible(!modalVisible);
-          onCompeleteReport(image);
+          void onCompeleteReport(image);
         }}
       />
     </View>
@@ -194,7 +194,7 @@ export function CurrentTaskView({ currentReport }: TaskListProps) {
   // }
   function onTimeout() {
     const edge = CurrentTask?.edges?.find((e) => e?.type == "TIMEOUT");
-    onAddTaskResult(edge, CurrentTask, "", undefined, edge?.location);
+    void onAddTaskResult(edge, CurrentTask, "", undefined, edge?.location);
   }
 }
 

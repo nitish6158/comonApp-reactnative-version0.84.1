@@ -36,7 +36,7 @@ export const useStorageDedline = ({ storageKey }: UseStorageDedline): UseStorage
   };
 
   const onRemove = () => {
-    if (storageKey) removeStorage(storageKey);
+    if (storageKey) void removeStorage(storageKey);
   };
 
   const onResend = (storageKey: StorageKeysList) => {
@@ -44,7 +44,7 @@ export const useStorageDedline = ({ storageKey }: UseStorageDedline): UseStorage
     clearInterval(timeout.current);
     timerRef.current = 30;
     setDedline(30);
-    setStorage(storageKey, new Date(date).toString());
+    void setStorage(storageKey, new Date(date).toString());
     setIsCanResend(false);
     tick();
   };
@@ -58,7 +58,7 @@ export const useStorageDedline = ({ storageKey }: UseStorageDedline): UseStorage
   useEffect(() => {
     if (storageKey) {
       const now = moment();
-      getStorage(storageKey).then(async (res: any) => {
+      void getStorage(storageKey).then(async (res: any) => {
         const then = new Date(res);
         const diff = Number(moment.duration(moment(then).diff(now)).seconds());
 

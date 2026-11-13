@@ -43,7 +43,7 @@ export default function SoundScreen({ navigation, route }: any) {
   useEffect(() => {
     if (soundList.data?.getiOSSoundList) {
       // console.log([{ url: "", title: "None (Default)" }, ...soundList.data?.getiOSSoundList]);
-      setAllSound([{ url: "", title: "None (Default)" }, ...soundList.data?.getiOSSoundList]);
+      setAllSound([{ url: "", title: "None (Default)" }, ...soundList.data.getiOSSoundList]);
     }
   }, [soundList.data]);
 
@@ -55,7 +55,7 @@ export default function SoundScreen({ navigation, route }: any) {
     });
 
     if (selectedSound.title == "None (Default)") {
-      changeNotificationSoundRequest({
+      void changeNotificationSoundRequest({
         variables: {
           input: {
             sound: {
@@ -71,7 +71,7 @@ export default function SoundScreen({ navigation, route }: any) {
         }
       });
     } else {
-      changeNotificationSoundRequest({
+      void changeNotificationSoundRequest({
         variables: {
           input: {
             sound: {

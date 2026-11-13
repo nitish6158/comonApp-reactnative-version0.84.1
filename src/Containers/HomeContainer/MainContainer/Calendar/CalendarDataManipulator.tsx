@@ -482,13 +482,13 @@ export default function CalendarDataManipulator() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchCalendarData();
+      void fetchCalendarData();
     }, [fetchCalendarData]),
   );
   useEffect(() => {
     if (refreshKey) {
       console.log("🔁 Refresh Triggered:", refreshKey);
-      fetchCalendarData();
+      void fetchCalendarData();
     }
   }, [refreshKey, fetchCalendarData]);
   /* ===================== APPOINTMENTS ===================== */

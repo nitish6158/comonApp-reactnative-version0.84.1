@@ -91,7 +91,7 @@ function AddParticipants({
       }
     }
 
-    socketManager.chatRoom.getActiveContacts((data) => {
+    void socketManager.chatRoom.getActiveContacts((data) => {
       if (data) {
         try {
           storage.set("activeContacts", JSON.stringify(data));
@@ -139,7 +139,7 @@ function AddParticipants({
                     },
                   },
                 };
-                addParticipantRequest(payload).then((res) => {
+                void addParticipantRequest(payload).then((res) => {
                   if (res.errors) {
                     console.error("Error", res.errors);
                   }

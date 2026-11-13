@@ -86,7 +86,7 @@ export class ConversationSocketHandler extends BaseSocketHandler {
         super();
     }
 
-    protected async handleMessage(type: string, data: any): Promise<void> {
+    protected handleMessage(type: string, data: any): void {
         const callbacks = this.conversationCallbacks.get(type);
         const parsedData = typeof data === "string" ? JSON.parse(data) : data;
 
@@ -425,38 +425,20 @@ export class ConversationSocketHandler extends BaseSocketHandler {
     public async updateMessage(messageId: string, payload: any): Promise<any> {
         const userId = store.getState().Chat.MyProfile?._id;
         if (!userId) throw new Error("User not logged in");
-        try {
-            // Return empty result since service is removed
-            return {};
-        } catch (err) {
-            console.log("updateMessage err: ", err);
-            throw err;
-        }
+        return {};
     }
 
     public async getMessageByServerId(messageId: string): Promise<any> {
         const userId = store.getState().Chat.MyProfile?._id;
         if (!userId) throw new Error("User not logged in");
-        try {
-            // Return empty result since service is removed
-            return {};
-        } catch (err) {
-            console.log("updateMessage err: ", err);
-            throw err;
-        }
+        return {};
     }
 
     public async updateMessageByServerId(
         messageId: Array<string>,
         payloads: any
     ): Promise<any> {
-        try {
-            // Return empty result since service is removed
-            return {};
-        } catch (err) {
-            console.log("updateMessage err: ", err);
-            throw err;
-        }
+        return {};
     }
 
     public async updateMessageDeliveryAndReadStatus(data: {
@@ -514,7 +496,7 @@ export class ConversationSocketHandler extends BaseSocketHandler {
         messageIds: string[]
     ): Promise<void> {
         // conversationService removed
-        socketConnect.emit(ConversationEventType.FORWARD_CHAT, {
+        void socketConnect.emit(ConversationEventType.FORWARD_CHAT, {
             roomId,
             messageIds,
         });
@@ -571,7 +553,7 @@ export class ConversationSocketHandler extends BaseSocketHandler {
         const userId = store.getState().Chat.MyProfile?._id;
         if (!userId) return;
         // conversationService removed
-        socketConnect.emit(ConversationEventType.SET_CHAT_READ, {
+        void socketConnect.emit(ConversationEventType.SET_CHAT_READ, {
             roomId,
             messageIds: messageIds,
         });
@@ -593,7 +575,7 @@ export class ConversationSocketHandler extends BaseSocketHandler {
         const userId = store.getState().Chat.MyProfile?._id;
         if (!userId) return;
         // conversationService removed
-        socketConnect.emit(ConversationEventType.SET_CHAT_DELIVERED, {
+        void socketConnect.emit(ConversationEventType.SET_CHAT_DELIVERED, {
             roomId,
             messageId,
         });
@@ -611,7 +593,7 @@ export class ConversationSocketHandler extends BaseSocketHandler {
 
     public async getChatsByRoomId(roomId: string): Promise<any> {
         // conversationService removed
-        socketConnect.emit(ConversationEventType.GET_CHATS_BY_ROOM_ID, roomId);
+        void socketConnect.emit(ConversationEventType.GET_CHATS_BY_ROOM_ID, roomId);
         return [];
     }
 
@@ -700,7 +682,7 @@ export class ConversationSocketHandler extends BaseSocketHandler {
                 };
 
                 // Send the search request
-                socketConnect.emit(ConversationEventType.SEARCH_CHATS_BY_ROOM_ID, searchPayload);
+                void socketConnect.emit(ConversationEventType.SEARCH_CHATS_BY_ROOM_ID, searchPayload);
             } catch (error) {
                 reject(error instanceof Error ? error : new Error('Unknown error during search'));
             }
@@ -903,7 +885,7 @@ export class ConversationSocketHandler extends BaseSocketHandler {
                 }
 
                 if (isSelf) {
-                    this.socket.emit("setChatDelivered", {
+                    void this.socket.emit("setChatDelivered", {
                         roomId: newMessage?.roomId,
                         messageId: newMessage?._id,
                         cid: newMessage?._id,
@@ -977,7 +959,7 @@ export class ConversationSocketHandler extends BaseSocketHandler {
         }, 15000);
 
         // Send the request for pinned messages
-        socketConnect.emit(ConversationEventType.GET_PIN_CHATS, {
+        void socketConnect.emit(ConversationEventType.GET_PIN_CHATS, {
             roomId
         });
 
@@ -1014,7 +996,7 @@ export class ConversationSocketHandler extends BaseSocketHandler {
         }, 10000);
 
         // Emit the event and receive response directly in the callback parameter
-        socketConnect.emit(
+        void socketConnect.emit(
             ConversationEventType.GET_FAVOURITE_CHATS,
             {
                 roomId,

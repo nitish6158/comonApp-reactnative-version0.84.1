@@ -42,7 +42,7 @@ export default function StatusFeedScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      load();
+      void load();
     }, [load]),
   );
 
@@ -92,7 +92,7 @@ export default function StatusFeedScreen() {
               refreshing={refreshing}
               onRefresh={() => {
                 setRefreshing(true);
-                load();
+                void load();
               }}
             />
           }

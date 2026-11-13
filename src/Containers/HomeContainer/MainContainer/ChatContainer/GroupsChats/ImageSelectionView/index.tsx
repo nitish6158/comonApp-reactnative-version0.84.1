@@ -50,10 +50,10 @@ const ImageSelectionView = ({ setGroupIcon, GroupImage }) => {
             key={index}
             onPress={() => {
               if (index == 0) {
-                onOpenCamera();
+                void onOpenCamera();
               }
               if (index == 1) {
-                ImagePickers();
+                void ImagePickers();
               }
             }}
           >

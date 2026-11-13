@@ -17,7 +17,7 @@ export default function ViewScheduleAttachment({ navigation, route }: ViewSchedu
       </View>
       <ImagePreviewComponent isVisible={route.params.type == "image"} imageURL={`${route.params.url}`} />
       <VideoPreviewComponent isVisible={route.params.type == "video"} videoUrl={`${route.params.url}`} />
-      {route.params.caption && route.params.caption.length > 0 && (
+      {Boolean(route.params.caption?.length) && (
         <ScrollView style={styles.captionContainer}>
           <Text style={{ color: "white", textAlign: "center" }}>{route.params.caption}</Text>
         </ScrollView>

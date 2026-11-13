@@ -52,7 +52,7 @@ export default function useRoomMedia({ roomId, userId }: UseRoomMediaProps) {
                 }
             };
 
-            fetchMediaData();
+            void fetchMediaData();
         }, [getCachedMessages, roomId, userId])
     );
 

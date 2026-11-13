@@ -102,7 +102,7 @@ export default function FolderComponent({ item, drag, isActive, onDeleteSuccess 
                     onPress: () => {
                       setVisible(!visible);
                       console.log("item._id", item._id);
-                      deleteFolder({
+                      void deleteFolder({
                         variables: {
                           input: { _id: item._id }
                         }
@@ -115,7 +115,7 @@ export default function FolderComponent({ item, drag, isActive, onDeleteSuccess 
                             );
                             dispatch(setMyProfile({ ...myProfile, folders: updatedFolders }));
                           }
-                          socketConnect.emit("getProfile", {} as any);
+                          void socketConnect.emit("getProfile", {} as any);
                         }
                       });
                       let key = item.key + 1;

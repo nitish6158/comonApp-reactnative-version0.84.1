@@ -31,7 +31,7 @@ export default function AssignmentsHomeScreen() {
   const [taskCreate, setTaskCreate] = useState(false);
   useFocusEffect(
     useCallback(() => {
-      refreshAssignment();
+      void refreshAssignment();
     }, []),
   );
   const { members } = currentOrg;

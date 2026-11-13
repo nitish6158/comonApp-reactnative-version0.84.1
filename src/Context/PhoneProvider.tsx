@@ -39,7 +39,7 @@ export const PhoneProvider = ({ children }: PhoneProviderProps) => {
   const [code, setCode] = useState<string>("IN");
 
   useEffect(() => {
-    getStorage(DefaultStorageKeys.PHONE_NUMBER).then((number) => {
+    void getStorage(DefaultStorageKeys.PHONE_NUMBER).then((number) => {
       const data =
         typeof number == "string"
           ? JSON.parse(number)
@@ -50,7 +50,7 @@ export const PhoneProvider = ({ children }: PhoneProviderProps) => {
       setPhone(data);
       setLoading(false);
     });
-    getStorage(DefaultStorageKeys.COUNTRY_CODE).then((value) => {
+    void getStorage(DefaultStorageKeys.COUNTRY_CODE).then((value) => {
       const normalizedCode =
         typeof value === "string" ? value.replace(/^\+/, "").trim().toUpperCase() : "";
 
@@ -73,7 +73,7 @@ export const PhoneProvider = ({ children }: PhoneProviderProps) => {
   }, []);
 
   const setPhoneNumber = (phone?: PhoneType) => {
-    setStorage(DefaultStorageKeys.PHONE_NUMBER, JSON.stringify(phone));
+    void setStorage(DefaultStorageKeys.PHONE_NUMBER, JSON.stringify(phone));
     setPhone(phone!);
   };
 

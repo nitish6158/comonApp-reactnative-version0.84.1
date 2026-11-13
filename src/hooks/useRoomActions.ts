@@ -79,7 +79,7 @@ export default function useRoomActions({
         .then((res) => {
           if (res.data?.muteRoom?.success) {
             ToastMessage(res?.data?.muteRoom.message ?? "");
-            socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
+            void socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
 
             setDisplay((currentDisplay) =>
               produce(currentDisplay, (draftDisplay) => {
@@ -118,7 +118,7 @@ export default function useRoomActions({
     })
       .then((res) => {
         if (res.data?.unmuteRoom?.success) {
-          socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
+          void socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
           ToastMessage(res?.data?.unmuteRoom.message ?? "");
 
           setDisplay((currentDisplay) =>
@@ -148,8 +148,8 @@ export default function useRoomActions({
     }
     chatStorage.delete(`conversations_${roomId}`);
 
-    socketManager.conversation.clearAllChat({ roomId });
-    socketConnect.emit("clearAllChats", { roomId });
+    void socketManager.conversation.clearAllChat({ roomId });
+    void socketConnect.emit("clearAllChats", { roomId });
     setClearChatVisible(false);
   }, [roomId, activeRoomId, setConversation]);
 
@@ -158,7 +158,7 @@ export default function useRoomActions({
    */
   const handleCameraRollSetting = useCallback(
     (type: "On" | "Off") => {
-      socketConnect.emit("setCameraRoll", { roomId, type });
+      void socketConnect.emit("setCameraRoll", { roomId, type });
       setCamerarollVisible(false);
       return type === "On"; // Returns true if setting is turned on
     },
@@ -187,9 +187,9 @@ export default function useRoomActions({
         }
         if (response.data?.deleteBroadcastRoom?.success) {
           chatStorage.delete(`conversations_${roomId}`);
-          socketConnect.emit("deleteRoom", { roomId } as any);
-          socketConnect.emit("deleteRoom", roomId as any);
-          socketManager.chatRoom.fetchAndUpdateRooms((data) => {
+          void socketConnect.emit("deleteRoom", { roomId } as any);
+          void socketConnect.emit("deleteRoom", roomId as any);
+          void socketManager.chatRoom.fetchAndUpdateRooms((data) => {
             if (!data?.rooms) return;
             const archives = data.rooms.filter((room: any) => room.isArchived);
             setChatRooms(data.rooms);
@@ -262,8 +262,8 @@ export default function useRoomActions({
   const blockUser = useCallback(() => {
     applyLocalBlockState();
 
-    socketConnect.emit("blockRoom", { roomId });
-    socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
+    void socketConnect.emit("blockRoom", { roomId });
+    void socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
 
     setBlockVisible(false);
   }, [roomId, applyLocalBlockState]);
@@ -290,10 +290,10 @@ export default function useRoomActions({
       navigate("ChatListScreen", {});
 
       setTimeout(() => {
-        socketConnect.emit("unblockRoom", { roomId });
+        void socketConnect.emit("unblockRoom", { roomId });
       }, 300);
       setTimeout(() => {
-        socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
+        void socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
       }, 2000);
     },
     [roomId, dispatch, setDisplay]
@@ -306,8 +306,8 @@ export default function useRoomActions({
     (reason: string) => {
       // Keep UI in sync immediately (same behavior as block contact).
       applyLocalBlockState();
-      socketConnect.emit("reportRoom", { roomId, reason });
-      socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
+      void socketConnect.emit("reportRoom", { roomId, reason });
+      void socketManager.chatRoom.fetchAndUpdateRooms(() => undefined);
     },
     [roomId, applyLocalBlockState]
   );

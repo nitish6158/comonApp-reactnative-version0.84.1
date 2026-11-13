@@ -84,12 +84,16 @@ npm run start:prod
 # Build Dev Debug APK
 npm run build:android:dev
 
-# Build Staging Debug APK
+# Build Staging Debug APK / Staging Release APK
 npm run build:android:staging
+npm run build:android:staging:release
 
-# Build Production Release Bundle/APK
+# Build Production Release APK / Play Store AAB
 npm run build:android:prod
+npm run build:android:prod:aab
 ```
+
+For automated GitHub Actions builds (Android APK/AAB + iOS Simulator/IPA/TestFlight), see [BUILD_PIPELINE.md](./BUILD_PIPELINE.md).
 
 ---
 

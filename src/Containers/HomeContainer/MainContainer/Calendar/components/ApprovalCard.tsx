@@ -263,7 +263,7 @@ export default function ApprovalCard({ item, index }: ApprovalCardProps) {
   );
 
   function updateStatus(status, id) {
-    updateStatusRequest({
+    void updateStatusRequest({
       variables: {
         input: {
           _id: id,

@@ -378,7 +378,7 @@ const useTaskReport = () => {
         console.log("playback failed due to audio decoding errors");
       }
     });
-    fetchAllAssignment();
+    void fetchAllAssignment();
     const targetId =
       res?.data?.addTaskResult?.tasksData?.[res?.data?.addTaskResult?.tasksData?.length - 1]?.targetTaskId;
 

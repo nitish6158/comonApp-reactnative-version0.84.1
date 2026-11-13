@@ -136,14 +136,14 @@ export default function AudioRecording({
     React.useCallback(() => {
       if (autoStart == true) {
         setShowInitialView(true);
-        startRecording();
+        void startRecording();
       }
     }, [])
   );
 
   useEffect(() => {
     navigation.addListener("blur", () => {
-      cancelAudio();
+      void cancelAudio();
     });
     return () => {
       navigation.removeListener("blur", () => { });
@@ -175,7 +175,7 @@ export default function AudioRecording({
         {
           text: `${t("btn.ok")}`,
           onPress: () => {
-            openSettings();
+            void openSettings();
           },
         },
       ]
@@ -191,7 +191,7 @@ export default function AudioRecording({
       ]);
       if (
         checkAudio["android.permission.READ_EXTERNAL_STORAGE"] == "granted" &&
-        checkAudio["android.permission.READ_EXTERNAL_STORAGE"] == "granted" &&
+        checkAudio["android.permission.RECORD_AUDIO"] == "granted" &&
         checkAudio["android.permission.WRITE_EXTERNAL_STORAGE"] == "granted"
       ) {
         return true;
@@ -218,7 +218,7 @@ export default function AudioRecording({
       ]);
       if (
         askAudio["android.permission.READ_EXTERNAL_STORAGE"] == "granted" &&
-        askAudio["android.permission.READ_EXTERNAL_STORAGE"] == "granted" &&
+        askAudio["android.permission.RECORD_AUDIO"] == "granted" &&
         askAudio["android.permission.WRITE_EXTERNAL_STORAGE"] == "granted"
       ) {
         return true;
@@ -270,7 +270,7 @@ export default function AudioRecording({
   const sendAudio = async () => {
     if (!isLoading && !isPlaying) {
       setIsLoading(true);
-      sendRecordingHandler(audioUrl, autoStart);
+      void sendRecordingHandler(audioUrl, autoStart);
       return;
     }
     ToastMessage(
@@ -306,7 +306,7 @@ export default function AudioRecording({
         <BlinkingMicrophone
           isAnimate={isPaused}
           onIconPress={() => {
-            stopPlayRecording();
+            void stopPlayRecording();
             // startPlayRecording();
           }}
         />
@@ -314,7 +314,7 @@ export default function AudioRecording({
           initialValueRef={cTRef}
           maxLimit={10 * 60 * 1000}
           onMaxLimit={() => {
-            stopRecording();
+            void stopRecording();
             setIsPaused(true);
           }}
           visibility={!isPlaying}
@@ -420,7 +420,7 @@ export default function AudioRecording({
         type: "LOADING/DOCUMENT/recording/mpeg",
         sender: display.currentUserUtility.user_id,
         message: "",
-        duration: parseInt(cTRef.current.toFixed(0)),
+        duration: Number.parseInt(cTRef.current.toFixed(0), 10),
         fileURL: decodedUri ?? "",
         thumbnail: "",
         favourite_by: [],
@@ -448,12 +448,12 @@ export default function AudioRecording({
           message: "",
           fontStyle: "",
           thumbnail: "",
-          duration: parseInt(cTRef.current.toFixed(0)),
+          duration: Number.parseInt(cTRef.current.toFixed(0), 10),
         },
         reply_msg: null,
       };
 
-      socketManager.conversation.sendChat(payload);
+      void socketManager.conversation.sendChat(payload);
 
       // realm.write(() => {
       //   realm.create("conversations", conversation);
@@ -502,7 +502,7 @@ export default function AudioRecording({
     setIsRecording(false);
 
     setIsplaying(false);
-    audioRecorderPlayer.stopPlayer();
+    void audioRecorderPlayer.stopPlayer();
     audioRecorderPlayer.removePlayBackListener();
   };
 
@@ -556,9 +556,9 @@ export default function AudioRecording({
         style={{ height: "100%", paddingLeft: 15, paddingVertical: 5 }}
         onPress={() => {
           if (isPaused) {
-            resumeRecording();
+            void resumeRecording();
           } else {
-            pauseRecording();
+            void pauseRecording();
           }
         }}
       >
@@ -601,7 +601,7 @@ export default function AudioRecording({
               <View style={styles.leftCon}>
                 <Pressable
                   onPress={() => {
-                    cancelAudio();
+                    void cancelAudio();
                   }}
                 >
                   <Animated.Text style={[styles.cancel, CancelTextAnimated]}>
@@ -623,7 +623,7 @@ export default function AudioRecording({
                         }}
                         onPress={() => {
                           setShowInitialView(true);
-                          startRecording();
+                          void startRecording();
                         }}
                       >
                         <Text
@@ -648,7 +648,7 @@ export default function AudioRecording({
                             marginLeft: 4,
                           }}
                           onPress={() => {
-                            stopRecording();
+                            void stopRecording();
                           }}
                         >
                           <Text
@@ -667,9 +667,9 @@ export default function AudioRecording({
                       <Pressable
                         onPress={() => {
                           if (isPaused) {
-                            resumeRecording();
+                            void resumeRecording();
                           } else {
-                            pauseRecording();
+                            void pauseRecording();
                           }
                         }}
                       >
@@ -717,7 +717,7 @@ export default function AudioRecording({
                         // console.log("Stopping recording..", result);
                         if (!isLoading && !isPlaying) {
                           setIsLoading(true);
-                          sendRecordingHandler(result, autoStart);
+                          void sendRecordingHandler(result, autoStart);
                           return;
                         }
                         ToastMessage(

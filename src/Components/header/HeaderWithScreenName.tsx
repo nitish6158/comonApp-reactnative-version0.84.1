@@ -35,7 +35,7 @@ export const HeaderWithScreenName = ({ title, subtitle, navigateNested, leftIcon
           <ListItem.Subtitle style={[{ color: Colors.light.tintText }, typography.sm]}>{subtitle}</ListItem.Subtitle>
         )}
       </ListItem.Content>
-      {leftIcon && leftIcon}
+      {leftIcon}
     </View>
   );
 };

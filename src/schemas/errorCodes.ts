@@ -1,4 +1,4 @@
-export let realmErrors = {
+export const realmErrors = {
   200: "Session closed (no error)",
   201: "Other session level error",
   202: "Access token expired",

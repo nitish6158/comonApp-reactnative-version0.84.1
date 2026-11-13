@@ -10,8 +10,8 @@ type props = {
 export default function TaskPermissionView({ message, icon }: props) {
   return (
     <View style={style.viewstyle}>
-      {icon && icon}
-      <Text style={{ fontSize: 14, color: "gray", marginLeft: 5, lineHeight: 22 }}>{message && message}</Text>
+      {icon}
+      <Text style={{ fontSize: 14, color: "gray", marginLeft: 5, lineHeight: 22 }}>{message || ""}</Text>
     </View>
   );
 }

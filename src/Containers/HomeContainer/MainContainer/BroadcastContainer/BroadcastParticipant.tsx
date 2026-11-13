@@ -210,7 +210,7 @@ export default function BroadcastParticipant(props: BroadcastParticipantProps) {
             name: filename,
           };
           const fileurl: any = generateRNFile(images);
-          fileUpload({
+          void fileUpload({
             variables: {
               file: fileurl,
               input: {
@@ -235,7 +235,7 @@ export default function BroadcastParticipant(props: BroadcastParticipantProps) {
               }, 3000);
               return;
             }
-            socketConnect.emit("setRoomPicture", {
+            void socketConnect.emit("setRoomPicture", {
               imageURl: res?.data?.UploadChatFile?.data.filename,
               roomId: response?.data?.createBroadcastRoom.roomId,
             });

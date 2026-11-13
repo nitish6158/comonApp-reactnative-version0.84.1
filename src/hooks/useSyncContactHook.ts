@@ -44,14 +44,14 @@ function getPhoneBookContactName(display: string, prefix: string | null, suffix:
     }
 
     const names = display.split(" ");
-    const lastName = names.length > 1 ? names.slice(1).reduce((prev, la) => prev + " " + la) : "";
+    const lastName = names.slice(1).join(" ");
     return {
       firstName: `${names[0] ?? ""}`.trim(),
       lastName: lastName.trim().replace(",", ""),
     };
   } else {
     const names = display.split(" ");
-    const lastName = names.length > 1 ? names.slice(1).reduce((prev, la) => prev + " " + la) : "";
+    const lastName = names.slice(1).join(" ");
     return {
       firstName: `${names[0] ?? ""}`.trim(),
       lastName: lastName.trim(),
@@ -153,44 +153,51 @@ export async function loadContactsIfPermitted(): Promise<Array<formattedPhoneBoo
   return getAndFormateContact();
 }
 
-export async function addContact(t: TFunction<"translation", undefined>): Promise<Array<formattedPhoneBook>> {
-  return new Promise(async (resolve, reject) => {
+export function addContact(t: TFunction<"translation", undefined>): Promise<Array<formattedPhoneBook>> {
+  return new Promise((resolve, reject) => {
     if (Platform.OS === "android") {
       PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS)
         .then(async (response) => {
           if (!response) {
-            async function handlePressAgree(type: "contact" | "media") {
+            async function handlePressAgree() {
               const contacts = await requestContactPermission();
               await handleAllPermissions(t);
-              if(contacts){
-                return resolve(contacts);
-              }else{
-                return reject();
+              if (contacts) {
+                resolve(contacts);
+              } else {
+                reject(new Error("Contacts permission denied"));
               }
             }
-            const permissionType = PermissionHandler({ type: "contact", handlePressAgree, t });
-            return permissionType;
+            PermissionHandler({ type: "contact", handlePressAgree, t });
           } else {
             await handleAllPermissions(t);
             const contacts = await getAndFormateContact();
-            return resolve(contacts);
+            resolve(contacts);
           }
         })
         .catch((Err) => {
           console.log("Error in checking contact permission", Err);
+          reject(Err instanceof Error ? Err : new Error(String(Err)));
         });
     } else {
-      const permissionStatus = await Contacts.requestPermission();
-      let cameraPermission = await checkCameraPermission();
-      if (!cameraPermission) await askCameraPermission();
-      const microphonePermission = await checkMicrophonePermission();
-      if (permissionStatus === "authorized") {
-        const contacts = await getAndFormateContact();
-        return resolve(contacts);
-      }
-      if (permissionStatus == "denied" || permissionStatus == "undefined") {
-        return reject();
-      }
+      void (async () => {
+        try {
+          const permissionStatus = await Contacts.requestPermission();
+          const cameraPermission = await checkCameraPermission();
+          if (!cameraPermission) await askCameraPermission();
+          await checkMicrophonePermission();
+          if (permissionStatus === "authorized") {
+            const contacts = await getAndFormateContact();
+            resolve(contacts);
+            return;
+          }
+          if (permissionStatus === "denied" || permissionStatus === "undefined") {
+            reject(new Error("Contacts permission denied"));
+          }
+        } catch (err) {
+          reject(err instanceof Error ? err : new Error(String(err)));
+        }
+      })();
     }
   });
 }

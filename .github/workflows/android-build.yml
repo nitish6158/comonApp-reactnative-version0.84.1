@@ -1,0 +1,243 @@
+name: Android Automated Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment flavor
+        required: true
+        default: staging
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+      build_type:
+        description: Android output artifact type
+        required: true
+        default: apk
+        type: choice
+        options:
+          - apk
+          - aab
+          - both
+      version_name:
+        description: Optional Android versionName override (defaults to tag or 1.0)
+        required: false
+        default: ""
+        type: string
+      create_github_release:
+        description: Attach artifacts to GitHub Release (automatic on v* tags)
+        required: false
+        default: false
+        type: boolean
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+
+concurrency:
+  group: android-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-gate:
+    name: Pre-Build Typecheck & Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.19.4"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript typecheck
+        run: npm run typecheck
+
+      - name: Jest tests
+        run: npm run test:ci
+
+  build-android:
+    name: Build Android (${{ inputs.environment || (startsWith(github.ref, 'refs/tags/v') && 'production') || 'staging' }})
+    needs: quality-gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+
+    env:
+      GRADLE_OPTS: -Xmx4096m -XX:MaxMetaspaceSize=1024m -Dorg.gradle.daemon=false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Resolve build configuration
+        id: cfg
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            TARGET_ENV="${{ inputs.environment }}"
+            BUILD_TYPE="${{ inputs.build_type }}"
+            VERSION_NAME="${{ inputs.version_name }}"
+            DO_RELEASE="${{ inputs.create_github_release }}"
+          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            TARGET_ENV="production"
+            BUILD_TYPE="both"
+            VERSION_NAME="${GITHUB_REF_NAME#v}"
+            DO_RELEASE="true"
+          else
+            TARGET_ENV="staging"
+            BUILD_TYPE="apk"
+            VERSION_NAME=""
+            DO_RELEASE="false"
+          fi
+
+          if [[ -z "$VERSION_NAME" ]]; then
+            VERSION_NAME="1.0.${{ github.run_number }}"
+          fi
+
+          ENV_CAP="$(tr '[:lower:]' '[:upper:]' <<< "${TARGET_ENV:0:1}")${TARGET_ENV:1}"
+          if [[ "$TARGET_ENV" == "development" ]]; then
+            BUILD_VARIANT="Debug"
+          else
+            BUILD_VARIANT="Release"
+          fi
+
+          echo "target_env=$TARGET_ENV" >> "$GITHUB_OUTPUT"
+          echo "env_cap=$ENV_CAP" >> "$GITHUB_OUTPUT"
+          echo "build_variant=$BUILD_VARIANT" >> "$GITHUB_OUTPUT"
+          echo "build_type=$BUILD_TYPE" >> "$GITHUB_OUTPUT"
+          echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+          echo "version_code=${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+          echo "do_release=$DO_RELEASE" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.19.4"
+          cache: npm
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Android SDK & NDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools platforms;android-36 build-tools;36.0.0 ndk;27.1.12297006"
+
+      - name: Setup Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Prepare environment config (.env.${{ steps.cfg.outputs.target_env }})
+        shell: bash
+        env:
+          ENV_DEV_SECRET: ${{ secrets.ENV_DEVELOPMENT }}
+          ENV_STAGING_SECRET: ${{ secrets.ENV_STAGING }}
+          ENV_PROD_SECRET: ${{ secrets.ENV_PRODUCTION }}
+        run: |
+          TARGET_ENV="${{ steps.cfg.outputs.target_env }}"
+          TARGET_FILE=".env.${TARGET_ENV}"
+          SECRET_VAL=""
+          if [[ "$TARGET_ENV" == "development" ]]; then
+            SECRET_VAL="$ENV_DEV_SECRET"
+          elif [[ "$TARGET_ENV" == "staging" ]]; then
+            SECRET_VAL="$ENV_STAGING_SECRET"
+          else
+            SECRET_VAL="$ENV_PROD_SECRET"
+          fi
+
+          if [[ -n "$SECRET_VAL" ]]; then
+            printf '%s\n' "$SECRET_VAL" > "$TARGET_FILE"
+            echo "Loaded $TARGET_FILE from GitHub Secret."
+          else
+            UPPER_ENV=$(printf '%s' "$TARGET_ENV" | tr '[:lower:]' '[:upper:]')
+            echo "::warning::Secret ENV_${UPPER_ENV} not configured; falling back to .env.example"
+            cp .env.example "$TARGET_FILE"
+          fi
+          cp "$TARGET_FILE" .env
+
+      - name: Configure Android Release Keystore (if secret provided)
+        id: signing
+        shell: bash
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [[ -n "$KEYSTORE_B64" && -n "$KEYSTORE_PASS" && -n "$KEY_ALIAS" && -n "$KEY_PASS" ]]; then
+            echo "$KEYSTORE_B64" | base64 --decode > android/app/upload.keystore
+            echo "MYAPP_UPLOAD_STORE_FILE=upload.keystore" >> "$GITHUB_ENV"
+            echo "MYAPP_UPLOAD_STORE_PASSWORD=$KEYSTORE_PASS" >> "$GITHUB_ENV"
+            echo "MYAPP_UPLOAD_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+            echo "MYAPP_UPLOAD_KEY_PASSWORD=$KEY_PASS" >> "$GITHUB_ENV"
+            echo "signed_release=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::ANDROID_KEYSTORE_* secrets not set; release variant will use fallback debug.keystore."
+            echo "signed_release=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
+
+      - name: Build Android APK
+        if: steps.cfg.outputs.build_type == 'apk' || steps.cfg.outputs.build_type == 'both'
+        env:
+          ENVFILE: ../.env.${{ steps.cfg.outputs.target_env }}
+          APP_VERSION_CODE: ${{ steps.cfg.outputs.version_code }}
+          APP_VERSION_NAME: ${{ steps.cfg.outputs.version_name }}
+        run: |
+          cd android
+          ./gradlew "assemble${{ steps.cfg.outputs.env_cap }}${{ steps.cfg.outputs.build_variant }}" --no-daemon -PreactNativeArchitectures=armeabi-v7a,arm64-v8a
+
+      - name: Build Android App Bundle (AAB for Google Play)
+        if: steps.cfg.outputs.build_type == 'aab' || steps.cfg.outputs.build_type == 'both'
+        env:
+          ENVFILE: ../.env.${{ steps.cfg.outputs.target_env }}
+          APP_VERSION_CODE: ${{ steps.cfg.outputs.version_code }}
+          APP_VERSION_NAME: ${{ steps.cfg.outputs.version_name }}
+        run: |
+          cd android
+          ./gradlew "bundle${{ steps.cfg.outputs.env_cap }}${{ steps.cfg.outputs.build_variant }}" --no-daemon -PreactNativeArchitectures=armeabi-v7a,arm64-v8a
+
+      - name: Collect build outputs
+        shell: bash
+        run: |
+          mkdir -p build-artifacts
+          find android/app/build/outputs/apk -name "*.apk" -exec cp {} build-artifacts/ \; || true
+          find android/app/build/outputs/bundle -name "*.aab" -exec cp {} build-artifacts/ \; || true
+          ls -lh build-artifacts/
+
+      - name: Upload Android build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: meetus-android-${{ steps.cfg.outputs.target_env }}-v${{ steps.cfg.outputs.version_name }}-${{ github.run_number }}
+          path: build-artifacts/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Attach artifacts to GitHub Release
+        if: steps.cfg.outputs.do_release == 'true' && startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build-artifacts/*
+          generate_release_notes: true
+
+      - name: Cleanup keystore from runner
+        if: always()
+        run: rm -f android/app/upload.keystore .env .env.${{ steps.cfg.outputs.target_env }}

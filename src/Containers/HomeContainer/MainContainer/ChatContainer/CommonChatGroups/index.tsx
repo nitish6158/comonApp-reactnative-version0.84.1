@@ -59,7 +59,7 @@ const GroupsInCommon = ({ navigation }: any) => {
               <Pressable
                 style={{ flexDirection: "row", marginVertical: 10 }}
                 onPress={() => {
-                  socketConnect.emit("getChatsByRoomId", { roomId: item?._id });
+                  void socketConnect.emit("getChatsByRoomId", { roomId: item?._id });
 
                   navigate("ChatMessageScreen", {
                     RoomId: item?._id,

@@ -43,7 +43,7 @@ export default function TaskHeader() {
   useEffect(() => {
     
     if (!organisations?.length) {
-      FetchAllOrganisation();
+      void FetchAllOrganisation();
     }
   }, [organisations]);
 
@@ -57,7 +57,7 @@ export default function TaskHeader() {
 
   function onToggleOrganization() {
     setToggleDropdown(!toggleDropdown);
-    FetchAllOrganisation();
+    void FetchAllOrganisation();
     
   }
 

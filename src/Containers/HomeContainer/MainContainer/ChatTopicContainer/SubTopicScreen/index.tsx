@@ -196,7 +196,7 @@ export default function SubTopicScreen({ route, navigation }: ViewTopicsScreenPr
 
   function addMessage() {
     const data = history.getStack();
-    const { chatId, roomId } = data[data?.length - 1]?.chatData;
+    const { chatId, roomId } = data[data.length - 1]?.chatData ?? {};
     const payload = {
       chatId: chatId,
       roomId: roomId,
@@ -246,7 +246,7 @@ export default function SubTopicScreen({ route, navigation }: ViewTopicsScreenPr
   }
 
   function onTopicDelete(id: string) {
-    deleterequest({
+    void deleterequest({
       variables: {
         input: {
           _id: id,

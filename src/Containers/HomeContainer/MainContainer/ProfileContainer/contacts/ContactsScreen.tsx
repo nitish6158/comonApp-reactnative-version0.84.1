@@ -274,7 +274,7 @@ function ContactsScreen() {
                                 });
                             }
                           } else {
-                            onChoosePhone(value);
+                            void onChoosePhone(value);
 
                             dispatch(updateContactProfile([{ ...item, hasInvited: true, invitedAt: dayjs().unix() }]));
                           }
@@ -284,7 +284,7 @@ function ContactsScreen() {
                         loader={false}
                         isSefUser={isSefUser}
                         onDeleteReminder={(id) => {
-                          removeContactReminder({
+                          void removeContactReminder({
                             variables: {
                               input: {
                                 _id: id,
@@ -423,7 +423,7 @@ function ContactsScreen() {
     console.log(data);
     let { mode, ...formData } = data;
     if (mode == "create") {
-      createContactReminder({
+      void createContactReminder({
         variables: {
           input: { contact_reminder: formData },
         },
@@ -435,7 +435,7 @@ function ContactsScreen() {
       });
     }
     if (mode == "update") {
-      updateContactReminder({
+      void updateContactReminder({
         variables: {
           input: { contact_reminder: formData },
         },
@@ -463,7 +463,7 @@ function ContactsScreen() {
   }
 
   function onAddContactPressed() {
-    Contacts.openContactForm({}).then((contact) => {
+    void Contacts.openContactForm({}).then((contact) => {
       if (contact && contact.phoneNumbers.length > 0) {
         const body = {
           id: contact?.recordID,
@@ -508,7 +508,7 @@ function ContactsScreen() {
       setModalVisible(false);
       setLoader(false);
       setTimeout(() => {
-        NativeShare.share({
+        void NativeShare.share({
           title: t("contacts.sms.title"),
           message: t("linkShare") + linkConfig.url,
         });
@@ -761,12 +761,11 @@ function ContactsScreen() {
     }
 
     // If duplicates exist, keep the latest/second entry and remove the first one.
-    filtered = _.uniqBy(
-      [...filtered].reverse(),
-      (item) =>
-        `${(item?.firstName ?? "").trim().toLowerCase()}_${(item?.lastName ?? "").trim().toLowerCase()}` ||
-        (item?.phone ?? "")
-    ).reverse();
+    filtered = _.uniqBy([...filtered].reverse(), (item) => {
+      const first = (item?.firstName ?? "").trim().toLowerCase();
+      const last = (item?.lastName ?? "").trim().toLowerCase();
+      return first || last ? `${first}_${last}` : (item?.phone ?? "");
+    }).reverse();
 
     // console.log(filtered);
 
@@ -806,7 +805,7 @@ function ContactsScreen() {
   }
 
   async function onChoosePhone(choosenContact: any) {
-    InviteContactOnApp({
+    void InviteContactOnApp({
       phone: choosenContact?.phone,
       code,
       InviteApi: (phone, region, branchUrl) => {

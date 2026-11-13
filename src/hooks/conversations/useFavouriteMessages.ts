@@ -72,7 +72,7 @@ export const useFavouriteMessages = (
             });
 
             // Fetch first page
-            getFavouriteMessages(1).then(({ messages }) => {
+            void getFavouriteMessages(1).then(({ messages }) => {
                 setFavouriteMessages(messages);
             });
         }
@@ -99,7 +99,7 @@ export const useFavouriteMessages = (
 
     // Refresh favourite messages (reload first page)
     const refreshFavouriteMessages = useCallback(() => {
-        getFavouriteMessages(1).then(({ messages }) => {
+        void getFavouriteMessages(1).then(({ messages }) => {
             setFavouriteMessages(messages);
         });
     }, [getFavouriteMessages, setFavouriteMessages]);

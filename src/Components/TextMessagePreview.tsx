@@ -7,6 +7,7 @@ import React from "react";
 import StarGray from "@Images/Favorite/StarGray.svg";
 import fonts from "@/Constants/fonts";
 import isActiveAction from "@Util/helpers/isActionActive";
+import { isValidUrl } from "@Util/urlValidator";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@/redux/Store";
 
@@ -14,16 +15,7 @@ const TextMessagePreview = ({ isGroup, searchText, item, formatedParticipants }:
   const myId = useAppSelector((state) => state.Chat.MyProfile?._id);
   const { t } = useTranslation();
   function validURL(str: string) {
-    const pattern = new RegExp(
-      "^(https?:\\/\\/)?" + // protocol
-        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-        "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-        "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-        "(\\#[-a-z\\d_]*)?$",
-      "i"
-    ); // fragment locator
-    return !!pattern.test(str);
+    return isValidUrl(str);
   }
 
   function renderText(message: string, isLast: boolean, customStyle = {}) {
@@ -44,7 +36,15 @@ const TextMessagePreview = ({ isGroup, searchText, item, formatedParticipants }:
   }
   function otherTypeOfText(message: string, isLast: boolean) {
     if (validURL(message)) {
-      return <Pressable onPress={() => Linking.openURL(message)}>{renderText(message, isLast)}</Pressable>;
+      return (
+        <Pressable
+          onPress={() => {
+            void Linking.openURL(message).catch(() => {});
+          }}
+        >
+          {renderText(message, isLast)}
+        </Pressable>
+      );
     } else if (message.startsWith("```") && message.endsWith("```")) {
       return renderText(message.substring(3, message.length - 3), isLast, { fontFamily: fonts.mono });
     } else if (message.startsWith("~") && message.endsWith("~")) {

@@ -93,7 +93,7 @@ export default function CalendarTaskItem({
       dayjs.locale(language);
     };
 
-    initLocale();
+    void initLocale();
   }, []);
 
   const status = useMemo(() => {
@@ -142,7 +142,7 @@ export default function CalendarTaskItem({
       disabled={loading}
       onPress={() => {
         if (status.status) {
-          onAssignmentPressed();
+          void onAssignmentPressed();
         } else {
           ToastMessage(status.text);
         }

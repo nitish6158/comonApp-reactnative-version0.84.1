@@ -114,7 +114,7 @@ export default function ContactDetails({
   const [customField, setCustomField] = useState<Array<customFieldType>>([]);
 
   useEffect(() => {
-    ContactSync();
+    void ContactSync();
   }, []);
 
   const {
@@ -796,10 +796,7 @@ export default function ContactDetails({
                       />
                     </View>
                     <Pressable
-                      disabled={
-                        updateContactProfileResponse.loading ||
-                        updateContactProfileResponse.loading
-                      }
+                      disabled={updateContactProfileResponse.loading}
                       style={{ alignItems: "flex-end" }}
                       onPress={() => removeCustomField(index)}
                     >
@@ -813,10 +810,7 @@ export default function ContactDetails({
             </View>
 
             <Pressable
-              disabled={
-                updateContactProfileResponse.loading ||
-                updateContactProfileResponse.loading
-              }
+              disabled={updateContactProfileResponse.loading}
               onPress={addNewCustomField}
             >
               <Text style={styles.customFieldText}>
@@ -825,15 +819,11 @@ export default function ContactDetails({
             </Pressable>
 
             <Pressable
-              disabled={
-                updateContactProfileResponse.loading ||
-                updateContactProfileResponse.loading
-              }
+              disabled={updateContactProfileResponse.loading}
               style={styles.saveButton}
               onPress={handleSubmit(SubmitContactForm)}
             >
-              {updateContactProfileResponse.loading ||
-              updateContactProfileResponse.loading ? (
+              {updateContactProfileResponse.loading ? (
                 <ActivityIndicator color="white" />
               ) : (
                 <Text style={styles.saveButtonText}>
@@ -871,9 +861,9 @@ export default function ContactDetails({
   function handleAndroidNameUpdate() {
     const originalID = isPhonebookContact?.localId.slice(0, -2);
     if (originalID) {
-      Contacts.getContactById(originalID).then((contact) => {
+      void Contacts.getContactById(originalID).then((contact) => {
         if (contact) {
-          Contacts.openExistingContact(contact).then((data) => {
+          void Contacts.openExistingContact(contact).then((data) => {
             if (data) {
               //OpenFORM:- Formate form number to local
               let numbers = removeDuplicateNumber(
@@ -913,7 +903,7 @@ export default function ContactDetails({
                     });
 
                   const promises = isSiblingNumber.map((body) => {
-                    updateUserContact({
+                    void updateUserContact({
                       variables: {
                         input: body,
                       },
@@ -937,7 +927,7 @@ export default function ContactDetails({
               //Else Remove Contact from contact list and show number
               else {
                 console.log("Delete Number");
-                deleteMyContactRequest({
+                void deleteMyContactRequest({
                   variables: {
                     input: {
                       contactIds: [isPhonebookContact?.localId ?? ""],
@@ -1058,9 +1048,9 @@ export default function ContactDetails({
         });
     });
 
-    Promise.all(promises).then(async (results) => {
+    void Promise.all(promises).then(async (results) => {
       if (originalID && Platform.OS == "ios") {
-        Contacts.getContactById(originalID).then((contact) => {
+        void Contacts.getContactById(originalID).then((contact) => {
           if (contact) {
             if (
               contact.familyName !== data.familyName ||
@@ -1072,7 +1062,7 @@ export default function ContactDetails({
                 givenName: data.givenName,
               };
 
-              Contacts.updateContact(updatedPhonebook).then(() => {});
+              void Contacts.updateContact(updatedPhonebook).then(() => {});
             }
           }
         });
@@ -1139,7 +1129,7 @@ export default function ContactDetails({
       };
     }
 
-    Contacts.openContactForm(newContact).then((contact) => {
+    void Contacts.openContactForm(newContact).then((contact) => {
       if (contact) {
         const body = {
           id: `${contact?.recordID}_0`,
@@ -1180,7 +1170,7 @@ export default function ContactDetails({
   }
 
   function onDialerPressed() {
-    Linking.openURL(`tel:${resolvedUser.phone}`);
+    void Linking.openURL(`tel:${resolvedUser.phone}`);
   }
 
   async function onVideoCallPressed() {

@@ -122,7 +122,7 @@ export function permissionAlert(permissionName: "Camera" | "Microphone", func?: 
             await func();
           }
           openSettings().catch(() => {
-            Linking.openSettings();
+            void Linking.openSettings();
           });
         },
       },

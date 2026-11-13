@@ -131,7 +131,7 @@ export default function SeniorChatSelectionScreen({ navigation }: SeniorChatSele
 
   function updateSeniorModeChatroom() {
     setLoading(true);
-    updateSeniorChatRoomListRequest({
+    void updateSeniorChatRoomListRequest({
       variables: {
         input: {
           _id: MyProfile?._id,

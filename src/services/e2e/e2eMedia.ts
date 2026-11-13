@@ -101,6 +101,10 @@ async function writeFileBytes(path: string, bytes: Uint8Array): Promise<void> {
  * Encrypt file bytes with a random (or provided) AES-256-GCM key.
  * Writes ciphertext to a temp path under CachesDirectoryPath.
  */
+function randomSuffix(): string {
+  return Array.from(randomBytes(4), (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 export async function encryptFileToTemp(
   localUri: string,
   options?: { keyB64?: string; mimeHint?: string }
@@ -111,9 +115,7 @@ export async function encryptFileToTemp(
   const iv = randomBytes(12);
   const cipher = gcm(key, iv);
   const ciphertext = cipher.encrypt(plaintext);
-  const tempPath = `${E2E_CACHE_DIR}/enc-${Date.now()}-${Math.random()
-    .toString(36)
-    .slice(2, 8)}.bin`;
+  const tempPath = `${E2E_CACHE_DIR}/enc-${Date.now()}-${randomSuffix()}.bin`;
   await writeFileBytes(tempPath, ciphertext);
   const mimeHint =
     options?.mimeHint ?? guessMimeFromPath(stripFileScheme(localUri));
@@ -140,9 +142,7 @@ export async function decryptFileToTemp(
   const cipher = gcm(fromB64(keyB64), fromB64(ivB64));
   const plaintext = cipher.decrypt(ciphertext);
   const safeExt = (outExt || "bin").replace(/[^a-zA-Z0-9]/g, "") || "bin";
-  const outPath = `${E2E_CACHE_DIR}/dec-${Date.now()}-${Math.random()
-    .toString(36)
-    .slice(2, 8)}.${safeExt}`;
+  const outPath = `${E2E_CACHE_DIR}/dec-${Date.now()}-${randomSuffix()}.${safeExt}`;
   await writeFileBytes(outPath, plaintext);
   return outPath.startsWith("file://") ? outPath : `file://${outPath}`;
 }

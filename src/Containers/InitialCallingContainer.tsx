@@ -60,7 +60,7 @@ export default function InitialCallingContainer() {
   }, [MyProfile]);
 
   useEffect(() => {
-    onGoingCallRequest();
+    void onGoingCallRequest();
     const unsubscribeNotificationOpen = messaging().onNotificationOpenedApp(
       async (remoteMessage) => {
         if (!remoteMessage) return;
@@ -71,18 +71,18 @@ export default function InitialCallingContainer() {
 
     if (Platform.OS == "ios") {
       IOSVoipCallForegroundAndBackgroundDataHandler();
-      IOSInitialNotificationFromNotify();
-      IOSInitialNotificationFromFirebase();
+      void IOSInitialNotificationFromNotify();
+      void IOSInitialNotificationFromFirebase();
     }
     if (Platform.OS == "android") {
       AndroidBackgroundCallActionHandler();
-      AndroidActiveBackgroundCallHandler();
+      void AndroidActiveBackgroundCallHandler();
       AndroidAppStateCallHandler();
       AndroidAskForPostNotification();
-      AndroidInitialNotificationFromNotify();
-      AndroidInitialNotificationFromFirebase();
+      void AndroidInitialNotificationFromNotify();
+      void AndroidInitialNotificationFromFirebase();
     }
-    getDeviceId();
+    void getDeviceId();
 
     return () => {
       unsubscribeNotificationOpen();
@@ -381,7 +381,7 @@ export default function InitialCallingContainer() {
         break;
       case "reminder":
       case "taskNotification":
-        handleTaskNotification(detail);
+        void handleTaskNotification(detail);
         break;
       case "message":
         await handleMessageNotification(detail);
@@ -412,7 +412,7 @@ export default function InitialCallingContainer() {
     }
 
     if (contact) {
-      dismissNotification(true, contact._id);
+      void dismissNotification(true, contact._id);
       // navigate("ChatMessageScreen", {
       //   RoomId: contact.roomId,
       // });
@@ -421,7 +421,7 @@ export default function InitialCallingContainer() {
         payload: { RoomId: contact.roomId },
       });
     }
-    notifee.cancelNotification(detail.notification?.id);
+    void notifee.cancelNotification(detail.notification?.id);
   };
 
   const handleCalendarReminder = async (detail: any) => {
@@ -536,7 +536,7 @@ export default function InitialCallingContainer() {
   // This function handles the background call actions on Android.
   // It checks for the event and sets the data for the fullModal or starts the call directly.
   function AndroidBackgroundCallActionHandler() {
-    getDataFromAsync(asyncStorageKeys.backgroundHandler).then((res) => {
+    void getDataFromAsync(asyncStorageKeys.backgroundHandler).then((res) => {
       if (res) {
         // console.log("res", res);
         const isExpiry = dayjs().isAfter(dayjs(res.expiry).add(60, "seconds"), "seconds");
@@ -550,7 +550,7 @@ export default function InitialCallingContainer() {
               notificationType: res?.notificationType,
             });
             setCallQueue(res);
-            removeDataFromAsync(asyncStorageKeys.backgroundHandler);
+            void removeDataFromAsync(asyncStorageKeys.backgroundHandler);
           } else {
             RNVoipCall.getInitialNotificationActions()
               .then(async (data: { action: string }) => {
@@ -567,7 +567,7 @@ export default function InitialCallingContainer() {
                     });
                     setCallQueue(res);
 
-                    removeDataFromAsync(asyncStorageKeys.backgroundHandler);
+                    void removeDataFromAsync(asyncStorageKeys.backgroundHandler);
                   }
                 } else if (data.action == "callAnswer") {
                   if (res) {
@@ -589,7 +589,7 @@ export default function InitialCallingContainer() {
                     }
                     RNVoipCall.stopRingtune();
 
-                    removeDataFromAsync(asyncStorageKeys.backgroundHandler);
+                    void removeDataFromAsync(asyncStorageKeys.backgroundHandler);
                   }
                 }
               })
@@ -610,11 +610,11 @@ export default function InitialCallingContainer() {
                 });
                 setCallQueue(res);
 
-                removeDataFromAsync(asyncStorageKeys.backgroundHandler);
+                void removeDataFromAsync(asyncStorageKeys.backgroundHandler);
               });
           }
         } else {
-          removeDataFromAsync(asyncStorageKeys.backgroundHandler);
+          void removeDataFromAsync(asyncStorageKeys.backgroundHandler);
         }
       }
     });
@@ -633,7 +633,7 @@ export default function InitialCallingContainer() {
       const currentUser = ProfileRef.current;
       if (activeCallKeys?.callId && activeCallKeys?.channelId && currentUser) {
         // Check for active call
-        channelStatusRequest({
+        void channelStatusRequest({
           variables: {
             input: {
               callId: activeCallKeys.callId,
@@ -673,20 +673,20 @@ export default function InitialCallingContainer() {
             setCallRequest(payload as any);
           } else {
             dispatch(removeActiveCall());
-            AsyncStorage.removeItem("backgroundCallReject");
-            AsyncStorage.removeItem("activeCallData");
+            void AsyncStorage.removeItem("backgroundCallReject");
+            void AsyncStorage.removeItem("activeCallData");
             console.log("channel not exist", getChannelStatus);
           }
         });
       } else {
         console.log("activeCallKeys are not defined");
         dispatch(removeActiveCall());
-        AsyncStorage.removeItem("backgroundCallReject");
+        void AsyncStorage.removeItem("backgroundCallReject");
       }
     } else {
       console.log("call is rejected already");
       dispatch(removeActiveCall());
-      AsyncStorage.removeItem("backgroundCallReject");
+      void AsyncStorage.removeItem("backgroundCallReject");
     }
   }
 
@@ -704,7 +704,7 @@ export default function InitialCallingContainer() {
           setCallQueue(null);
         }
         if (callData != null) {
-          AsyncStorage.setItem("callQueue", callData?.data?.callId);
+          void AsyncStorage.setItem("callQueue", callData?.data?.callId);
           setCallQueue(callData);
         } else {
           setCallQueue(null);

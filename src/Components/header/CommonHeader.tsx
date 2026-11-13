@@ -81,7 +81,7 @@ export default function CommonHeader({
           )}
         </TouchableOpacity>
       )}
-      {actionButton && actionButton}
+      {actionButton}
      
     </View>
   );

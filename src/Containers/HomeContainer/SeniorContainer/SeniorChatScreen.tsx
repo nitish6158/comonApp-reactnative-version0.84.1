@@ -199,7 +199,7 @@ export default function SeniorChatScreen({ navigation }: SeniorChatScreenProps) 
             return;
           } else {
             if (text) {
-              sendChat({
+              void sendChat({
                 variables: {
                   input: {
                     data: {

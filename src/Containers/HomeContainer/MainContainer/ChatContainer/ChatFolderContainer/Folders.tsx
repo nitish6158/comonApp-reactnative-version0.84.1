@@ -68,7 +68,7 @@ export default function FolderScreen({ navigation }: any) {
         data={data}
         onDragEnd={({ data }) => {
           setData(data);
-          socketConnect.emit("reArrangeFolder", { folders: data });
+          void socketConnect.emit("reArrangeFolder", { folders: data });
         }}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item, drag, isActive }) => (

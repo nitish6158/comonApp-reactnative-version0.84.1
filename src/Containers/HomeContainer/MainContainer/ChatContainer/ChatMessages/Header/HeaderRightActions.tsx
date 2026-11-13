@@ -102,7 +102,7 @@ export default function HeaderRightActions({ isCalling, isSetting }: props) {
               Keyboard.dismiss();
               global.roomId = null;
               navigate("ChatProfileScreen", {});
-              socketConnect.emit("getFavouriteChats", { roomId: display.roomId });
+              void socketConnect.emit("getFavouriteChats", { roomId: display.roomId });
             }}
           >
             <Settingtwo />

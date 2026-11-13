@@ -87,7 +87,7 @@ export default function CallHistoryDetails({ navigation, route }: any) {
   useFocusEffect(
     useCallback(() => {
       setHistory([]);
-      getHistoryRequest({
+      void getHistoryRequest({
         variables: {
           input: {
             categoryId: categoryId,
@@ -126,7 +126,7 @@ export default function CallHistoryDetails({ navigation, route }: any) {
   }
 
   const sDate = "" + history[0]?.callStartedAt;
-  const LastSeen = getLastSeen(parseInt(sDate));
+  const LastSeen = getLastSeen(Number.parseInt(sDate, 10));
   const { time } = useTimeHook(userDetails?.lastSeen);
   // const Day: any = getCallHistoryDate(userDetails?.lastSeen);
 
@@ -227,7 +227,7 @@ export default function CallHistoryDetails({ navigation, route }: any) {
               e.callHistory.length > 0 ? e.callHistory[0].callJoinedAt : 0;
             const callEndedAt =
               e.callHistory.length > 0 ? e.callHistory[0].callEndedAt : 0;
-            const diff = parseInt(callEndedAt) - parseInt(callStartedAt);
+            const diff = Number.parseInt(callEndedAt, 10) - Number.parseInt(callStartedAt, 10);
             const timeFormatter = diff != 0 ? msToTime(diff) : "";
             const localContact = commonContact.find(
               (el) => el?.userId?._id == e?.userId?._id
@@ -275,7 +275,7 @@ export default function CallHistoryDetails({ navigation, route }: any) {
                     /> */}
                     <View>
                       <Text ellipsizeMode={"tail"}>{name}</Text>
-                      {timeFormatter && (
+                      {Boolean(timeFormatter) && (
                         <Text
                           style={{
                             color: Colors.light.grayText,
@@ -320,7 +320,7 @@ export default function CallHistoryDetails({ navigation, route }: any) {
         otherUser[0].callHistory.length > 0
           ? otherUser[0].callHistory[0].callEndedAt
           : 0;
-      const diff = parseInt(callEndedAt) - parseInt(callStartedAt);
+      const diff = Number.parseInt(callEndedAt, 10) - Number.parseInt(callStartedAt, 10);
       const timeFormatter = diff != 0 ? msToTime(diff) : "";
 
       return (
@@ -335,7 +335,7 @@ export default function CallHistoryDetails({ navigation, route }: any) {
               paddingBottom: 10,
             }}
           >
-            {item.callStartedAt && (
+            {Boolean(item.callStartedAt) && (
               <Text style={{ fontSize: 14 }}>
                 {covertUtcToLocalDate(item.callStartedAt).format("HH:mm")}
               </Text>
@@ -352,7 +352,7 @@ export default function CallHistoryDetails({ navigation, route }: any) {
                 {t(`${status.toUpperCase()}`)} {t("call")}
               </Typography>
 
-              {timeFormatter && (
+              {Boolean(timeFormatter) && (
                 <Text
                   style={{
                     color: Colors.light.grayText,
@@ -398,7 +398,7 @@ export default function CallHistoryDetails({ navigation, route }: any) {
           ? otherUser[0].callHistory[0].callEndedAt
           : 0;
 
-      const diff = parseInt(callEndedAt) - parseInt(callStartedAt);
+      const diff = Number.parseInt(callEndedAt, 10) - Number.parseInt(callStartedAt, 10);
       const date = dayjs().isSame(item.callStartedAt, "day")
         ? t("others.Today")
         : dayjs().subtract(1, "day").isSame(dayjs(item.callStartedAt), "day")
@@ -493,7 +493,7 @@ export default function CallHistoryDetails({ navigation, route }: any) {
                 e.callHistory.length > 0 ? e.callHistory[0].callJoinedAt : 0;
               const callEndedAt =
                 e.callHistory.length > 0 ? e.callHistory[0].callEndedAt : 0;
-              const diff = parseInt(callEndedAt) - parseInt(callStartedAt);
+              const diff = Number.parseInt(callEndedAt, 10) - Number.parseInt(callStartedAt, 10);
               const timeFormatter = diff != 0 ? msToTime(diff) : "";
               const localContact = commonContact.find(
                 (el) => el?.userId?._id == e?.userId?._id
@@ -535,7 +535,7 @@ export default function CallHistoryDetails({ navigation, route }: any) {
                       />
                       <View>
                         <Text ellipsizeMode={"tail"}>{name}</Text>
-                        {timeFormatter && (
+                        {Boolean(timeFormatter) && (
                           <Text
                             style={{
                               color: Colors.light.grayText,
@@ -555,7 +555,7 @@ export default function CallHistoryDetails({ navigation, route }: any) {
                       >
                         {t(`${status.toUpperCase()}`)} {t("call")}
                       </Typography>
-                      {item.callStartedAt && (
+                      {Boolean(item.callStartedAt) && (
                         <Text style={{ fontSize: 14, textAlign: "right" }}>
                           {covertUtcToLocalDate(item.callStartedAt).format(
                             "HH:mm"
@@ -656,7 +656,7 @@ export default function CallHistoryDetails({ navigation, route }: any) {
 
   function PaginationAPI() {
     setIsHistoryListLoading(true);
-    getHistoryRequest({
+    void getHistoryRequest({
       variables: {
         input: {
           categoryId: categoryId,
@@ -666,7 +666,7 @@ export default function CallHistoryDetails({ navigation, route }: any) {
       },
     }).then((res) => {
       if (res.data?.getCallListWithAParticipant) {
-        setHistory([...history, ...res.data?.getCallListWithAParticipant]);
+        setHistory([...history, ...res.data.getCallListWithAParticipant]);
       }
       setIsHistoryListLoading(false);
     });

@@ -43,7 +43,7 @@ export default function useActiveContacts() {
       }
 
       // Always fetch fresh data from socket
-      socketManager.chatRoom.getActiveContacts((data) => {
+      void socketManager.chatRoom.getActiveContacts((data) => {
         receivedSocketData = true;
         clearTimeout(loadingTimeout);
 
@@ -60,7 +60,7 @@ export default function useActiveContacts() {
       });
     };
 
-    loadContacts();
+    void loadContacts();
   }, []);
 
   // useEffect(() => {

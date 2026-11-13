@@ -85,7 +85,6 @@ export default function SelectParticipantForGroup({route,navigation}:SelectParti
                   setSelectedMembers(selectedMembers.concat([item?._id]));
                 }
               }}
-              disabled={createRoomResponse.loading}
               style={{
                 paddingVertical: 8,
                 flexDirection: "row",

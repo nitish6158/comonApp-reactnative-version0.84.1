@@ -180,7 +180,7 @@ function ImageComponent({
     if (message.fileURL.startsWith("file:")) {
       if (isConnected) {
         setRetry(false);
-        uploadImage();
+        void uploadImage();
       } else {
         setRetry(true);
       }
@@ -325,7 +325,7 @@ function ImageComponent({
                 totalMedia: prev.totalMedia + 1
               }));
               // Keep plaintext local copy for sender preview
-              copyFile(plaintextLocalPath, path);
+              void copyFile(plaintextLocalPath, path);
             })
             .catch((err) => {
               console.error(
@@ -339,7 +339,7 @@ function ImageComponent({
           setRetry(true);
         }
         if (plaintextLocalPath !== message.fileURL) {
-          unlinkFile(plaintextLocalPath);
+          void unlinkFile(plaintextLocalPath);
         }
       } else {
         console.log(res);

@@ -23,12 +23,12 @@ export function TaskPermissionContainer({ children }: { children?: React.ReactNo
       }
     };
 
-    checkPermission();
+    void checkPermission();
   }, []);
 
   const openAppSettings = () => {
     openSettings().catch(() => {
-      Linking.openSettings();
+      void Linking.openSettings();
     });
   };
   return (

@@ -86,7 +86,7 @@ const useRoomDataFormatter = (RoomId: string) => {
         console.log(`No cache found for room_${currentRoomId}`);
       }
 
-      socketManager.chatRoom.getFormattedRoomById(currentRoomId, (data) => {
+      void socketManager.chatRoom.getFormattedRoomById(currentRoomId, (data) => {
         if (data.room) {
           const hydratedRoomData = applyBlockedState(data.room);
           if (currentRoomId === roomIdRef.current) {
@@ -115,13 +115,13 @@ const useRoomDataFormatter = (RoomId: string) => {
   useEffect(() => {
     if (RoomId) {
       roomIdRef.current = RoomId;
-      updateRoomData();
+      void updateRoomData();
     }
   }, [RoomId, updateRoomData]);
 
   useEffect(() => {
-    notifee.cancelNotification(`CHAT_${RoomId}`);
-    readChatRequest({
+    void notifee.cancelNotification(`CHAT_${RoomId}`);
+    void readChatRequest({
       variables: {
         input: {
           roomId: RoomId,

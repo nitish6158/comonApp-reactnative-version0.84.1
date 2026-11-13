@@ -73,7 +73,7 @@ export default function AddMessageTopicsScreen({ route, navigation }: AddMessage
 
       const uniqueTopic = _.uniq(updated);
 
-      updateTopicRequest({
+      void updateTopicRequest({
         variables: {
           input: {
             roomId: display.roomId,

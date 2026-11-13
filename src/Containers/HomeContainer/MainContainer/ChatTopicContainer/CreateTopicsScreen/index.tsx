@@ -109,7 +109,7 @@ export default function CreateTopicsScreen({ route, navigation }: CreateTopicsSc
   );
 
   function formEdit(data: formType) {
-    updateRequest({
+    void updateRequest({
       variables: {
         input: {
           _id: parentId,
@@ -125,7 +125,7 @@ export default function CreateTopicsScreen({ route, navigation }: CreateTopicsSc
   }
 
   function formSubmit(data: formType) {
-    createRequest({
+    void createRequest({
       variables: {
         input: {
           name: data.name,
@@ -145,7 +145,7 @@ export default function CreateTopicsScreen({ route, navigation }: CreateTopicsSc
   }
 
   function addMessage(topicId: string) {
-    addMessageRequest({
+    void addMessageRequest({
       variables: {
         input: {
           chatId: chatId,

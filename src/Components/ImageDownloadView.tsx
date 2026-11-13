@@ -23,7 +23,7 @@ export default function ImageDownloadView({ item }: props) {
   useEffect(() => {
     if (Platform.OS !== "android" && isSaveToCameraRollActive) {
       setloading(true);
-      downloadMediaToCameraRoll(
+      void downloadMediaToCameraRoll(
         item?.fileURL,
         isSaveToCameraRollActive
       ).then((res) => {
@@ -39,7 +39,7 @@ export default function ImageDownloadView({ item }: props) {
       onPress={() => {
         if (!loading) {
           setloading(true);
-          downloadMediaToCameraRoll(
+          void downloadMediaToCameraRoll(
             item?.fileURL,
             isSaveToCameraRollActive
           ).then((res) => {

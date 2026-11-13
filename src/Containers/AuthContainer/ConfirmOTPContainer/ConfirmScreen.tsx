@@ -53,7 +53,7 @@ export default function ConfirmScreen({
       },
     })
       .then((res) => {
-        getTermsPolicy(phone?.formattedNumber).then((value) => {
+        void getTermsPolicy(phone?.formattedNumber).then((value) => {
           if (!value) {
             navigate("Terms", { phone: phone?.formattedNumber });
           } else {
@@ -68,7 +68,7 @@ export default function ConfirmScreen({
   };
 
   const handleResend = () => {
-    requestPhoneConfirm();
+    void requestPhoneConfirm();
   };
 
   const toggleDialog = () => {

@@ -45,7 +45,7 @@ const OrganizationInvites = (navigation) => {
 
   useFocusEffect(
     useCallback(() => {
-      refetch().then((response) => {
+      void refetch().then((response) => {
         Dispatch(setOrganisationInvites(response.data.getMyInvites));
       });
     }, [])
@@ -104,7 +104,7 @@ const OrganizationInvites = (navigation) => {
   return (
     // eslint-disable-next-line react-native/no-color-literals
     <View style={{ flex: 1, backgroundColor: "#eff2f5" }}>
-      {(acceptResponse.loading || acceptResponse.loading || declineResponse.loading || loader) && <CommonLoader />}
+      {(acceptResponse.loading || declineResponse.loading || loader) && <CommonLoader />}
       <HeaderWithScreenName title={t("navigation.organization-invite")} />
       <View style={style.container}>
         <View style={style.IconContainer}>

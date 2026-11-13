@@ -24,7 +24,7 @@ const isRefreshNeeded = async () => {
   }
 
   const expireAt = Number(sessionExpireAt);
-  if (isNaN(expireAt) || expireAt <= 0) {
+  if (Number.isNaN(expireAt) || expireAt <= 0) {
     return false;
   }
 

@@ -54,6 +54,6 @@ export async function uploadThumbnail(localVideoPath: string, bucketPath: string
       (written, total) => {}
     );
   }
-  RNFS.unlink(thumbnailPath);
+  void RNFS.unlink(thumbnailPath);
   return true;
 }

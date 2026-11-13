@@ -479,7 +479,7 @@ export default function SplashContainer() {
 
   useEffect(() => {
     StatusBar.setHidden(true, "none");
-    checkForCurrentDeviceLoginStatus();
+    void checkForCurrentDeviceLoginStatus();
     iosPushKit();
     return () => {
       StatusBar.setHidden(false, "fade");
@@ -491,7 +491,7 @@ export default function SplashContainer() {
   useEffect(() => {
     if (refreshResponse.error) {
       console.log(refreshResponse.error);
-      logoutUser();
+      void logoutUser();
 
       ToastMessage(t("label.token-expired"));
     }
@@ -515,11 +515,11 @@ export default function SplashContainer() {
     await setSession(refreshSession);
     await setTokenLogin(refreshSession.token);
     console.log("subscribe", `${refreshSession.mode}_user_id_${user?._id}`);
-    messaging().subscribeToTopic(`${refreshSession.mode}_user_id_${user?._id}`);
+    void messaging().subscribeToTopic(`${refreshSession.mode}_user_id_${user?._id}`);
     // dispatch(connectToSocket(refreshSession.token));
     // console.log(contacts?.length);
 
-    socketConnect.connect();
+    void socketConnect.connect();
 
     if (user) {
       storage.set(keys.userId, user?._id);
@@ -560,7 +560,7 @@ export default function SplashContainer() {
     const { mode } = await getSession();
     const id = storage.getString(keys.userId);
 
-    messaging()
+    void messaging()
       .unsubscribeFromTopic(`${mode}_user_id_${id}`)
       .then(() => {
         console.log(`${Platform.OS} topic unSubscribe success`, `${mode}_user_id_${id}`);
@@ -608,16 +608,16 @@ export default function SplashContainer() {
               if (res.data?.refreshSession) {
                 const isActiveDevice = res.data?.refreshSession.user?.device?.token == value.token;
                 if (isActiveDevice) {
-                  HandleRefreshSucess(res.data?.refreshSession);
+                  void HandleRefreshSucess(res.data?.refreshSession);
                 } else {
-                  logoutUser();
+                  void logoutUser();
                 }
               }
             })
             .catch(console.log);
         } else {
           console.log("Missing device payload on splash, logging out");
-          logoutUser();
+          void logoutUser();
         }
       } else {
         //offline mode
@@ -627,7 +627,7 @@ export default function SplashContainer() {
       //if any user exist then logout the user
       //after logout it automatically moves to "Auth navigator"
       console.log("realm logout", sessionData);
-      logoutUser();
+      void logoutUser();
     }
   }
 
@@ -653,7 +653,7 @@ export default function SplashContainer() {
   function deleteContacts(contactsToDelete: ContactDetailsDto[]) {
     if (!contactsToDelete.length) return;
     const deleteContact = contactsToDelete.map((e) => e?.localId);
-    deleteMyContactRequest({
+    void deleteMyContactRequest({
       variables: {
         input: {
           contactIds: deleteContact,

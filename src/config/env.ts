@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import Config from 'react-native-config';
 
 type AppEnvironment = 'development' | 'staging' | 'production';
@@ -22,20 +21,12 @@ const DEFAULT_PUBLIC_URL = 'https://comon.axiusstaging.in';
 const DEFAULT_SOCKET_URL = 'https://comon.axiusstaging.in?token=';
 const DEFAULT_BACKGROUND_API = 'https://comon.axiusstaging.in';
 const DEFAULT_PRIVACY_POLICY = 'https://fe-pr-preview-pb2r7hxayq-ez.a.run.app/privacy-policy';
-const DEFAULT_GOOGLE_PLACE_API_KEY = 'AIzaSyAHJGLj2qeJwuI96x7T3Hz_-Q6LV5DKhUk';
 const DEFAULT_IMAGE_URL = 'https://storage.googleapis.com/comon-bucket/';
 const DEFAULT_USER_MANUAL_URL = 'https://axius-staging.com/wp/comon_user_manual';
-const DEFAULT_LIVEKIT_URL = 'ws://192.168.0.25:7880';
+const DEFAULT_LIVEKIT_URL = 'wss://meetus-ypdlhodh.livekit.cloud';
 
 function normalizeUrl(url: string | undefined, fallback: string): string {
-  const target = url || fallback;
-  return target
-    .replace(/192\.168\.29\.88/g, '192.168.0.25')
-    .replace(/192\.168\.0\.44/g, '192.168.0.25')
-    .replace(/192\.168\.1\.43/g, '192.168.0.25')
-    .replace(/192\.168\.1\.38/g, '192.168.0.25')
-    .replace(/10\.0\.2\.2/g, '192.168.0.25')
-    .replace(/localhost:7880/g, '192.168.0.25:7880');
+  return url || fallback;
 }
 
 function resolveLiveKitUrl(rawUrl: string | undefined): string {
@@ -53,7 +44,7 @@ export const env = {
   privacyPolicy: Config.PRIVACY_POLICY ?? DEFAULT_PRIVACY_POLICY,
   livekitUrl: resolveLiveKitUrl(Config.LIVEKIT_URL),
   useLivekit: Config.USE_LIVEKIT !== undefined ? toBoolean(Config.USE_LIVEKIT) : true,
-  googlePlaceApiKey: Config.GOOGLE_PLACE_API_KEY ?? DEFAULT_GOOGLE_PLACE_API_KEY,
+  googlePlaceApiKey: Config.GOOGLE_PLACE_API_KEY ?? '',
   publicJwtExpire: toNumber(Config.PUBLIC_JWT_EXPIRE, 10),
   iosUrl: Config.IOS_URL ?? 'https://apps.apple.com/in/app/comon-app/id1624464685',
   androidUrl: Config.ANDROID_URL ?? 'https://play.google.com/store/apps/details?id=io.comon.app',

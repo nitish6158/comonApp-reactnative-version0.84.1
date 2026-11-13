@@ -129,7 +129,7 @@ export default function SendContactScreen({
         },
         reply_msg: null,
       };
-      socketManager.conversation.sendChat(payload);
+      void socketManager.conversation.sendChat(payload);
     });
     replaceWithIndex("ChatMessageScreen");
     setTimeout(() => {
@@ -140,7 +140,7 @@ export default function SendContactScreen({
     const roo = [RoomId];
 
     if (socket && typeof socket.emit === "function") {
-      socketConnect.emit("shareContact", { contacts: con, rooms: roo });
+      void socketConnect.emit("shareContact", { contacts: con, rooms: roo });
       // replaceWithIndex("ChatMessageScreen");
 
       // setTimeout(() => {

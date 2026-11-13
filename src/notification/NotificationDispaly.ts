@@ -36,11 +36,11 @@ export async function onMessageReceived(message: Message) {
 
   console.log("onMessageReceived dataObject--------->", dataObject);
 
-  notificationLog(type);
+  void notificationLog(type);
 
   if (type == "CHAT") {
     const dataQ = dataObject as Chat;
-    chatDelivered({ ...dataQ, TYPE: type });
+    void chatDelivered({ ...dataQ, TYPE: type });
     let attachments: IOSNotificationAttachment[] = [];
     let androidStyle: androidStyle = {} as androidStyle;
     // console.log("dataQ", dataQ);
@@ -244,7 +244,7 @@ export async function onMessageReceived(message: Message) {
       case "CONTACT_REMINDER":
         let { isDismiss, _id, ...restData } = resultData[0];
         console.log("online", restData);
-        notifee.displayNotification({
+        void notifee.displayNotification({
           id: _id,
           title: dataObject.notification.title,
           body: dataObject.notification.body,
@@ -292,7 +292,7 @@ export async function onMessageReceived(message: Message) {
         const taskData = dataObject;
         const { attachment, ...main } = resultData;
         const x = { ...main, TYPE: "TASK_SUBMIT" };
-        notifee.displayNotification({
+        void notifee.displayNotification({
           title: taskData?.notification?.title,
           body: taskData?.notification?.body,
           data: x,
@@ -320,7 +320,7 @@ export async function onMessageReceived(message: Message) {
         });
         break;
       case "TASK_COMPLETE":
-        notifee.displayNotification({
+        void notifee.displayNotification({
           title: dataObject?.notification?.title,
           body: dataObject?.notification?.body,
           data: { ...resultData, TYPE: "TASK_COMPLETE" },
@@ -350,7 +350,7 @@ export async function onMessageReceived(message: Message) {
 
       case "TASK_REMINDER":
         const taskR = dataObject;
-        notifee.displayNotification({
+        void notifee.displayNotification({
           title: taskR.notification.title,
           body: taskR.notification.body,
           data: { ...resultData, TYPE: "TASK" },
@@ -379,7 +379,7 @@ export async function onMessageReceived(message: Message) {
         break;
       case "REMINDER":
         const taskRM = dataObject;
-        notifee.displayNotification({
+        void notifee.displayNotification({
           title: taskRM.notification.title,
           body: taskRM.notification.body,
           data: { ...resultData, TYPE: "TASK" },
@@ -421,7 +421,7 @@ export async function onMessageReceived(message: Message) {
           };
         }
 
-        notifee.displayNotification({
+        void notifee.displayNotification({
           title: dataObject?.notification.title,
           body: dataObject?.notification.body,
           data: { data: resultData, TYPE: type, _id: result.reminderID },
@@ -467,7 +467,7 @@ export async function onMessageReceived(message: Message) {
           };
         }
 
-        notifee.displayNotification({
+        void notifee.displayNotification({
           title: dataObject?.notification.title,
           body: dataObject?.notification.body,
           data: { data: resultData, TYPE: type, _id: result.reminderID },
@@ -529,7 +529,7 @@ export async function onMessageReceived(message: Message) {
           };
         }
 
-        notifee.displayNotification({
+        void notifee.displayNotification({
           title: dataObject?.notification.title,
           body: dataObject?.notification.body,
           data: { data: resultData, TYPE: type, _id: result.reminderID },
@@ -764,7 +764,7 @@ export async function DisplayMissedCall(data: any) {
 
   let payload = { data: JSON.stringify(data) };
 
-  notifee.displayNotification({
+  void notifee.displayNotification({
     id: `Missed_${data.callID}_${Date.now()}`,
     title: data.roomName,
     body: `Missed ${data.callType == "audio" ? "audio" : "video"} call`,
@@ -802,7 +802,7 @@ export async function DisplayMissedCall(data: any) {
       asyncData.data.callId
     );
     if (data.callId === asyncData.data.callId) {
-      removeDataFromAsync(asyncStorageKeys.backgroundHandler);
+      void removeDataFromAsync(asyncStorageKeys.backgroundHandler);
     }
   }
 }

@@ -164,7 +164,7 @@ function HiddenItem({
 
   const pinChat = (time: string) => {
     const roomId = data?.item._id ?? ''
-    pinRoomRequest({
+    void pinRoomRequest({
       variables: {
         input: {
           roomId
@@ -172,7 +172,7 @@ function HiddenItem({
       },
     }).then((res) => {
       if (res.data?.fixRoom.success) {
-        socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
+        void socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
           if (data) {
             const rooms = produce(AllRooms, (draftrooms) => {
               return draftrooms.map((dr) => {
@@ -198,7 +198,7 @@ function HiddenItem({
 
   const unPinChat = () => {
     const roomId = data?.item._id ?? ''
-    unPinRoomRequest({
+    void unPinRoomRequest({
       variables: {
         input: {
           roomId
@@ -206,7 +206,7 @@ function HiddenItem({
       },
     }).then((res) => {
       if (res.data?.unfixRoom.success) {
-        socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
+        void socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
           if (data) {
             const rooms = produce(AllRooms, (draftrooms) => {
               return draftrooms.map((dr) => {
@@ -232,7 +232,7 @@ function HiddenItem({
   };
 
   const muteChat = (time: string) => {
-    muteRoomRequest({
+    void muteRoomRequest({
       variables: {
         input: {
           roomId: data?.item?._id,
@@ -242,7 +242,7 @@ function HiddenItem({
     }).then((res) => {
       if (res.data?.muteRoom?.success) {
         // socketConnect.emit("GetAllRooms", {});
-        socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
+        void socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
           if (data) {
             const rooms = produce(AllRooms, (draftrooms) => {
               return draftrooms.map((dr) => {
@@ -267,7 +267,7 @@ function HiddenItem({
   };
 
   const unMuteChat = () => {
-    unMuteRoomRequest({
+    void unMuteRoomRequest({
       variables: {
         input: {
           roomId: data?.item._id,
@@ -276,7 +276,7 @@ function HiddenItem({
     }).then((res) => {
       if (res.data?.unmuteRoom?.success) {
         // socketConnect.emit("GetAllRooms", {});
-        socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
+        void socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
           if (data) {
             const rooms = produce(AllRooms, (draftrooms) => {
               return draftrooms.map((dr) => {
@@ -300,17 +300,17 @@ function HiddenItem({
   };
 
   const ClearChat = () => {
-    socketManager.conversation.clearAllChat({ roomId: display.roomId });
+    void socketManager.conversation.clearAllChat({ roomId: display.roomId });
     // socket.emit("clearAllChats", { roomId: selectedItem._id });
     setClearChatVisible(false);
-    socketConnect.emit("clearAllChats", { roomId: selectedItem._id });
+    void socketConnect.emit("clearAllChats", { roomId: selectedItem._id });
   };
 
   function removeFromFolder(_id: string) {
     if (currentTab > 0) {
       let currentFolder = MyProfile.folders[currentTab - 1];
       let updatedRoom = currentFolder.roomId.filter((v) => v !== _id);
-      socketConnect.emit("editFolder", {
+      void socketConnect.emit("editFolder", {
         folderId: currentFolder._id,
         newName: currentFolder.name,
         rooms: updatedRoom,
@@ -376,9 +376,9 @@ function HiddenItem({
             }
 
             if (hasUnread) {
-              socketConnect.emit("setChatReadBy", { roomId, cid: [] });
+              void socketConnect.emit("setChatReadBy", { roomId, cid: [] });
             } else {
-              socketConnect.emit("markRoomUnread", { roomId });
+              void socketConnect.emit("markRoomUnread", { roomId });
             }
 
             // Local instant toggle for WhatsApp-like manual unread dot.
@@ -403,7 +403,7 @@ function HiddenItem({
             setAllRooms(optimisticRooms);
 
             setTimeout(() => {
-              socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
+              void socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
                 if (data?.rooms) {
                   setAllRooms(data.rooms);
                 }
@@ -488,15 +488,15 @@ function HiddenItem({
               onPressArchive();
               return;
             } else {
-              try {
-                if (!roomId) return;
-                archiveRoomRequest({
-                  variables: {
-                    input: {
-                      roomId,
-                    },
+              if (!roomId) return;
+              void archiveRoomRequest({
+                variables: {
+                  input: {
+                    roomId,
                   },
-                }).then((res) => {
+                },
+              })
+                .then((res) => {
                   if (res.data?.archiveRoom.success) {
                     const nextRooms = produce(AllRooms || [], (draftrooms) => {
                       return draftrooms.map((dr) => {
@@ -520,20 +520,18 @@ function HiddenItem({
                     setAllRooms(nextRooms);
                     setArchiveRooms(buildArchiveListForMe(nextRooms));
 
-                    socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
+                    void socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
                       if (data) {
                         setAllRooms(data.rooms);
                         setArchiveRooms(buildArchiveListForMe(data.rooms));
                       }
-                    }
-                    );
-                    // socketConnect.emit("GetAllRooms", {});
+                    });
                     ToastMessage(`${t("toastmessage.archive-message")}`);
                   }
+                })
+                .catch((error) => {
+                  console.log(error);
                 });
-              } catch (error) {
-                console.log(error);
-              }
             }
           }}
           style={[
@@ -587,7 +585,7 @@ function HiddenItem({
               return draftrooms.filter((dr) => dr._id != selectedItem._id);
             });
             setAllRooms(rooms);
-            deleteRoomRequest({
+            void deleteRoomRequest({
               variables: {
                 input: {
                   roomId: selectedItem._id,
@@ -595,7 +593,7 @@ function HiddenItem({
               },
             }).then(() => {
               // socketConnect.emit("GetAllRooms", {});
-              socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
+              void socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
                 if (data) {
                   const rooms = produce(AllRooms, (draftrooms) => {
                     return draftrooms.filter((dr) => dr._id != selectedItem._id);
@@ -606,7 +604,7 @@ function HiddenItem({
               );
               ToastMessage(`${t("toastmessage.room-deleted-successfully")}`);
             });
-            socketConnect.emit("deleteRoom", { roomId: selectedItem._id });
+            void socketConnect.emit("deleteRoom", { roomId: selectedItem._id });
           }}
         // negativeButton={() => {}}
         />

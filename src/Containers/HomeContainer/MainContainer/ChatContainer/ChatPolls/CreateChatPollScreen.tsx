@@ -362,7 +362,7 @@ export default function CreateChatPollScreen({
         reply_msg: null,
       };
       console.log("send poll chat payload---->", payload);
-      socketManager.conversation.sendChat(payload);
+      void socketManager.conversation.sendChat(payload);
       navigation.goBack();
       // sendChat({
       //   variables: {

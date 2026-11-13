@@ -89,7 +89,7 @@ export default function Menu({ navigation }: UserProfileScreenProps) {
 
   // const user = useUser();
 
-  const [logoutRequest, {}] = useLogoutLazyQuery();
+  const [logoutRequest] = useLogoutLazyQuery();
   const sessionStatus = useSetAtom(SessionStatus);
   const comonSyncStatus = useSetAtom(ComonSyncStatus);
   const { setTokenLogin } = React.useContext(AuthContext);
@@ -133,8 +133,8 @@ export default function Menu({ navigation }: UserProfileScreenProps) {
         .catch((error) => {
           console.log(error);
           setLoader(false);
-          setTokenLogin(null);
-          removeSession();
+          void setTokenLogin(null);
+          void removeSession();
           navigateAndSimpleReset("Auth", {});
         });
 
@@ -426,7 +426,7 @@ function UserOrganizations() {
       .then((res) => {
         ToastMessage(t("label.organisation-selected"));
 
-        fetchAllAssigment(res);
+        void fetchAllAssigment(res);
       })
       .catch((err) => {
         // navigation.dispatch(DrawerActions.closeDrawer());
@@ -436,7 +436,7 @@ function UserOrganizations() {
   };
 
   const onToggle = () => {
-    FetchAllOrganisation();
+    void FetchAllOrganisation();
     refetch()
       .then((response) => {
         Dispatch(setOrganisationInvites(response.data.getMyInvites));

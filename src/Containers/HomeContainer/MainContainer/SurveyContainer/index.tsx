@@ -39,7 +39,7 @@ export default function SurveyContainer({ navigation, route }: SurveyContainerSc
   const { t } = useTranslation();
 
   useEffect(() => {
-    getQuestions();
+    void getQuestions();
   }, []);
 
   const getQuestions = useCallback(async () => {

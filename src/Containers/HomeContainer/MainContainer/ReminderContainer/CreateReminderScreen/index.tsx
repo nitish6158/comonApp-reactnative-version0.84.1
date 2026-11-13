@@ -2071,7 +2071,7 @@ export default function CreateReminderScreen({
                             if (!fromPhoneBook) {
                               setParticipantSelection(true);
                             } else {
-                              pickContact().then((res) => {
+                              void pickContact().then((res) => {
                                 if (res) {
                                   let phone = res.phoneNumbers[0].number;
                                   field.onChange([
@@ -2526,7 +2526,7 @@ export default function CreateReminderScreen({
   );
 
   function SelectAttachment(type: string, docType: MediaType) {
-    DocumentPicker.pickSingle({
+    void DocumentPicker.pickSingle({
       type: type,
       copyTo: "cachesDirectory",
     }).then(async (res) => {

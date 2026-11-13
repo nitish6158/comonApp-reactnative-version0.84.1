@@ -1,16 +1,15 @@
-import { Alert, Keyboard, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Keyboard, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useAtom, useAtomValue } from "jotai";
+import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import Call from "@Images/Call.svg";
-import Colors from "@/Constants/Colors";
-import { InternetAtom } from "@Atoms/InternetAtom";
-import React, { useMemo } from "react";
-import ToastMessage from "@Util/ToastMesage";
 import VideoCallChat from "@Images/VideoCallChat.svg";
+import ToastMessage from "@Util/ToastMesage";
 import { callAtom } from "@Atoms/callAtom";
-import { checkCallPermissions } from "@Util/permission";
+import { InternetAtom } from "@Atoms/InternetAtom";
 import { singleRoom } from "@Atoms/singleRoom";
-import { useTranslation } from "react-i18next";
+import { checkCallPermissions } from "@Util/permission";
 
 export default function AudioVideoContainer() {
   const display = useAtomValue(singleRoom);
@@ -18,124 +17,83 @@ export default function AudioVideoContainer() {
   const [internet] = useAtom(InternetAtom);
   const { t } = useTranslation();
 
-  const isMySelf = display.roomType == "self"
+  const isMySelf = display.roomType === "self";
 
   const hideAudioAndVideo = useMemo(() => {
-    if (display.roomType == "individual") {
-      if (display.isCurrentRoomBlocked && !isMySelf) {
-        return true;
-      } else {
-        return false;
-      }
-    } else if (display.roomType == "self") {
-      return true;
-    } else if (display.roomType == "group") {
-      if (display.participantsNotLeft.length == 1) {
-        return true;
-      } else {
-        return false;
-      }
+    if (display.roomType === "individual") {
+      return Boolean(display.isCurrentRoomBlocked && !isMySelf);
     }
-  }, [display.roomType, display.isCurrentRoomBlocked, display.participantsNotLeft]);
+    if (display.roomType === "self") {
+      return true;
+    }
+    if (display.roomType === "group") {
+      return display.participantsNotLeft.length === 1;
+    }
+    return false;
+  }, [display.roomType, display.isCurrentRoomBlocked, display.participantsNotLeft, isMySelf]);
+
+  const startCall = async (callType: "audio" | "video") => {
+    Keyboard.dismiss();
+    const res = await checkCallPermissions(callType);
+    if (res !== true) {
+      return;
+    }
+    if (!internet) {
+      Alert.alert(
+        "",
+        t("others.Couldn't place call. Make sure your device have an internet connection and try again")
+      );
+      return;
+    }
+    if (callRequest != null) {
+      ToastMessage(`${t("toastmessage.incall-already-message")}`);
+      return;
+    }
+    setCallRequest({
+      callType,
+      roomType: display.roomType,
+      roomId: display.roomId,
+      callBackground: display.roomImage,
+      roomName: display.roomName,
+      participants: [],
+      isReceiver: false,
+    });
+  };
 
   if (hideAudioAndVideo) {
-    return <></>;
-  } else {
-    return (
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <TouchableOpacity
-          activeOpacity={1}
-          style={styles.buttonContainer}
-          onPress={async () => {
-            Keyboard.dismiss();
-            console.log("[AudioVideoContainer] Video Call Pressed, internet:", internet, "callRequest:", callRequest);
-            const res = await checkCallPermissions("video");
-            console.log("[AudioVideoContainer] checkCallPermissions video result:", res);
-            if (res === true) {
-              if (internet) {
-                if (callRequest == null) {
-                  console.log("[AudioVideoContainer] Setting callRequest for video...");
-                  setCallRequest({
-                    callType: "video",
-                    roomType: display.roomType,
-                    roomId: display.roomId,
-                    callBackground: display.roomImage,
-                    roomName: display.roomName,
-                    participants: [],
-                    isReceiver: false,
-                  });
-                } else {
-                  console.log("[AudioVideoContainer] Already in callRequest:", callRequest);
-                  ToastMessage(`${t("toastmessage.incall-already-message")}`);
-                }
-              } else {
-                console.log("[AudioVideoContainer] No internet!");
-                Alert.alert(
-                  "",
-                  t("others.Couldn't place call. Make sure your device have an internet connection and try again")
-                );
-              }
-            }
-          }}
-          disabled={isMySelf}
-        >
-          <VideoCallChat />
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={1}
-          style={styles.buttonContainer}
-          onPress={async () => {
-            Keyboard.dismiss();
-            console.log("[AudioVideoContainer] Audio Call Pressed, internet:", internet, "callRequest:", callRequest);
-            const res = await checkCallPermissions("audio");
-            console.log("[AudioVideoContainer] checkCallPermissions audio result:", res);
-            if (res === true) {
-              if (internet) {
-                if (callRequest == null) {
-                  console.log("[AudioVideoContainer] Setting callRequest for audio...");
-                  setCallRequest({
-                    callType: "audio",
-                    roomType: display.roomType,
-                    roomId: display.roomId,
-                    callBackground: display.roomImage,
-                    roomName: display.roomName,
-                    participants: [],
-                    isReceiver: false,
-                  });
-                } else {
-                  console.log("[AudioVideoContainer] Already in callRequest:", callRequest);
-                  ToastMessage(`${t("toastmessage.incall-already-message")}`);
-                }
-              } else {
-                console.log("[AudioVideoContainer] No internet!");
-                Alert.alert(
-                  "",
-                  t("others.Couldn't place call. Make sure your device have an internet connection and try again")
-                );
-              }
-            }
-          }}
-          disabled={isMySelf}
-        >
-          <Call style={{ marginHorizontal: 15 }} />
-        </TouchableOpacity>
-      </View>
-    );
+    return null;
   }
+
+  return (
+    <View style={styles.row}>
+      <TouchableOpacity
+        activeOpacity={1}
+        style={styles.buttonContainer}
+        onPress={() => {
+          void startCall("video");
+        }}
+        disabled={isMySelf}
+      >
+        <VideoCallChat />
+      </TouchableOpacity>
+      <TouchableOpacity
+        activeOpacity={1}
+        style={styles.buttonContainer}
+        onPress={() => {
+          void startCall("audio");
+        }}
+        disabled={isMySelf}
+      >
+        <Call style={styles.callIcon} />
+      </TouchableOpacity>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  Backarrow: { transform: [{ rotate: "180deg" }] },
-  OnlineStyle: {
-    backgroundColor: Colors.light.onlineGreen,
-    borderColor: Colors.light.background,
-    borderRadius: 50,
-    borderWidth: 2.4,
-    height: 14,
-    left: 58,
-    position: "absolute",
-    top: 20,
-    width: 14,
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   buttonContainer: {
     alignItems: "center",
@@ -143,24 +101,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginHorizontal: 3,
     width: 35,
-    // backgroundColor: "red",
   },
-  chatsearchheader: {
-    alignItems: "center",
-    backgroundColor: Colors.light.LightBlue,
-    elevation: 1,
-    flexDirection: "row",
-    height: 60,
-    shadowColor: Colors.light.formItemBorder,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
+  callIcon: {
+    marginHorizontal: 15,
   },
-  container: {
-    flexDirection: "row",
-    // justifyContent: "",
-  },
-  downArrow: { marginLeft: 20, marginRight: 10, transform: [{ rotate: "90deg" }] },
-  secondryContainer: { flex: 5, flexDirection: "row" },
-  upArrow: { transform: [{ rotate: "-90deg" }] },
 });

@@ -149,7 +149,7 @@ function Docs({ name }: { name: string }) {
                     <View>
                       <Pressable
                         onPress={() => {
-                          onPressOpenDocument(item);
+                          void onPressOpenDocument(item);
                         }}
                         style={{
                           width: "100%",

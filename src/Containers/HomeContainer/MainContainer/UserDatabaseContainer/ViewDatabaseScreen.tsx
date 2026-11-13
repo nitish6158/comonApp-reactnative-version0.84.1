@@ -38,7 +38,7 @@ export default function ViewDatabaseScreen({ navigation, route }: ViewDatabaseSc
 
   useFocusEffect(
     useCallback(() => {
-      getFolderList.refetch();
+      void getFolderList.refetch();
     }, [])
   );
 
@@ -135,7 +135,7 @@ export default function ViewDatabaseScreen({ navigation, route }: ViewDatabaseSc
                             }
                             if (res.data?.deleteRecord) {
                               ToastMessage(t("userDatabase.record-deleted"));
-                              getFolderList.refetch({ input: { _id: route.params.parentId } });
+                              void getFolderList.refetch({ input: { _id: route.params.parentId } });
                             }
                           })
                           .catch((res) => {
@@ -239,7 +239,7 @@ export default function ViewDatabaseScreen({ navigation, route }: ViewDatabaseSc
 
                       <MenuOption
                         onSelect={() => {
-                          deleteFolderRequest({
+                          void deleteFolderRequest({
                             variables: {
                               input: {
                                 _id: item._id,
@@ -247,7 +247,7 @@ export default function ViewDatabaseScreen({ navigation, route }: ViewDatabaseSc
                             },
                           }).then((res) => {
                             if (res.data?.deleteUserFolder) {
-                              getFolderList.refetch({ input: { _id: route.params.parentId } });
+                              void getFolderList.refetch({ input: { _id: route.params.parentId } });
                             }
                           });
                         }}

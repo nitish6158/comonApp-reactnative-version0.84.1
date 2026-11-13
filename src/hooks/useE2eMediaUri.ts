@@ -212,7 +212,7 @@ export function useE2eMediaUri(
       }
     }
 
-    run();
+    void run();
     return () => {
       cancelled = true;
     };

@@ -78,7 +78,7 @@ export default function ViewTopicsScreen({ route, navigation }: ViewTopicsScreen
 
   function onTopicDelete(id: string) {
     setLoading(true);
-    deleterequest({
+    void deleterequest({
       variables: {
         input: {
           _id: id,

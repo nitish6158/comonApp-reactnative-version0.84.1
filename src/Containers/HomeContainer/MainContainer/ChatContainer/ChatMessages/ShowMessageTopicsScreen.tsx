@@ -62,7 +62,7 @@ export default function ShowMessageTopicsScreen({ navigation, route }: ShowMessa
 
   function onTopicDelete(topic: string) {
     let updated = display.currentUserUtility?.topic.filter((item) => item !== topic);
-    updateTopicRequest({
+    void updateTopicRequest({
       variables: {
         input: {
           roomId: display.roomId,

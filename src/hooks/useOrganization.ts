@@ -69,25 +69,19 @@ export const useOrganizations = () => {
     const org = orgData ? orgData : AllOrganisationData;
     const current = org?.find((organization) => organization._id === _id) as Organization | undefined;
     console.log("onSwitchOrganization", _id);
-    return new Promise<string>(async (resolve, reject) => {
-      try {
-        if (current) {
-          await AsyncCurrentOrganisation({ _id: _id!, link: current?.link! });
-          const res = await getOrganization({
-            variables: {
-              input: {
-                _id: _id,
-              },
-            },
-          });
-          dispatch(setCurrentOrganization(current));
-          return resolve(_id);
-        }
-        return reject("Custom error");
-      } catch (error) {
-        return reject(error);
-      }
+    if (!current) {
+      throw new Error("Organization not found");
+    }
+    await AsyncCurrentOrganisation({ _id: _id!, link: current?.link! });
+    await getOrganization({
+      variables: {
+        input: {
+          _id: _id,
+        },
+      },
     });
+    dispatch(setCurrentOrganization(current));
+    return _id;
   };
 
   const removeOrganization = (id: string) => {

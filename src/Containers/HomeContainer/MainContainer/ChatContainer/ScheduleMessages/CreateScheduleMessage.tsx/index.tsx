@@ -342,14 +342,13 @@ export default function CreateScheduleMessage({ route, navigation }: Readonly<Cr
                             )}
                             {(item.type === "video" || item.type === "VIDEO") && (
                               <Pressable
-                                style={{ marginBottom: 5 }}
                                 onPress={() => {
                                   navigation.navigate("ViewScheduleAttachment", {
                                     url: `${route.params.mode == "update" ? DefaultImageUrl : ""}${item.fileURL}`,
                                     type: "video",
                                   });
                                 }}
-                                style={styles.imageContainer}
+                                style={[styles.imageContainer, { marginBottom: 5 }]}
                               >
                                 {item.thumbnail.length > 0 && (
                                   <FastImage
@@ -1305,7 +1304,7 @@ export default function CreateScheduleMessage({ route, navigation }: Readonly<Cr
     console.log(form);
 
     if (route.params.mode == "create") {
-      scheduleMessageRequest({
+      void scheduleMessageRequest({
         variables: {
           input: {
             ...form,
@@ -1325,7 +1324,7 @@ export default function CreateScheduleMessage({ route, navigation }: Readonly<Cr
       const isOnce = data.recursive === RecurrentTypes["Once"]
 
       if (isSameDate && isOnce) {
-        updateRequest({
+        void updateRequest({
           variables: {
             input: {
               _id: route.params._id,
@@ -1470,7 +1469,7 @@ function UploadMedia({ type, file, onUploadDone }: Readonly<UploadMediaProps>) {
         uploadVideoFile();
       }
       if (type === "image" || type === "doc") {
-        uploadMedia();
+        void uploadMedia();
       }
     }
   }, []);
@@ -1510,8 +1509,8 @@ function UploadMedia({ type, file, onUploadDone }: Readonly<UploadMediaProps>) {
   function uploadVideoFile() {
     let bucketThumbnailPath = `${display.roomId}/${display.currentUserUtility.user_id}/thumbnail/${UUID.v4()}.jpg`;
     let bucketVideoPath = `${display.roomId}/${display.currentUserUtility.user_id}/${file.name}`;
-    uploadThumbnail(file.url, bucketThumbnailPath);
-    getUploadUrl(bucketVideoPath, file.mimeType).then(async (urlResponse) => {
+    void uploadThumbnail(file.url, bucketThumbnailPath);
+    void getUploadUrl(bucketVideoPath, file.mimeType).then(async (urlResponse) => {
       if (urlResponse.data?.getUploadSignedUrl.url) {
         const compressedUrl = await VideoCompress.compress(
           file.url,

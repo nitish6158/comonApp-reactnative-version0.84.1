@@ -77,7 +77,7 @@ export default function AnswerQuestionContainer({ currentTask }: { currentTask: 
             </View>
           )}
 
-          {currentTask?.attachment && currentTask.attachment?.type == "VIDEO" && currentTask?.attachment?.filename && (
+          {currentTask?.attachment?.type === "VIDEO" && Boolean(currentTask?.attachment?.filename) && (
             <>
               <TaskVideoPlayer
                 isFullScreen={true}

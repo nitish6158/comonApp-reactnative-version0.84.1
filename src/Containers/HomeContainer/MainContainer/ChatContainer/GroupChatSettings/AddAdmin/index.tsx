@@ -70,7 +70,7 @@ const AddAdmin = ({ navigation }: any) => {
     };
     // console.log(data);
     // return
-    socketConnect.emit("updateRoomAdmin", data);
+    void socketConnect.emit("updateRoomAdmin", data);
     ToastMessage(`${t("toastmessage.role-update-successfully")}`);
 
     const roleMap = new Map(updatedParticipants.map((participant) => [participant.user_id, participant.user_type]));
@@ -100,7 +100,7 @@ const AddAdmin = ({ navigation }: any) => {
     setTimeout(() => {
       navigateBack();
     }, 2000);
-    socketManager.chatRoom.fetchAndUpdateRooms();
+    void socketManager.chatRoom.fetchAndUpdateRooms();
   };
 
   return (

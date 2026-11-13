@@ -93,7 +93,7 @@ const OtpVerifyScreen: React.FC<OtpVerifyScreenProps> = ({ route }) => {
     setTimer(120);
     setCanResend(false);
 
-    resendOtp({
+    void resendOtp({
       variables: { email },
     });
   };

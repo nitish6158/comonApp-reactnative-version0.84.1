@@ -89,14 +89,14 @@ export function useRoomMediaAndDocsProcessor() {
               normalizePayloadItems(RoomMediaData),
               roomConversations
             );
-            prepareMediaData(combinedCachedData);
+            void prepareMediaData(combinedCachedData);
           } catch (error) {
             console.error("Error parsing cached media data:", error);
           }
         }
 
         // Fetch fresh data from server
-        socketManager.chatRoom.getMediaChats(display.roomId, 'all', (payload) => {
+        void socketManager.chatRoom.getMediaChats(display.roomId, 'all', (payload) => {
           // console.log("getMediaChats------>", JSON.stringify(payload));
           if (payload) {
             // Cache the response
@@ -110,7 +110,7 @@ export function useRoomMediaAndDocsProcessor() {
               normalizePayloadItems(RoomMediaData),
               roomConversations
             );
-            prepareMediaData(combinedPayload);
+            void prepareMediaData(combinedPayload);
           }
         });
       }

@@ -59,14 +59,14 @@ const useFileSystem = () => {
 
         if (i < files.length - 1) {
           i++;
-          donwloadFile();
+          void donwloadFile();
         } else {
           return true;
         }
       } else {
         if (i < files.length - 1) {
           i++;
-          donwloadFile();
+          void donwloadFile();
         } else {
           return true;
         }

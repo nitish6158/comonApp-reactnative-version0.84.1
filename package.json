@@ -17,7 +17,9 @@
     "start:prod": "cross-env ENVFILE=.env.production react-native start",
     "build:android:dev": "node scripts/buildAndroid.js .env.development :app:assembleDevelopmentDebug",
     "build:android:staging": "node scripts/buildAndroid.js .env.staging :app:assembleStagingDebug",
+    "build:android:staging:release": "node scripts/buildAndroid.js .env.staging :app:assembleStagingRelease",
     "build:android:prod": "node scripts/buildAndroid.js .env.production :app:assembleProductionRelease",
+    "build:android:prod:aab": "node scripts/buildAndroid.js .env.production :app:bundleProductionRelease",
     "pods": "cd ios && pod install",
     "postinstall": "patch-package && node scripts/patch-react-native-calendars.js && node scripts/patch-native-deps.js",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx",
@@ -36,7 +38,11 @@
     "debugBuild": "cd android && ./gradlew clean && cd .. && npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && cd android && ./gradlew assembleDebug",
     "androidReleaseAPK": "yarn android --mode release",
     "release": "cd android && ./gradlew clean && cd .. && npx react-native bundle --platform android --dev false  --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/ && rm -rf ./android/app/src/main/res/drawable-* && rm -rf ./android/app/src/main/res/raw/ && cd ./android && ./gradlew bundleRelease",
-    "rm": "rm -rf ./android/app/src/main/res/drawable-* && rm -rf ./android/app/src/main/res/raw"
+    "rm": "rm -rf ./android/app/src/main/res/drawable-* && rm -rf ./android/app/src/main/res/raw",
+    "sonar:up": "docker compose -f docker-compose.sonar.yml up -d",
+    "sonar:down": "docker compose -f docker-compose.sonar.yml down",
+    "sonar": "set -a; [ -f .env.sonar.local ] && . ./.env.sonar.local; set +a; SONAR_USER_HOME=.sonar sonar-scanner",
+    "sonar:local": "npm run test:ci && npm run sonar"
   },
   "dependencies": {
     "@ant-design/icons-react-native": "^2.3.2",

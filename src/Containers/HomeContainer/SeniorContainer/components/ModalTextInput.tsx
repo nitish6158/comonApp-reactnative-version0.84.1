@@ -155,7 +155,7 @@ export default function ModalTextInput({ isVisible, onClose, room }: props) {
                         setConversation((prev: any[]) => [optimisticMessage, ...(prev || [])]);
                       }
 
-                      socketManager.conversation.sendChat(payload as any);
+                      void socketManager.conversation.sendChat(payload as any);
                       ToastMessage(
                         `${t("seniorMode.message-sended")} ${room.display.UserName}`
                       );

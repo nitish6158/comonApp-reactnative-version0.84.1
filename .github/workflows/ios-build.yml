@@ -1,0 +1,275 @@
+name: iOS Automated Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment config
+        required: true
+        default: staging
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+      build_mode:
+        description: iOS output mode (simulator needs no Apple certificates; ad-hoc/app-store require signing secrets)
+        required: true
+        default: simulator
+        type: choice
+        options:
+          - simulator
+          - ad-hoc
+          - app-store
+      upload_testflight:
+        description: Upload exported IPA to TestFlight (requires App Store Connect API secrets)
+        required: false
+        default: false
+        type: boolean
+  push:
+    tags:
+      - "v*"
+
+concurrency:
+  group: ios-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-gate:
+    name: Pre-Build Typecheck & Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.19.4"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript typecheck
+        run: npm run typecheck
+
+      - name: Jest tests
+        run: npm run test:ci
+
+  build-ios:
+    name: Build iOS (${{ inputs.environment || 'production' }})
+    needs: quality-gate
+    runs-on: macos-15
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Resolve iOS build options
+        id: cfg
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            TARGET_ENV="${{ inputs.environment }}"
+            BUILD_MODE="${{ inputs.build_mode }}"
+            UPLOAD_TF="${{ inputs.upload_testflight }}"
+          else
+            TARGET_ENV="production"
+            BUILD_MODE="app-store"
+            UPLOAD_TF="false"
+          fi
+          echo "target_env=$TARGET_ENV" >> "$GITHUB_OUTPUT"
+          echo "build_mode=$BUILD_MODE" >> "$GITHUB_OUTPUT"
+          echo "upload_tf=$UPLOAD_TF" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.19.4"
+          cache: npm
+
+      - name: Setup Ruby & Bundler cache
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Prepare environment config (.env.${{ steps.cfg.outputs.target_env }})
+        shell: bash
+        env:
+          ENV_DEV_SECRET: ${{ secrets.ENV_DEVELOPMENT }}
+          ENV_STAGING_SECRET: ${{ secrets.ENV_STAGING }}
+          ENV_PROD_SECRET: ${{ secrets.ENV_PRODUCTION }}
+        run: |
+          TARGET_ENV="${{ steps.cfg.outputs.target_env }}"
+          TARGET_FILE=".env.${TARGET_ENV}"
+          SECRET_VAL=""
+          if [[ "$TARGET_ENV" == "development" ]]; then
+            SECRET_VAL="$ENV_DEV_SECRET"
+          elif [[ "$TARGET_ENV" == "staging" ]]; then
+            SECRET_VAL="$ENV_STAGING_SECRET"
+          else
+            SECRET_VAL="$ENV_PROD_SECRET"
+          fi
+
+          if [[ -n "$SECRET_VAL" ]]; then
+            printf '%s\n' "$SECRET_VAL" > "$TARGET_FILE"
+          else
+            UPPER_ENV=$(printf '%s' "$TARGET_ENV" | tr '[:lower:]' '[:upper:]')
+            echo "::warning::Secret ENV_${UPPER_ENV} not configured; falling back to .env.example"
+            cp .env.example "$TARGET_FILE"
+          fi
+          cp "$TARGET_FILE" .env
+          printf 'export NODE_BINARY="%s"\n' "$(command -v node)" > ios/.xcode.env.local
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Install CocoaPods dependencies
+        env:
+          ENVFILE: ../.env.${{ steps.cfg.outputs.target_env }}
+        run: |
+          cd ios
+          bundle exec pod install
+
+      - name: Build unsigned iOS Simulator app
+        if: steps.cfg.outputs.build_mode == 'simulator'
+        env:
+          ENVFILE: ../.env.${{ steps.cfg.outputs.target_env }}
+        run: |
+          xcodebuild \
+            -workspace ios/commonapp.xcworkspace \
+            -scheme commonapp \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath ios/build-sim \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+          mkdir -p ios-artifacts
+          cd ios/build-sim/Build/Products/Release-iphonesimulator
+          zip -r "$GITHUB_WORKSPACE/ios-artifacts/MeetUs-${{ steps.cfg.outputs.target_env }}-simulator.app.zip" *.app
+
+      - name: Import Apple Signing Certificate & Provisioning Profile
+        if: steps.cfg.outputs.build_mode != 'simulator'
+        shell: bash
+        env:
+          P12_B64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
+          P12_PASS: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          PROFILE_B64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          KEYCHAIN_PASS: ${{ secrets.IOS_KEYCHAIN_PASSWORD || 'ci-temp-keychain' }}
+        run: |
+          if [[ -z "$P12_B64" || -z "$P12_PASS" || -z "$PROFILE_B64" ]]; then
+            echo "::error::Missing IOS_CERTIFICATE_P12_BASE64, IOS_CERTIFICATE_PASSWORD, or IOS_PROVISIONING_PROFILE_BASE64 secrets for signed IPA build."
+            exit 1
+          fi
+
+          CERT_PATH="$RUNNER_TEMP/dist_cert.p12"
+          PROFILE_PATH="$RUNNER_TEMP/profile.mobileprovision"
+          KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
+
+          echo "$P12_B64" | base64 --decode > "$CERT_PATH"
+          echo "$PROFILE_B64" | base64 --decode > "$PROFILE_PATH"
+
+          security create-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
+          security import "$CERT_PATH" -P "$P12_PASS" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH" login.keychain-db
+
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          PROFILE_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' /dev/stdin <<< "$(security cms -D -i "$PROFILE_PATH")")
+          PROFILE_NAME=$(/usr/libexec/PlistBuddy -c 'Print :Name' /dev/stdin <<< "$(security cms -D -i "$PROFILE_PATH")")
+          cp "$PROFILE_PATH" "$HOME/Library/MobileDevice/Provisioning Profiles/${PROFILE_UUID}.mobileprovision"
+          echo "PROFILE_NAME=$PROFILE_NAME" >> "$GITHUB_ENV"
+
+      - name: Archive & Export Signed IPA
+        if: steps.cfg.outputs.build_mode != 'simulator'
+        env:
+          ENVFILE: ../.env.${{ steps.cfg.outputs.target_env }}
+          IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID || '4FXM237WD5' }}
+        run: |
+          EXPORT_METHOD="app-store-connect"
+          if [[ "${{ steps.cfg.outputs.build_mode }}" == "ad-hoc" ]]; then
+            EXPORT_METHOD="ad-hoc"
+          fi
+
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>${EXPORT_METHOD}</string>
+            <key>teamID</key>
+            <string>${IOS_TEAM_ID}</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.comon.comonapp</key>
+              <string>${PROFILE_NAME}</string>
+            </dict>
+          </dict>
+          </plist>
+          EOF
+
+          xcodebuild \
+            -workspace ios/commonapp.xcworkspace \
+            -scheme commonapp \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath ios/build/MeetUs.xcarchive \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM="${IOS_TEAM_ID}" \
+            PROVISIONING_PROFILE_SPECIFIER="${PROFILE_NAME}" \
+            archive
+
+          mkdir -p ios-artifacts
+          xcodebuild -exportArchive \
+            -archivePath ios/build/MeetUs.xcarchive \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath ios-artifacts
+
+      - name: Upload to TestFlight (optional)
+        if: steps.cfg.outputs.upload_tf == 'true' && steps.cfg.outputs.build_mode == 'app-store'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+        run: |
+          if [[ -z "$ASC_KEY_ID" || -z "$ASC_ISSUER_ID" || -z "$ASC_PRIVATE_KEY" ]]; then
+            echo "::error::Missing ASC_KEY_ID, ASC_ISSUER_ID, or ASC_PRIVATE_KEY secrets for TestFlight upload."
+            exit 1
+          fi
+          mkdir -p "$HOME/.appstoreconnect/private_keys"
+          printf '%s\n' "$ASC_PRIVATE_KEY" > "$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8"
+          IPA_FILE=$(find ios-artifacts -name "*.ipa" | head -n 1)
+          xcrun altool --upload-app -f "$IPA_FILE" -t ios --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID"
+
+      - name: Upload iOS build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: meetus-ios-${{ steps.cfg.outputs.target_env }}-${{ steps.cfg.outputs.build_mode }}-${{ github.run_number }}
+          path: ios-artifacts/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Cleanup runner keychain & secrets
+        if: always()
+        run: |
+          security delete-keychain "$RUNNER_TEMP/app-signing.keychain-db" 2>/dev/null || true
+          rm -rf "$HOME/.appstoreconnect" .env .env.${{ steps.cfg.outputs.target_env }} ios/.xcode.env.local

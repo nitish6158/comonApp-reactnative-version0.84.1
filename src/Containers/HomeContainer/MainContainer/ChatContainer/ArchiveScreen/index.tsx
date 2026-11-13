@@ -60,7 +60,7 @@ export default function ArchiveScreen({ }: ArchiveChatListScreenProps) {
                   chatclear={item?.last_msg[0]?.message?.clear}
                   onPressContinaer={() => {
                     setLimit(20);
-                    socketConnect.emit("removeDisappearedChats", {
+                    void socketConnect.emit("removeDisappearedChats", {
                       roomId: item?._id,
                     });
                     navigate("ChatMessageScreen", {
@@ -143,7 +143,7 @@ export default function ArchiveScreen({ }: ArchiveChatListScreenProps) {
   function unArchive(id: string) {
     const myId = MyProfile?._id;
     const syncRoomsFromServer = () => {
-      socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
+      void socketManager.chatRoom.fetchAndUpdateRooms((data: { rooms: RoomData[] }) => {
         if (!data?.rooms) return;
         const archives = data.rooms.filter((room) =>
           (room?.archivedBy || []).some((entry: any) => {

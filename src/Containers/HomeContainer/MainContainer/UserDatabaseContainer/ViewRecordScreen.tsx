@@ -23,7 +23,7 @@ export default function ViewRecordScreen({ navigation, route }: ViewRecordScreen
 
   useFocusEffect(
     useCallback(() => {
-      getRecordRequest({
+      void getRecordRequest({
         variables: {
           input: {
             _id: route.params.recordId,

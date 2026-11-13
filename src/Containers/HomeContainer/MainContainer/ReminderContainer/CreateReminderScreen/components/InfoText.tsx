@@ -60,7 +60,7 @@ export default function InfoText({ text, style, recursiveList }: props) {
           borderRadius: 10,
           flexDirection: "row",
         },
-        style && style,
+        style,
       ]}
     >
       <VectorIconCompat name="info" size={12} color={"#DD761C"} style={{ marginRight: 5, marginTop: 2 }} />

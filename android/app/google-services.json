@@ -1,44 +1,26 @@
 {
   "project_info": {
-    "project_number": "13504575413",
-    "project_id": "analog-sum-332609",
-    "storage_bucket": "analog-sum-332609.firebasestorage.app"
+    "project_number": "825164035184",
+    "project_id": "meetus-c10a1",
+    "storage_bucket": "meetus-c10a1.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:13504575413:android:f313c8dad95e2db6880bfc",
+        "mobilesdk_app_id": "1:825164035184:android:814f0e66c330c6b04b30b5",
         "android_client_info": {
-          "package_name": "io.comon.app"
+          "package_name": "com.meetus"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "13504575413-t0s9qf90cg4or4mk2urqgnqvgp0mjqd6.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDvU50wv5i__UKBruDoB8xMLQmg_G9ME78"
+          "current_key": "AIzaSyAklcd4K7w-IDAOvtbj54lkmWINrfAqwHU"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "13504575413-t0s9qf90cg4or4mk2urqgnqvgp0mjqd6.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "13504575413-pbqkvsdu586tq4po64rmchj210o83e2d.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.comon.comonapp",
-                "app_store_id": "1624464685"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

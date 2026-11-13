@@ -245,7 +245,7 @@ export const useTaskManager = (
         }
       }
     };
-    fetchContacts();
+    void fetchContacts();
   }, [currentOrg?._id, getAllOrgContactsRequest]);
 
   // Update contacts effect

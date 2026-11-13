@@ -55,7 +55,7 @@ export default function DeleteForwardModal({ }: DeleteForwardModalProps) {
 
     // const serverList = Cidlist.map((c) => c.server_id);
 
-    socketConnect.emit("deleteChat", {
+    void socketConnect.emit("deleteChat", {
       cid: list,
       roomId: display.roomId,
       type: "me",
@@ -69,7 +69,7 @@ export default function DeleteForwardModal({ }: DeleteForwardModalProps) {
       },
     });
 
-    socketConnect.emit("removeChatsFromFavourite", { cid: list });
+    void socketConnect.emit("removeChatsFromFavourite", { cid: list });
 
     setselectedItem(null);
     setCidList([]);
@@ -98,7 +98,7 @@ export default function DeleteForwardModal({ }: DeleteForwardModalProps) {
 
     const serverList = Cidlist.map((c) => c.server_id);
 
-    socketConnect.emit("deleteChat", {
+    void socketConnect.emit("deleteChat", {
       cid: list,
       roomId: display.roomId,
       type: "everyone",
@@ -110,7 +110,7 @@ export default function DeleteForwardModal({ }: DeleteForwardModalProps) {
         cause: "deleted",
       },
     });
-    socketConnect.emit("removeChatsFromFavourite", { cid: list });
+    void socketConnect.emit("removeChatsFromFavourite", { cid: list });
 
     setselectedItem(null);
     setCidList([]);

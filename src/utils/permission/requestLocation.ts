@@ -18,7 +18,7 @@ export const requestLocation = async (): Promise<undefined | { lat: string; long
         },
         (error) => {
           console.error("Error getting location:", error);
-          reject(undefined);
+          reject(new Error(error?.message || "Failed to get location"));
         }
       );
     });
@@ -40,7 +40,7 @@ export const requestLastKnownLocation = async () => {
         },
         (error) => {
           console.error("Error getting last known location:", error);
-          reject(error);
+          reject(new Error(error?.message || "Failed to get last known location"));
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
       );

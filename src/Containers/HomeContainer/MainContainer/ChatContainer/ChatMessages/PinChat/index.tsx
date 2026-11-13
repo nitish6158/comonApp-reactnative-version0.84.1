@@ -90,8 +90,8 @@ function PinChat({
   // Handle unpinning a message
   const handleUnpin = () => {
     // Call the socket API to unpin the message
-    socketManager.conversation.pinMessage(activeRoomid || display.roomId, Cid);
-    socketConnect.emit("unpinChat", { cid: Cid, roomId: activeRoomid || display.roomId });
+    void socketManager.conversation.pinMessage(activeRoomid || display.roomId, Cid);
+    void socketConnect.emit("unpinChat", { cid: Cid, roomId: activeRoomid || display.roomId });
 
     // Update the local state immediately via the callback
     if (onUnpin) {

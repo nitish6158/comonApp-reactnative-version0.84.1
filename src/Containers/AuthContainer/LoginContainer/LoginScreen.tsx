@@ -104,7 +104,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
 
   const [LoginRequest, LoginResponse] = useSigninMutation();
   const [updateAgreeStatus] = useUpdateUserMutation();
-  const [logoutDevicesRequest, { }] = useLogoutDevicesMutation();
+  const [logoutDevicesRequest] = useLogoutDevicesMutation();
   const setCurrentId = useSetAtom(currentUserIdAtom);
   const [tempPayload, setTeamPayload] = useState<payloadType | null>(null);
   const [waitingPayload, setWaitingPayload] = useState<{
@@ -120,7 +120,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
     useRequestEmailConfirmLazyQuery({});
 
   useEffect(() => {
-    handleLoginResponse();
+    void handleLoginResponse();
   }, [LoginResponse.data, LoginResponse.error]);
 
   return (
@@ -255,7 +255,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
           onAgree={async () => {
             if (waitingPayload) {
               termsSheetRef.current?.close();
-              AsyncStorage.setItem(
+              void AsyncStorage.setItem(
                 "MyProfile",
                 JSON.stringify(waitingPayload?.user),
               );
@@ -266,7 +266,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
                 "topic Subscribe success",
                 `${waitingPayload?.mode}_user_id_${id}`,
               );
-              messaging().subscribeToTopic(
+              void messaging().subscribeToTopic(
                 `${waitingPayload?.mode}_user_id_${id}`,
               );
 
@@ -279,7 +279,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
 
               if (result.success && tempPayload) {
                 await setSession(result.data);
-                updateAgreeStatus({
+                void updateAgreeStatus({
                   variables: {
                     input: {
                       _id: waitingPayload?.user._id,
@@ -290,7 +290,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
                 }).then((res) => {
                   let email = waitingPayload?.user?.email;
                   let password = waitingPayload?.password;
-                  handleRealmLogin(email, password);
+                  void handleRealmLogin(email, password);
                 });
               }
             }
@@ -402,8 +402,13 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
 
     setLoader(true);
     try {
-      await AsyncStorage.setItem(SessionKeys.TOKEN, token);
-      const response = await logoutDevicesRequest();
+      const response = await logoutDevicesRequest({
+        context: {
+          headers: {
+            token,
+          },
+        },
+      });
 
       ToastMessage(
         `${response.data?.logoutDevices?.message ?? ""}. ${t(
@@ -433,7 +438,10 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
       console.log("hwdgbhjwgb", JSON.stringify(LoginResponse?.error));
       if (LoginResponse.error.graphQLErrors[0]) {
         let error = LoginResponse.error.graphQLErrors[0];
-        let code = error?.extensions?.exception?.response?.code;
+        const responseBody =
+          error?.extensions?.response ||
+          error?.extensions?.exception?.response;
+        let code = responseBody?.code;
         console.log("code", code);
 
         switch (code) {
@@ -446,10 +454,8 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
           case 3:
             Alert.alert(
               "Force Logout ?",
-              `${t("account-already-login")} ${error?.extensions?.exception?.response?.buildId ??
-              "other device"
-              }, ${t("account-logout")} ${error?.extensions?.exception?.response?.buildId ??
-              "other device"
+              `${t("account-already-login")} ${responseBody?.buildId ?? "other device"
+              }, ${t("account-logout")} ${responseBody?.buildId ?? "other device"
               }.`,
               [
                 {
@@ -460,9 +466,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
                 {
                   text: "OK",
                   onPress: () => {
-                    logoutDevices(
-                      error?.extensions?.exception?.response?.token,
-                    );
+                    void logoutDevices(responseBody?.token);
                   },
                 },
               ],
@@ -495,7 +499,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
       setWaitingPayload({ user, password: tempPayload?.password, mode });
 
       if (isAgree) {
-        AsyncStorage.setItem("MyProfile", JSON.stringify(user));
+        void AsyncStorage.setItem("MyProfile", JSON.stringify(user));
         const id = user._id;
         setCurrentId(user);
         dispatch(setMyProfile(user));
@@ -584,7 +588,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
   }
 
   function onGoPrivacyPolicy() {
-    Linking.openURL(PRIVACY_POLICY);
+    void Linking.openURL(PRIVACY_POLICY);
   }
 
   function onCloseModal() {
@@ -592,10 +596,10 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
   }
 
   function openHelpPhone() {
-    Linking.openURL("tel:+491722804503");
+    void Linking.openURL("tel:+491722804503");
   }
 
   function openHelpMail() {
-    Linking.openURL("mailto://M.Ketteler@gmx.de");
+    void Linking.openURL("mailto://M.Ketteler@gmx.de");
   }
 }

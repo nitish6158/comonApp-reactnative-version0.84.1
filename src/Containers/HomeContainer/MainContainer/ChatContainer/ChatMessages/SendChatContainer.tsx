@@ -303,7 +303,7 @@ function ChatInputBox() {
       }
     };
 
-    loadRoomDraft();
+    void loadRoomDraft();
 
     return () => {
       isMounted = false;
@@ -320,7 +320,7 @@ function ChatInputBox() {
     return () => {
       clearTimeout(expireTimeout);
       const latestMessage = messageValueRef.current;
-      draftMessageHandler(latestMessage);
+      void draftMessageHandler(latestMessage);
     };
   }, []);
 
@@ -442,7 +442,7 @@ function ChatInputBox() {
       if (display.roomType == "broadcast") {
         sendBroadcastChat(payload)
           .then((response) => {
-            socketManager.conversation.sendChat(payload);
+            void socketManager.conversation.sendChat(payload);
             if (response?._id) {
               whoosh.play((success) => {
                 if (success) {
@@ -457,7 +457,7 @@ function ChatInputBox() {
             console.error("Error in sending chat", err);
           });
       } else {
-        socketManager.conversation.sendChat(payload);
+        void socketManager.conversation.sendChat(payload);
         // const messages = await conversationService.getMessagesByRoomId(
         //   display?.roomId
         // );
@@ -502,7 +502,7 @@ function ChatInputBox() {
         reply_msg: Replymessage ? Replymessage : null,
       };
 
-      socketManager.conversation.sendChat(payload);
+      void socketManager.conversation.sendChat(payload);
     }
   }
   const SendChatHandler = async (messageText = messageValue) => {
@@ -585,7 +585,7 @@ function ChatInputBox() {
     clearTimeout(expireTimeout);
     setMessageValue(nextMessage);
     setSelection({ start: caretPosition, end: caretPosition });
-    draftMessageHandler(nextMessage);
+    void draftMessageHandler(nextMessage);
     mentionRef.current?.focus();
   };
 
@@ -895,7 +895,7 @@ function ChatInputBox() {
             ToastMessage(t("noLongerParticipant"));
             return;
           }
-          socketManager.conversation.flushOutbox?.();
+          void socketManager.conversation.flushOutbox?.();
         })
         .catch((err) => {
           console.log("ensureRoomCanSend failed:", err);
@@ -914,7 +914,7 @@ function ChatInputBox() {
     // Some socket backends expect object payload and some expect raw id.
     await socketConnect.emit("undeleteRoom", { roomId: activeRoomId } as any);
     await socketConnect.emit("undeleteRoom", activeRoomId as any);
-    socketManager.chatRoom.fetchAndUpdateRooms(() => {});
+    void socketManager.chatRoom.fetchAndUpdateRooms(() => {});
 
     for (let attempt = 0; attempt < 8; attempt++) {
       await new Promise((resolve) => setTimeout(resolve, 300));
@@ -926,7 +926,7 @@ function ChatInputBox() {
             resolve(data);
           }
         };
-        socketManager.chatRoom.getFormattedRoomById(activeRoomId, (data) => {
+        void socketManager.chatRoom.getFormattedRoomById(activeRoomId, (data) => {
           settleOnce(data);
         });
         setTimeout(() => settleOnce(null), 1200);
@@ -950,7 +950,7 @@ function ChatInputBox() {
 
     if (index >= 0) {
       draftData.splice(index, 1);
-      StoreDraft(JSON.stringify(draftData));
+      void StoreDraft(JSON.stringify(draftData));
     }
   }
 
@@ -979,7 +979,7 @@ function ChatInputBox() {
       draftData.splice(index, 1, { id: roomId, message: message });
     }
     //update draft from async-storage
-    StoreDraft(JSON.stringify(draftData));
+    void StoreDraft(JSON.stringify(draftData));
   }
 
   async function draftMessageHandler(message: string) {
@@ -993,12 +993,12 @@ function ChatInputBox() {
       clearTimeout(expireTimeout);
       expireTimeout = setTimeout(() => {
         // console.log("Here");
-        draftMessageHandler(message);
+        void draftMessageHandler(message);
       }, 1000);
       // console.log(message)
       setMessageValue(message);
     } else {
-      draftMessageHandler("");
+      void draftMessageHandler("");
       setMessageValue("");
       setSelection({ start: 0, end: 0 });
     }
@@ -1039,7 +1039,7 @@ function SeniorBottomBox() {
       </Pressable>
       <Pressable
         onPress={() => {
-          pickImage("Camera");
+          void pickImage("Camera");
         }}
         style={{ flex: 1, alignItems: "center" }}
       >
@@ -1054,7 +1054,7 @@ function SeniorBottomBox() {
       </Pressable>
       <Pressable
         onPress={() => {
-          pickImage("Gallery");
+          void pickImage("Gallery");
         }}
         style={{ flex: 1, alignItems: "center" }}
       >

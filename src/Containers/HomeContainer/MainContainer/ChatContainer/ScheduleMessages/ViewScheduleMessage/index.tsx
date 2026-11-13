@@ -86,12 +86,12 @@ export default function ViewScheduleMessage({ route, navigation }: Readonly<View
   }, [route?.params?.roomId, display?.roomId, filter, getScheduleByRoomId]);
 
   useEffect(() => {
-    fetchScheduleMessages();
+    void fetchScheduleMessages();
   }, [fetchScheduleMessages, reminderRefreshKey]);
 
   useFocusEffect(
     useCallback(() => {
-      fetchScheduleMessages();
+      void fetchScheduleMessages();
       return () => {};
     }, [fetchScheduleMessages])
   );
@@ -251,7 +251,7 @@ export default function ViewScheduleMessage({ route, navigation }: Readonly<View
                             
                             if (res.data?.deleteReminder) {
                               ToastMessage(t("reminders.event-deleted"));
-                              fetchScheduleMessages();
+                              void fetchScheduleMessages();
                               
                             }
                           })

@@ -170,7 +170,7 @@ export default function ChatsScreen({ navigation }: any) {
     let isMounted = true;
 
     const refreshActiveContacts = () => {
-      socketManager.chatRoom.getActiveContacts((data: any) => {
+      void socketManager.chatRoom.getActiveContacts((data: any) => {
         const nextContacts = Array.isArray(data)
           ? data
           : Array.isArray(data?.activeContacts)
@@ -253,7 +253,7 @@ export default function ChatsScreen({ navigation }: any) {
 
   const onRefreshRooms = useCallback(() => {
     setRefreshing(true);
-    socketManager.chatRoom.fetchAndUpdateRooms((data) => {
+    void socketManager.chatRoom.fetchAndUpdateRooms((data) => {
       if (data.rooms) {
         setAllRooms(data.rooms);
       }
@@ -312,7 +312,7 @@ export default function ChatsScreen({ navigation }: any) {
               e2eEnabled: !!item.e2eEnabled,
             });
             setLimit(20);
-            socketConnect.emit("removeDisappearedChats", { roomId: item?._id });
+            void socketConnect.emit("removeDisappearedChats", { roomId: item?._id });
             setRoomId(item?._id);
             socketManager.conversation.onSetChatReadBy(() => {});
             navigate("ChatMessageScreen", {

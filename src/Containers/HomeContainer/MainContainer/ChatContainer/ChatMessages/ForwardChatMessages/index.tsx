@@ -58,7 +58,7 @@ export default function ForwardChatMessage({ route }) {
 
   useFocusEffect(
     useCallback(() => {
-      fetchData();
+      void fetchData();
       setRoomidList([]);
     }, [])
   );
@@ -93,7 +93,7 @@ export default function ForwardChatMessage({ route }) {
     };
 
     return new Promise((resolve) => {
-      socketManager.conversation.sendChat(payload);
+      void socketManager.conversation.sendChat(payload);
       // Resolve immediately after sending
       resolve();
     });
@@ -136,7 +136,7 @@ export default function ForwardChatMessage({ route }) {
 
     // return
     if (RoomidList?.length > 0) {
-      socketConnect.emit("forwardChat", {
+      void socketConnect.emit("forwardChat", {
         rooms: roomIdList,
         messages: messagesList,
       });
@@ -302,7 +302,7 @@ export default function ForwardChatMessage({ route }) {
               // };
 
               if (RoomidList.length > 0) {
-                socketConnect.emit("forwardChat", {
+                void socketConnect.emit("forwardChat", {
                   rooms: RoomidList,
                   messages: Cidlist,
                 });
@@ -327,9 +327,7 @@ export default function ForwardChatMessage({ route }) {
 
   async function fetchData() {
     try {
-      // socketConnect.emit("getFrequentRooms", "");
-
-      socketManager.chatRoom.onGetFrequentRooms((data) => {
+      await socketManager.chatRoom.onGetFrequentRooms((data) => {
         const getlist = data
           .map((room) => {
             const isExist = ChatRooms.find((al) => al._id === room);

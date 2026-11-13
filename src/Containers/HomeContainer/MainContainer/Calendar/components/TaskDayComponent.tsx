@@ -94,7 +94,7 @@ export default function TaskDayComponent({ data, title }: props) {
         disabled={loading}
         onPress={() => {
           if (status.status) {
-            onAssignmentPressed();
+            void onAssignmentPressed();
           } else {
             ToastMessage(status.text);
           }

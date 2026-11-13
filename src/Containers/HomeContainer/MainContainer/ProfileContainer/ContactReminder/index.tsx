@@ -79,7 +79,7 @@ export default function ContactReminders({}: ContactRemindersScreenProps) {
                   <MenuOption
                     style={{ flexDirection: "row", alignItems: "center" }}
                     onSelect={() => {
-                      removeContactReminder({
+                      void removeContactReminder({
                         variables: {
                           input: {
                             _id: item._id,
@@ -129,7 +129,7 @@ export default function ContactReminders({}: ContactRemindersScreenProps) {
               mode={"update"}
               onSubmit={(data) => {
                 setSelectedReminder(null);
-                updateContactReminder({
+                void updateContactReminder({
                   variables: {
                     input: { contact_reminder: { ...data, _id: selectedReminder?._id } },
                   },

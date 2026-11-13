@@ -49,7 +49,7 @@ function SendChatHelper() {
 
     if (isConnected) {
       console.log("send it");
-      createNewMessage({
+      void createNewMessage({
         variables: {
           input: {
             data: {

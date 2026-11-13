@@ -362,7 +362,7 @@ export default function SingleViewReminder({
                                   );
                                 }
                                 console.log("file", file);
-                                FileViewer.open(file, {
+                                void FileViewer.open(file, {
                                   showOpenWithDialog: true,
                                   showAppsSuggestions: true,
                                 });
@@ -428,7 +428,7 @@ export default function SingleViewReminder({
                   utility.isCurrentUserAdmin && (
                     <Pressable
                       onPress={() => {
-                        reInviteRequest({
+                        void reInviteRequest({
                           variables: {
                             input: {
                               _id: reminder?._id,
@@ -774,7 +774,7 @@ export default function SingleViewReminder({
   );
 
   function onDialerPressed(phone: string) {
-    Linking.openURL(`tel:${phone}`);
+    void Linking.openURL(`tel:${phone}`);
   }
 
   function GetCallName(participants: reminder_participants[]) {
@@ -881,7 +881,7 @@ export function DownloadAttachmentView({ url }) {
       }}
       onPress={() => {
         setLoading(true);
-        donwloadFiles([url], false).then((res) => {
+        void donwloadFiles([url], false).then((res) => {
           ToastMessage(t("reminders.file-downloaded-succesfully"));
           setLoading(false);
         });

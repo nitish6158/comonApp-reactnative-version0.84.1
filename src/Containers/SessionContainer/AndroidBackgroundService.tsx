@@ -48,13 +48,13 @@ function BackgroundNotifications() {
   }, [MyProfile]);
 
   useEffect(() => {
-    AsyncActionCheck();
+    void AsyncActionCheck();
   }, [appState]);
 
   async function AsyncActionCheck() {
     let detail = global.androidBackgroundNotificationPress;
     if (detail) {
-      handlePressAction(detail);
+      void handlePressAction(detail);
       global.androidBackgroundNotificationPress = null;
     }
   }
@@ -91,7 +91,7 @@ function BackgroundNotifications() {
         break;
       case "reminder":
       case "taskNotification":
-        handleTaskNotification(detail);
+        void handleTaskNotification(detail);
         break;
       case "message":
         await handleMessageNotification(detail);
@@ -231,12 +231,12 @@ function BackgroundNotifications() {
     }
 
     if (contact) {
-      dismissNotification(true, contact._id);
+      void dismissNotification(true, contact._id);
       navigate("ChatMessageScreen", {
         RoomId: contact.roomId,
       });
     }
-    notifee.cancelNotification(detail.notification?.id ?? "");
+    void notifee.cancelNotification(detail.notification?.id ?? "");
   };
 
   const handleCalendarReminder = async (detail: any) => {
@@ -285,7 +285,7 @@ function BackgroundNotifications() {
     console.log("handleTaskNotification",TaskData)
     if (TaskData?.assignmentId && TaskData?.organizationId) {
       global.activeOrg = TaskData?.organizationId
-      handleTaskNotificationTap(TaskData?.organizationId, TaskData?.assignmentId);
+      void handleTaskNotificationTap(TaskData?.organizationId, TaskData?.assignmentId);
     }
   };
 

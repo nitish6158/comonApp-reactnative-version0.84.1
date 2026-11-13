@@ -42,7 +42,7 @@ export default function UploadAttachmentView({ item, onUploadDone, onCancel, onE
   const [progress, setProgress] = useState<number>(0);
 
   useEffect(() => {
-    AttachmentUpload(item);
+    void AttachmentUpload(item);
   }, []);
 
   const name = useMemo(() => {

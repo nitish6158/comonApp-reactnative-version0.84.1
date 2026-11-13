@@ -130,7 +130,7 @@ function CreateGroupProfile({ navigation, route }: CreateGroupScreenProps) {
               if (route.params.mode == "update") {
                 let payload = await UploadImage();
                 console.log("upload image payload", payload);
-                socketConnect.emit("setRoomPicture", payload);
+                void socketConnect.emit("setRoomPicture", payload);
                 const imageUrl = payload?.imageURl ?? ImageUrl;
                 setDisplay(
                   produce(display, (draftDisplay) => {
@@ -138,7 +138,7 @@ function CreateGroupProfile({ navigation, route }: CreateGroupScreenProps) {
                   })
                 );
                 setTimeout(() => {
-                  socketManager.chatRoom.fetchAndUpdateRooms();
+                  void socketManager.chatRoom.fetchAndUpdateRooms();
                   setLoading(false);
                   setGroupImage([]);
                   navigation.goBack();

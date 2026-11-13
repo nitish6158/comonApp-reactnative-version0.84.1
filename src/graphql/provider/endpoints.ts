@@ -1,3 +1,4 @@
+import Config from "react-native-config";
 import { env } from "@/config/env";
 
 export const BuildType: string = env.appEnv;
@@ -15,11 +16,8 @@ export const IOS_URL: string = env.iosUrl;
 export const ANDROID_URL: string = env.androidUrl;
 
 // Fallback compatibility keys
-export const REALM_URL: string = env.appEnv === "staging" ? "application-stage-vldxa" : "application-com-dev-ygous";
-export const REALM_AUTH_LOGIN: string =
-  env.appEnv === "staging"
-    ? "iVkmUzUAE4EDaULGUYa7mswv4X2eTWUvhRFydvsnYxyB8X4AHolC52Y8TorRqEjd"
-    : "BW2FeGAjKojKWEl7SwBUZnWoRflBeuSaOO0Yo8VGocptAMbgvpMs6yk0KfIPOdOr";
+export const REALM_URL: string = Config.REALM_URL ?? (env.appEnv === "staging" ? "application-stage-vldxa" : "application-com-dev-ygous");
+export const REALM_AUTH_LOGIN: string = Config.REALM_AUTH_LOGIN ?? "";
 
 // Static & media assets
 export const DefaultImageUrl: string = env.defaultImageUrl;

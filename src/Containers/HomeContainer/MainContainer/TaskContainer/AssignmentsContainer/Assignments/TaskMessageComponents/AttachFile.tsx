@@ -73,7 +73,7 @@ function AttachFile({
         text: `${t("btn.ok")}`,
         onPress: () => {
           openSettings().catch(() => {
-            Linking.openSettings();
+            void Linking.openSettings();
           });
         },
       },

@@ -31,7 +31,7 @@ export default function AboutContainer() {
         <View style={{ marginHorizontal: 40, justifyContent: "flex-end", flexGrow: 1}}>
           <Pressable
             onPress={() => {
-              Linking.openURL(PRIVACY_POLICY);
+              void Linking.openURL(PRIVACY_POLICY);
             }}
             style={{ flexDirection: "row", alignItems: "center", marginVertical: 5 }}
           >
@@ -39,7 +39,7 @@ export default function AboutContainer() {
           </Pressable>
           <Pressable
             onPress={() => {
-              Linking.openURL(PRIVACY_POLICY);
+              void Linking.openURL(PRIVACY_POLICY);
             }}
             style={{ flexDirection: "row", alignItems: "center", marginVertical: 5 }}
           >
@@ -47,7 +47,7 @@ export default function AboutContainer() {
           </Pressable>
           <Pressable
             onPress={() => {
-              Linking.openURL(PRIVACY_POLICY);
+              void Linking.openURL(PRIVACY_POLICY);
             }}
             style={{ flexDirection: "row", alignItems: "center", marginVertical: 5 }}
           >

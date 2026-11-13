@@ -105,7 +105,7 @@ export const SingleTaskMessage = ({ item }: { item: TaskData }) => {
           )}
           <Text>{myTaskData ? (item?.memberId ? "You" : "") : userName ?? "___"}</Text>
         </View>
-        {item?.result && (
+        {Boolean(item?.result) && (
           <View style={{}}>
             <Text
               style={{
@@ -117,7 +117,7 @@ export const SingleTaskMessage = ({ item }: { item: TaskData }) => {
             >
               Answer: {item.result}
             </Text>
-            {rangeType && (
+            {Boolean(rangeType) && (
               <Text
                 style={{
                   marginRight: 30,
@@ -132,13 +132,13 @@ export const SingleTaskMessage = ({ item }: { item: TaskData }) => {
               </Text>
             )}
 
-            {item?.resultAttachment?.type == "IMAGE" && item.resultAttachment.filename && (
+            {item?.resultAttachment?.type === "IMAGE" && Boolean(item.resultAttachment.filename) && (
               <View style={{ marginTop: 20 }}>
                 <MediaPreview size="xlarge" imageUri={item?.resultAttachment?.filename} renderCloseIcon={false} />
               </View>
             )}
 
-            {item?.resultAttachment?.type == "VIDEO" && item?.resultAttachment?.filename && (
+            {item?.resultAttachment?.type === "VIDEO" && Boolean(item?.resultAttachment?.filename) && (
               <>
                 <TaskVideoPlayer
                   setImagePreviewImage={setImagePreviewImage}
@@ -150,7 +150,7 @@ export const SingleTaskMessage = ({ item }: { item: TaskData }) => {
                 />
               </>
             )}
-            {item?.resultAttachment?.type == "APPLICATION" && item?.resultAttachment?.filename && (
+            {item?.resultAttachment?.type === "APPLICATION" && Boolean(item?.resultAttachment?.filename) && (
               <View
                 style={{
                   alignSelf: myTaskData ? "flex-end" : "flex-start",
@@ -164,7 +164,7 @@ export const SingleTaskMessage = ({ item }: { item: TaskData }) => {
               </View>
             )}
 
-            {item?.resultAttachment?.type == "AUDIO" && item?.resultAttachment?.filename && (
+            {item?.resultAttachment?.type === "AUDIO" && Boolean(item?.resultAttachment?.filename) && (
               <View
                 style={{
                   alignSelf: myTaskData ? "flex-end" : "flex-start",
@@ -207,7 +207,7 @@ export const SingleTaskMessage = ({ item }: { item: TaskData }) => {
           </View>
         )}
 
-        {!item?.result && item?.resultAttachment?.type == "IMAGE" && item.resultAttachment.filename && (
+        {!item?.result && item?.resultAttachment?.type === "IMAGE" && Boolean(item.resultAttachment.filename) && (
           <View
             style={{
               marginVertical: 20,
@@ -239,7 +239,7 @@ export const SingleTaskMessage = ({ item }: { item: TaskData }) => {
           </View>
         )}
 
-        {!item?.result && item?.resultAttachment?.type == "VIDEO" && item?.resultAttachment?.filename && (
+        {!item?.result && item?.resultAttachment?.type === "VIDEO" && Boolean(item?.resultAttachment?.filename) && (
           <>
             <TaskVideoPlayer
               setImagePreviewImage={setImagePreviewImage}
@@ -269,7 +269,7 @@ export const SingleTaskMessage = ({ item }: { item: TaskData }) => {
             <TaskTime item={item} />
           </>
         )}
-        {!item?.result && item?.resultAttachment?.type == "APPLICATION" && item?.resultAttachment?.filename && (
+        {!item?.result && item?.resultAttachment?.type === "APPLICATION" && Boolean(item?.resultAttachment?.filename) && (
           <View
             style={{
               alignSelf: myTaskData ? "flex-end" : "flex-start",
@@ -301,7 +301,7 @@ export const SingleTaskMessage = ({ item }: { item: TaskData }) => {
           </View>
         )}
 
-        {!item?.result && item?.resultAttachment?.type == "AUDIO" && item?.resultAttachment?.filename && (
+        {!item?.result && item?.resultAttachment?.type === "AUDIO" && Boolean(item?.resultAttachment?.filename) && (
           <View
             style={{
               alignSelf: myTaskData ? "flex-end" : "flex-start",

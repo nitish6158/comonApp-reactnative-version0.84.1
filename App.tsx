@@ -62,7 +62,7 @@ function App() {
         includesCallsInRecents: false,
         supportsVideo: true,
       };
-      RNVoipCall.initializeCall(options)
+      void RNVoipCall.initializeCall(options)
         .then(() => {})
         .catch();
     }
@@ -92,7 +92,7 @@ function App() {
 function DataLoaderContainer() {
   useEffect(() => {
     currentUserIdAtom.onMount = (setValue) => {
-      (async () => {
+      void (async () => {
         const item = await AsyncStorage.getItem("MyProfile");
         if (item) {
           const data = JSON.parse(item) as user;

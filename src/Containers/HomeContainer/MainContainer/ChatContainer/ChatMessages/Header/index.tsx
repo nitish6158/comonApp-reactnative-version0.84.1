@@ -55,7 +55,7 @@ export default function ChatMessageHeader() {
           }}
           onProfilePress={() => {
             navigation.navigate("ChatProfileScreen", {});
-            socketConnect.emit("getFavouriteChats", { roomId: global.roomId });
+            void socketConnect.emit("getFavouriteChats", { roomId: global.roomId });
           }}
         />
         <HeaderRightActions isCalling={true} isSetting={true} />

@@ -19,10 +19,9 @@ export type StorageKeysList = `${DeadlineStorageKeys}` | `${DefaultStorageKeys}`
 
 export const setStorage = (key: StorageKeysList, value = "true") => AsyncStorage.setItem(key, value);
 
-export const getStorage = <T>(data: StorageKeysList): Promise<ReturnDataType<T>> => {
-  return (AsyncStorage.getItem(data) || undefined) as Promise<ReturnDataType<T>>;
+export const getStorage = async <T>(data: StorageKeysList): Promise<ReturnDataType<T>> => {
+  const item = await AsyncStorage.getItem(data);
+  return (item ?? undefined) as ReturnDataType<T>;
 };
 
-export const removeStorage = (data: StorageKeysList) => {
-  AsyncStorage.removeItem(data);
-};
+export const removeStorage = (data: StorageKeysList) => AsyncStorage.removeItem(data);

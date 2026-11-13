@@ -8,11 +8,11 @@ const iOS = Platform.OS === "ios";
 const android = Platform.OS === "android";
 
 export async function stopAllPlayers() {
-  if (android) stopExternalMedia();
+  if (android) void stopExternalMedia();
   if (MusicControl.STATE_PLAYING && iOS) MusicControl.on(Command.stop, () => {});
 }
 
 export function enableAllPlayers() {
-  if (android) enableExternalMedia();
+  if (android) void enableExternalMedia();
   if (iOS) MusicControl.on(Command.play, () => {});
 }

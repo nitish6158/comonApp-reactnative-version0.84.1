@@ -28,7 +28,7 @@ const PinnedChatsSection: React.FC<PinnedChatsSectionProps> = ({
     );
 
     useEffect(() => {
-        refreshPinnedMessages
+        void refreshPinnedMessages();
     },[refreshPinnedMessages])
 
     const handleUnpin = useCallback((messageId: string) => {

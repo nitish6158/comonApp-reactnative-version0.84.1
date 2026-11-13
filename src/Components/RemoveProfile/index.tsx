@@ -58,7 +58,7 @@ export default function RemoveProfile() {
   };
 
   const onRequest = () => {
-    requestAccountDelete().then(() => {
+    void requestAccountDelete().then(() => {
       setValue("");
       onResend();
     });

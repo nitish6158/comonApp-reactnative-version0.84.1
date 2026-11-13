@@ -22,7 +22,7 @@ export function SurveyChecker({ type }: props) {
 
   useFocusEffect(
     useCallback(() => {
-      chatSurvey();
+      void chatSurvey();
     }, [])
   );
 

@@ -190,7 +190,7 @@ console.log("SelectedOptionItem",visible)
                         type: "favorite",
                         data: {},
                       });
-                      socketConnect.emit("addChatsToFavourite", {
+                      void socketConnect.emit("addChatsToFavourite", {
                         cid: SelectedOptionItem?._id,
                         roomId: display.roomId,
                       });
@@ -199,7 +199,7 @@ console.log("SelectedOptionItem",visible)
                         type: "favorite",
                         data: {},
                       });
-                      socketConnect.emit("removeChatsFromFavourite", {
+                      void socketConnect.emit("removeChatsFromFavourite", {
                         cid: SelectedOptionItem?._id,
                       });
                     }
@@ -285,11 +285,11 @@ console.log("SelectedOptionItem",visible)
                     }
                     onPress={() => {
                       if (isPinned) {
-                        socketManager.conversation.pinMessage(
+                        void socketManager.conversation.pinMessage(
                           display.roomId,
                           SelectedOptionItem?._id
                         );
-                        socketConnect.emit("unpinChat", {
+                        void socketConnect.emit("unpinChat", {
                           cid: SelectedOptionItem?._id,
                           roomId: display.roomId,
                         });
@@ -304,12 +304,12 @@ console.log("SelectedOptionItem",visible)
                           if (pinnedChats.length !== 3) {
                             // socketConnect.emit('messagePinned');
                             temp.unshift(SelectedOptionItem);
-                            socketManager.conversation.pinMessage(
+                            void socketManager.conversation.pinMessage(
                               display.roomId,
                               SelectedOptionItem?._id
                             );
 
-                            socketConnect.emit("pinChat", {
+                            void socketConnect.emit("pinChat", {
                               cid: SelectedOptionItem?._id,
                               roomId: display.roomId,
                             });

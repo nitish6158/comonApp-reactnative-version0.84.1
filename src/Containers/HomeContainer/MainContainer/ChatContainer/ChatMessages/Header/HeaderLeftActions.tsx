@@ -297,7 +297,7 @@ export default function HeaderLeftActions({ onBackPress, onProfilePress }: Props
   const refreshPresenceFromRoom = useCallback(() => {
     if (!display?.roomId || display?.roomType !== "individual") return;
 
-    socketManager.chatRoom.getFormattedRoomById(display.roomId, (data: any) => {
+    void socketManager.chatRoom.getFormattedRoomById(display.roomId, (data: any) => {
       const room = data?.room;
       if (!room?.participants) return;
 
@@ -335,7 +335,7 @@ export default function HeaderLeftActions({ onBackPress, onProfilePress }: Props
 
   const refreshOnlineFromActiveContacts = useCallback(() => {
     if (!otherParticipantId) return;
-    socketManager.chatRoom.getActiveContacts((data: any) => {
+    void socketManager.chatRoom.getActiveContacts((data: any) => {
       const list = Array.isArray(data)
         ? data
         : Array.isArray(data?.activeContacts)
@@ -538,7 +538,7 @@ export default function HeaderLeftActions({ onBackPress, onProfilePress }: Props
     // Single subscription via socketConnect — do not also attach socket.on("message")
     socketConnect.addMessageHandler(handler);
 
-    socketConnect.emit("sendStatusToAUser", {
+    void socketConnect.emit("sendStatusToAUser", {
       userId: otherParticipantId,
       user_id: otherParticipantId,
       roomId: display.roomId,
@@ -550,7 +550,7 @@ export default function HeaderLeftActions({ onBackPress, onProfilePress }: Props
     refreshOnlineFromActiveContacts();
     const interval = setInterval(refreshOnlineFromActiveContacts, 8000);
     const pingInterval = setInterval(() => {
-      socketConnect.emit("sendStatusToAUser", {
+      void socketConnect.emit("sendStatusToAUser", {
         userId: otherParticipantId,
         user_id: otherParticipantId,
         roomId: display.roomId,

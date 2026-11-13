@@ -117,7 +117,7 @@ export default function Application() {
 
   useEffect(() => {
     IOSDeviceToken();
-    AskForNotificationPermission();
+    void AskForNotificationPermission();
   }, []);
 
   // On every app open, this function will get the iOS device token and update AsyncStorage with the device token, so that it can be used throughout the app.
@@ -360,14 +360,14 @@ function CheckAppVersion() {
   const [versionText, setVersionText] = useState<string>("");
   const RBSheetRef = useRef<any>(null);
   const dispatch = useDispatch();
-  const [logoutRequest, { }] = useLogoutLazyQuery();
+  const [logoutRequest] = useLogoutLazyQuery();
   // const user = useUser();
   const MyProfile = useAppSelector((state) => state.Chat.MyProfile);
   const setCallQueue = useSetAtom(callQueueAtom);
   const appStateRef = useRef<AppStateStatus>(AppState.currentState);
 
   useEffect(() => {
-    fetchVersionManagement();
+    void fetchVersionManagement();
   }, []);
 
   useEffect(() => {
@@ -376,7 +376,7 @@ function CheckAppVersion() {
         appStateRef.current === "background" || appStateRef.current === "inactive";
 
       if (wasInBackground && nextState === "active") {
-        fetchVersionManagement();
+        void fetchVersionManagement();
       }
 
       appStateRef.current = nextState;
@@ -413,7 +413,7 @@ function CheckAppVersion() {
             // RNExitApp.exitApp();
           }}
           onUpdatePress={() => {
-            Linking.openURL(Platform.OS === "android" ? ANDROID_URL : IOS_URL);
+            void Linking.openURL(Platform.OS === "android" ? ANDROID_URL : IOS_URL);
           }}
         />
       </RBSheet>
@@ -424,7 +424,7 @@ function CheckAppVersion() {
     const { mode } = await getSession();
     const id = storage.getString(keys.userId);
 
-    messaging()
+    void messaging()
       .unsubscribeFromTopic(`${mode}_user_id_${id}`)
       .then(() => {
         console.log(
@@ -441,7 +441,7 @@ function CheckAppVersion() {
     dispatch(resetChatState());
     setCallQueue(null);
     await logoutRequest({ variables: { input: {} } });
-    removeSession();
+    void removeSession();
     await AsyncStorage.removeItem("MyProfile");
     // await user?.logOut();
     storage.clearAll();
@@ -572,12 +572,24 @@ function SessionInvalidationGuard() {
           },
         },
       });
+      if (response.error) {
+        throw response.error;
+      }
 
       const activeDeviceToken = response.data?.refreshSession?.user?.device?.token;
       if (activeDeviceToken && activeDeviceToken !== device.token) {
         await forceLogout("same user logged in on another device");
       }
-    } catch (error) {
+    } catch (error: any) {
+      const gqlError = error?.graphQLErrors?.[0];
+      const status =
+        gqlError?.extensions?.response?.statusCode ||
+        error?.networkError?.statusCode;
+      const code = gqlError?.extensions?.code;
+      if (code === "UNAUTHENTICATED" || status === 401) {
+        await forceLogout("refresh token expired");
+        return;
+      }
       console.log("Device session check failed:", error);
     } finally {
       checkingRef.current = false;
@@ -593,17 +605,17 @@ function SessionInvalidationGuard() {
     const socketLogoutHandler = (type: string, data: any) => {
       const eventType = String(type || data?.type || "").toLowerCase();
       if (eventType === "logout") {
-        forceLogout("socket logout event");
+        void forceLogout("socket logout event");
       }
     };
 
     socketConnect.addMessageHandler(socketLogoutHandler as any);
     const intervalId = setInterval(checkCurrentDevice, 15000);
-    checkCurrentDevice();
+    void checkCurrentDevice();
 
     const appStateSub = AppState.addEventListener("change", (nextState) => {
       if (nextState === "active") {
-        checkCurrentDevice();
+        void checkCurrentDevice();
       }
     });
 

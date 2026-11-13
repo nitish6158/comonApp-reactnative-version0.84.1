@@ -54,7 +54,7 @@ export default function RealmErrorScreen({ message }: props) {
           backgroundColor={Colors.light.PrimaryColor}
           label={`${t("onlineStatus.uninstall-app")}`}
           onPress={() => {
-            Linking.openURL(Platform.OS == "android" ? ANDROID_URL : IOS_URL);
+            void Linking.openURL(Platform.OS == "android" ? ANDROID_URL : IOS_URL);
           }}
           style={{ width: 300 }}
         />

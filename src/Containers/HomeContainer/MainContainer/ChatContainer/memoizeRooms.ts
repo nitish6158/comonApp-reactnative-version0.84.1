@@ -208,7 +208,7 @@ export function formatRoomData(
             break;
         }
         let addToCache = JSON.stringify(Array.from(roomDataCache.entries()));
-        AsyncStorage.setItem("roomDataCache", addToCache);
+        void AsyncStorage.setItem("roomDataCache", addToCache);
       }
     }
 
@@ -225,7 +225,7 @@ export function formatRoomData(
     // STORE THE FORMATTED DATA IN THE CACHE
     roomDataCache.set(roomID, formattedData);
     let addToCache = JSON.stringify(Array.from(roomDataCache.entries()));
-    AsyncStorage.setItem("roomDataCache", addToCache);
+    void AsyncStorage.setItem("roomDataCache", addToCache);
     //RETURN FULL FORMATED DATA
     return formattedData;
   }

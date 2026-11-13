@@ -23,7 +23,7 @@ const FileNameView = (file: {
     filename: file.name,
   };
   const FileOpener = () => {
-    FileViewer.open(file.uri);
+    void FileViewer.open(file.uri);
   };
 
   return (

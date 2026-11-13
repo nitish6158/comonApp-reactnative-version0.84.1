@@ -22,7 +22,7 @@ export default function HeaderWithBack({ customStyle }: props) {
         paddingVertical: 10,
         flexDirection: "row",
         alignItems: "center",
-      }, customStyle && customStyle]}
+      }, customStyle]}
     >
       <AppIcon name="back" size={24} color="black" style={{ marginRight: 5 }} />
       <Text style={{ fontSize: 17 }}>{t('titles.Back')}</Text>
