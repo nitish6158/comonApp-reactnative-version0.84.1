@@ -100,14 +100,8 @@ export const SignUpScreen = ({
     console.log(JSON.stringify(signUpResponse.data));
     if (signUpResponse.data != null) {
       setCode(phoneInput.current?.state.countryCode);
-      setShowModal(true);
-      //requestEmailConfirm();
-
-      // navigation.navigate("OtpVerify", {
-      //   phone: phoneInput.current?.state.code,
-      //   email: form?.email,
-      // });
-      //navigation.navigate("Login", {});
+      ToastMessage("Account created successfully! Please log in.");
+      navigation.navigate("Login", {});
     }
   }, [signUpResponse.error, signUpResponse.data]);
 

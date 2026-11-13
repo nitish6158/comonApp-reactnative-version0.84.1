@@ -4,8 +4,8 @@
 Login, signup, OTP/confirm, forgot/reset password, and secure session persistence for MeetUs mobile.
 
 ## Main entry points
-- `LoginContainer/LoginScreen.tsx`
-- `NewSignUpContainer/SignUpScreen.tsx` — Safe-area aware, padded signup form with inline tooltip and clean branding
+- `LoginContainer/LoginScreen.tsx` — Login with bypassed email confirmation guard for standalone/dev environments
+- `NewSignUpContainer/SignUpScreen.tsx` — Safe-area aware, padded signup form with direct login redirect and inline tooltips
 - `ConfirmOTPContainer`, `ForgotPasswordContainer`, `ResetPasswordContainer`
 - `src/utils/session.ts` — Keychain-backed `setSession` / `getSession` / `removeSession`
 - `src/Components/AuthContext.tsx` — React `tokenLogin` flag synced from Keychain

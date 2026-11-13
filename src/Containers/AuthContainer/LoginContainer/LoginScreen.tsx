@@ -484,8 +484,9 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
       let mode = LoginResponse?.data.signin.mode;
       let isAgree = user.isAgree;
 
-      // mail not confirmed
-      if (!user.emailConfirmed) {
+      // Email confirmation check bypassed for testing/development (no client mail server configured)
+      const bypassEmailVerification = true;
+      if (!user.emailConfirmed && !bypassEmailVerification) {
         setLoader(false);
         setShowMailConfirmModal(true);
         await requestEmailConfirm({
