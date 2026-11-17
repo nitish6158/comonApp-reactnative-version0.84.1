@@ -132,8 +132,7 @@ function ContactsScreen() {
 
   useFocusEffect(
     React.useCallback(() => {
-      ToastMessage(`${t("onlineStatus.contact-refresh")}
-`, true);
+      void ContactSync();
     }, [])
   );
 
@@ -555,41 +554,37 @@ function ContactsScreen() {
 
       //if new number added or removed then create list of delete and add contact
 
-      //USER DELETED CONTACT FROM PHONEBOOK
-      //if contact removed from phonebook or second contact number on single phonebook number
-      if (PhoneBookContacts.length <= contacts.length) {
-        const ContactToRemove = contacts.filter((contact) => {
-          const isLocal = PhoneBookContacts.find((ph_contact) => ph_contact?.localId === contact?.localId);
-
-          if (!isLocal) {
-            // console.log(contact.localId)
-            //Contact removed from phonebook
-            return true;
-          } else {
-            const isPhoneChanged = isLocal?.phone === contact.originalPhone;
-
-            if (!isPhoneChanged) {
-              phoneChange.push(isLocal);
-              phoneDelete.push(contact.localId);
-            }
-
-            //if server and local both are same then do not send it for delete
-            return false;
-          }
-        });
-
-        console.log("Delete Contact List", ContactToRemove.length);
-        deleteContacts(ContactToRemove);
-      }
-
-      //USER ADDED CONTACT IN PHONEBOOK
-      if (PhoneBookContacts.length > contacts.length) {
-        const ContactAdded = PhoneBookContacts.filter((ph_contact) => {
-          const isLocal = contacts.find((contact) => ph_contact?.localId === contact?.localId);
-          return isLocal ? false : true;
-        });
+      // Sync newly added contacts from device phonebook to server
+      const ContactAdded = PhoneBookContacts.filter((ph_contact) => {
+        return !contacts.some((contact) => ph_contact?.localId === contact?.localId);
+      });
+      if (ContactAdded.length > 0) {
         console.log("New Contact List", ContactAdded.length);
         addContactsToServer(ContactAdded);
+      }
+
+      // Sync contacts removed from device phonebook
+      const ContactToRemove = contacts.filter((contact) => {
+        const isLocal = PhoneBookContacts.find((ph_contact) => ph_contact?.localId === contact?.localId);
+
+        if (!isLocal) {
+          // Contact removed from phonebook
+          return true;
+        } else {
+          const isPhoneChanged = isLocal?.phone === contact.originalPhone;
+
+          if (!isPhoneChanged) {
+            phoneChange.push(isLocal);
+            phoneDelete.push(contact.localId);
+          }
+
+          return false;
+        }
+      });
+
+      if (ContactToRemove.length > 0) {
+        console.log("Delete Contact List", ContactToRemove.length);
+        deleteContacts(ContactToRemove);
       }
 
       //is any number change then add new number
@@ -745,57 +740,51 @@ function ContactsScreen() {
     let filtered = filterInObject({
       searchText: searchText,
       data: primaryContacts,
-      // searchKeys: ["firstName", "lastName", "phone"],
-      // returnKeys: [],
     });
-    const regex = /[A-Za-z]/;
 
-    //hasComon
-    if (currentTab == "MeetUs" || currentTab == "Comon") {
-      filtered = filtered.filter((item) => item.hasComon == true);
-      // console.log(filtered);
-    }
+    const isMeetUsTab = currentTab === "MeetUs" || currentTab === "Comon";
+    const isOtherTab = currentTab === "Other" || currentTab === t("label.other");
 
-    if (currentTab === "Other") {
+    if (isMeetUsTab) {
+      filtered = filtered.filter((item) => item.hasComon === true);
+    } else if (isOtherTab) {
       filtered = filtered.filter((item) => !item.hasComon);
     }
 
-    // If duplicates exist, keep the latest/second entry and remove the first one.
+    // Keep unique contacts without dropping contacts that share the same name but have different phone numbers
     filtered = _.uniqBy([...filtered].reverse(), (item) => {
       const first = (item?.firstName ?? "").trim().toLowerCase();
       const last = (item?.lastName ?? "").trim().toLowerCase();
-      return first || last ? `${first}_${last}` : (item?.phone ?? "");
+      const phoneDigits = (item?.phone ?? "").replace(/\D/g, "");
+      const phoneSuffix = phoneDigits.slice(-10);
+      return item?.localId || (phoneSuffix ? `${first}_${last}_${phoneSuffix}` : `${first}_${last}_${item?.phone ?? ""}`);
     }).reverse();
-
-    // console.log(filtered);
 
     const chars: typeof alphabetList = alphabetList;
     const currContacts = produce(chars, (draftChar) => {
       return draftChar
         .map((item) => {
-          const data = produce(filtered, (draftalpha) => {
-            return draftalpha.filter((con: { firstName: string[]; lastName: string[]; phone: string[] }) => {
-              const checkSection = con.firstName[0]?.match(/[A-Za-z]/g)
-                ? item.title == con.firstName[0]
-                : con.lastName[0]?.match(/[A-Za-z]/g)
-                  ? item.title == con.lastName[0]
-                  : con.firstName[0] == undefined && con.lastName[0] == undefined && item.title == "#"
-                    ? true
-                    : item.title == "#";
-              if (checkSection) {
-                return true;
-              } else {
-                return false;
-              }
-            });
+          const data = filtered.filter((con: any) => {
+            const first = typeof con?.firstName === "string" ? con.firstName.trim() : "";
+            const last = typeof con?.lastName === "string" ? con.lastName.trim() : "";
+            const displayName = first || last;
+            const firstChar = displayName.length > 0 ? displayName[0].toUpperCase() : "";
+            const isAlpha = /^[A-Z]$/.test(firstChar);
+
+            if (isAlpha) {
+              return item.title === firstChar;
+            } else {
+              return item.title === "#";
+            }
           });
+
           return {
             ...item,
-            data: data.sort((a, b) =>
-              `${a.firstName ?? ""} ${b.lastName ?? ""}`
-                .toLowerCase()
-                .localeCompare(`${b.firstName ?? ""} ${b.lastName ?? ""}`.toLowerCase())
-            ),
+            data: data.sort((a, b) => {
+              const nameA = `${a?.firstName ?? ""} ${a?.lastName ?? ""}`.trim() || `${a?.phone ?? ""}`;
+              const nameB = `${b?.firstName ?? ""} ${b?.lastName ?? ""}`.trim() || `${b?.phone ?? ""}`;
+              return nameA.toLowerCase().localeCompare(nameB.toLowerCase());
+            }),
           };
         })
         .filter((con) => con.data.length > 0);

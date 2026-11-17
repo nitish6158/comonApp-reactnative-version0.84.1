@@ -38,12 +38,26 @@ function GlobalSearch({ navigation }: any) {
   const screenFocus = nav.isFocused();
 
   const filterChat = React.useMemo(() => {
-    if (SearchValue.length > 0) {
-      const lowerFilter = SearchValue.toLowerCase();
+    if (SearchValue.trim().length > 0) {
+      const lowerFilter = SearchValue.toLowerCase().trim();
+      const filterDigits = lowerFilter.replace(/\D/g, "");
       return chatRooms.filter((item) => {
-        const roomLower = item.display?.UserName.toLowerCase();
-        const phoneLower = item.display?.PhoneNo.toLowerCase();
-        return roomLower.split(" ").find((v) => v.startsWith(lowerFilter)) || phoneLower.includes(lowerFilter);
+        const roomLower = `${item.display?.UserName ?? ""}`.toLowerCase().trim();
+        const phoneLower = `${item.display?.PhoneNo ?? ""}`.toLowerCase().trim();
+        const phoneDigits = phoneLower.replace(/\D/g, "");
+
+        const nameMatches =
+          roomLower.includes(lowerFilter) ||
+          roomLower.split(/\s+/).some((v) => v.startsWith(lowerFilter));
+
+        let phoneMatches = phoneLower.includes(lowerFilter);
+        if (!phoneMatches && filterDigits.length >= 3) {
+          phoneMatches = phoneDigits.includes(filterDigits) || filterDigits.includes(phoneDigits);
+          if (!phoneMatches && phoneDigits.length >= 10 && filterDigits.length >= 10) {
+            phoneMatches = phoneDigits.slice(-10) === filterDigits.slice(-10);
+          }
+        }
+        return nameMatches || phoneMatches;
       });
     } else {
       return chatRooms;
@@ -91,6 +105,8 @@ function GlobalSearch({ navigation }: any) {
       <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
         <VectorIconCompat name="chevron-back" size={35} color="black" onPress={() => nav.goBack()} style={{ marginTop: 12 }} />
         <SearchInput
+          value={SearchValue}
+          onChangeText={SetSearchValue}
           SearchValue={SearchValue}
           SetSearchValue={SetSearchValue}
           ShowSearchIcon

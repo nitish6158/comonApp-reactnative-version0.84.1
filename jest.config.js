@@ -55,5 +55,7 @@ module.exports = {
     'src/Containers/TermsScreen.tsx',
     'src/Containers/AuthContainer/TermsAndConditionsContainer/TermsAndConditionsScreen.tsx',
     'src/hooks/useOrganization.ts',
+    'src/Containers/HomeContainer/MainContainer/ProfileContainer/contacts/FilterContact.ts',
+    'src/Components/input/SearchInput.tsx',
   ],
 };

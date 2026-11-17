@@ -28,9 +28,15 @@ export default function SelectContactScreen({ route, navigation }: Readonly<Sele
   const [searchSelected, setSearchSelected] = useState<boolean>(false);
 
   const filteredList = useMemo(() => {
+    const primaryContacts = contacts.filter((contact) => {
+      const localId = contact?.localId ?? "";
+      if (!localId) return true;
+      return !/_\d+$/.test(localId) || localId.endsWith("_0");
+    });
+
     const filtered: ContactDetailsDto[] = filterInObject({
       searchText: search,
-      data: contacts.filter((v) => v.localId.slice(-2) == "_0"),
+      data: primaryContacts,
     });
 
     return getAlphabatic(filtered);
