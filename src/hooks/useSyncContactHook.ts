@@ -1,11 +1,4 @@
 import { Alert, PermissionsAndroid, Platform } from "react-native";
-import {
-  askCameraPermission,
-  askMediaPermission,
-  checkCameraPermission,
-  checkMediaPermission,
-  checkMicrophonePermission,
-} from "@Util/permission";
 import _ from "lodash";
 
 import Contacts from "react-native-contacts";
@@ -161,7 +154,6 @@ export function addContact(t: TFunction<"translation", undefined>): Promise<Arra
           if (!response) {
             async function handlePressAgree() {
               const contacts = await requestContactPermission();
-              await handleAllPermissions(t);
               if (contacts) {
                 resolve(contacts);
               } else {
@@ -173,7 +165,6 @@ export function addContact(t: TFunction<"translation", undefined>): Promise<Arra
             }
             PermissionHandler({ type: "contact", handlePressAgree, handlePressCancel, t });
           } else {
-            await handleAllPermissions(t);
             const contacts = await getAndFormateContact();
             resolve(contacts);
           }
@@ -186,9 +177,6 @@ export function addContact(t: TFunction<"translation", undefined>): Promise<Arra
       void (async () => {
         try {
           const permissionStatus = await Contacts.requestPermission();
-          const cameraPermission = await checkCameraPermission();
-          if (!cameraPermission) await askCameraPermission();
-          await checkMicrophonePermission();
           if (permissionStatus === "authorized") {
             const contacts = await getAndFormateContact();
             resolve(contacts);
@@ -205,27 +193,6 @@ export function addContact(t: TFunction<"translation", undefined>): Promise<Arra
   });
 }
 
-async function handleAllPermissions(t: any) {
-  const mediaPermission = await checkMediaPermission();
-  if (!mediaPermission) {
-    async function handlePressAgree(type: "contact" | "media") {
-      if (type === "media") {
-        await askMediaPermission();
-        const cameraPermission = await checkCameraPermission();
-        if (!cameraPermission) await askCameraPermission();
-        const microphonePermission = await checkMicrophonePermission();
-        console.log("Microphone permission", microphonePermission);
-      }
-    }
-    return PermissionHandler({ type: "media", handlePressAgree, t });
-  } else {
-    const cameraPermission = await checkCameraPermission();
-    if (!cameraPermission) await askCameraPermission();
-    const microphonePermission = await checkMicrophonePermission();
-    console.log("Microphone permission", microphonePermission);
-  }
-}
-
 async function requestContactPermission() {
   let permissionRes = await PermissionsAndroid.requestMultiple([
     PermissionsAndroid.PERMISSIONS.WRITE_CONTACTS,
@@ -235,7 +202,7 @@ async function requestContactPermission() {
     const contacts = await getAndFormateContact();
     return contacts;
   } else {
-    return null
+    return null;
   }
 }
 

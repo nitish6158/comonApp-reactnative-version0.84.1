@@ -17,6 +17,8 @@ See files under `src/Containers/HomeContainer/MainContainer/ProfileContainer/`.
 
 ## Important rules / edge cases
 - Keep navigation route names and socket event payloads stable.
+- Contacts permission is requested on first Home screen launch with the standard disclosure dialog (`accessPermission`); once granted, subsequent launches silently sync contacts without prompting again.
+- Camera, microphone, and media permissions must NEVER be requested during contact sync; they are requested strictly in contextual workflows (making a call, taking/sending a photo, or attaching media).
 - Phone searching must always normalize digits (`replace(/\D/g, "")`) so numbers match regardless of country codes (`+91`), spaces, hyphens, or brackets.
 - Alphabet section grouping must compare case-insensitively (`displayName[0].toUpperCase()`) and sort non-alpha names under `"#"` safely.
 - Never gate phonebook contact addition/deletion on flawed length comparisons (`<=` or `>`); always diff `localId` against server contacts.

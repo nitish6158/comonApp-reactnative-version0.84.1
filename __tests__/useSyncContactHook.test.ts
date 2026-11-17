@@ -104,12 +104,9 @@ describe("useSyncContactHook", () => {
   it("handles addContact flows on Android and iOS", async () => {
     const t = ((k: string) => k) as any;
 
-    // Android already granted + PermissionHandler triggers media agree
+    // Android already granted - directly resolves contacts without asking again
     (Platform as any).OS = "android";
     jest.spyOn(PermissionsAndroid, "check").mockResolvedValueOnce(true);
-    mockPermissionHandler.mockImplementationOnce(async ({ handlePressAgree }: any) => {
-      await handlePressAgree("media");
-    });
     mockGetAll.mockResolvedValueOnce([]);
     await expect(addContact(t)).resolves.toEqual([]);
 
@@ -118,14 +115,17 @@ describe("useSyncContactHook", () => {
     jest.spyOn(PermissionsAndroid, "requestMultiple").mockResolvedValueOnce({
       "android.permission.READ_CONTACTS": "granted",
     } as any);
-    mockPermissionHandler
-      .mockImplementationOnce(({ handlePressAgree }: any) => {
-        void handlePressAgree("contact");
-      })
-      .mockImplementationOnce(async ({ handlePressAgree }: any) => {
-        await handlePressAgree("media");
-      });
+    mockPermissionHandler.mockImplementationOnce(({ handlePressAgree }: any) => {
+      void handlePressAgree("contact");
+    });
     mockGetAll.mockResolvedValueOnce([]);
+    await expect(addContact(t)).resolves.toEqual([]);
+
+    // Android denied check -> PermissionHandler cancel
+    jest.spyOn(PermissionsAndroid, "check").mockResolvedValueOnce(false);
+    mockPermissionHandler.mockImplementationOnce(({ handlePressCancel }: any) => {
+      handlePressCancel();
+    });
     await expect(addContact(t)).resolves.toEqual([]);
 
     // Android check failure

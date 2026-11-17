@@ -4,7 +4,14 @@ import {
   useGetUserPhoneBookLazyQuery,
   useUpdateContactProfileMutation,
 } from "@/graphql/generated/contact.generated";
-import { loadContactsIfPermitted, usePhoneContext } from "@/hooks";
+import {
+  addContact,
+  formattedPhoneBook,
+  hasContactsPermission,
+  loadContactsIfPermitted,
+  usePhoneContext,
+} from "@/hooks";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAppSelector } from "@/redux/Store";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -124,10 +131,27 @@ export default function GlobalContactSyncEvent() {
   }
 
   async function syncContactsToDb(serverContact: serverContactType[]) {
-    void loadContactsIfPermitted().then(async (phonebook) => {
-      if (!phonebook.length) {
-        return;
+    let phonebook: Array<formattedPhoneBook> = [];
+    const isAllowed = await hasContactsPermission();
+
+    if (isAllowed) {
+      phonebook = await loadContactsIfPermitted();
+    } else {
+      // First time on Home screen: request contacts permission
+      try {
+        const alreadyPrompted = await AsyncStorage.getItem("CONTACT_PERMISSION_PROMPTED");
+        if (!alreadyPrompted) {
+          await AsyncStorage.setItem("CONTACT_PERMISSION_PROMPTED", "true");
+          phonebook = await addContact(t);
+        }
+      } catch (e) {
+        console.log("Error checking permission prompt state", e);
       }
+    }
+
+    if (!phonebook || !phonebook.length) {
+      return;
+    }
       const RemoveFromServer = serverContact.filter((e: { localId: string }) => {
         //If contact not found on server then add to the list
         let isFound = phonebook.find((v) => v.localId === e.localId);
@@ -229,7 +253,6 @@ export default function GlobalContactSyncEvent() {
         );
         refreshChatRooms();
       }
-    });
   }
 
   if (getServerPhonebookResponse.loading) {
