@@ -35,7 +35,7 @@ import SearchInput from "@Components/input/SearchInput";
 import { String } from "lodash";
 import Text from "@Components/Text";
 import ToastMessage from "@Util/ToastMesage";
-import { addContact, formattedPhoneBook } from "@Hooks/useSyncContactHook";
+import { addContact, formattedPhoneBook, hasContactsPermission } from "@Hooks/useSyncContactHook";
 import { alphabetList } from "@/Constants/chatectors";
 import branch from "react-native-branch";
 import { currentUserIdAtom } from "@/Atoms";
@@ -132,7 +132,15 @@ function ContactsScreen() {
 
   useFocusEffect(
     React.useCallback(() => {
-      void ContactSync();
+      void ContactSync().then((contactsRaw) => {
+        if (!contactsRaw || contactsRaw.length === 0) {
+          void hasContactsPermission().then((allowed) => {
+            if (allowed) {
+              void onPressRefreshing();
+            }
+          });
+        }
+      });
     }, [])
   );
 

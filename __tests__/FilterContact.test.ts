@@ -85,3 +85,4 @@ describe("filterInObject contact search", () => {
     expect(filterInObject({ searchText: "abc", data: [null as any] })).toEqual([]);
   });
 });
+

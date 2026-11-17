@@ -5,6 +5,7 @@ import { Alert } from "react-native";
 interface IPermissionHandler {
   type: "contact" | "media";
   handlePressAgree: Function;
+  handlePressCancel?: Function;
   t: any;
 }
 
@@ -26,7 +27,10 @@ export default function PermissionHandler(props: IPermissionHandler) {
   return Alert.alert(title, description, [
     {
       text: "Not Now",
-      onPress: () => console.log("Cancel Pressed"),
+      onPress: () => {
+        props.handlePressCancel?.();
+        console.log("Cancel Pressed");
+      },
       style: "cancel",
     },
     {

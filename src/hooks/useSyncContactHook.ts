@@ -168,7 +168,10 @@ export function addContact(t: TFunction<"translation", undefined>): Promise<Arra
                 reject(new Error("Contacts permission denied"));
               }
             }
-            PermissionHandler({ type: "contact", handlePressAgree, t });
+            function handlePressCancel() {
+              resolve([]);
+            }
+            PermissionHandler({ type: "contact", handlePressAgree, handlePressCancel, t });
           } else {
             await handleAllPermissions(t);
             const contacts = await getAndFormateContact();
