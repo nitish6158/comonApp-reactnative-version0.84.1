@@ -742,7 +742,7 @@ export default function SplashContainer() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+    <View testID="splash-root" style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <StatusBar hidden={true} translucent={true} backgroundColor="transparent" barStyle="dark-content" />
       <FastImage
         source={require("../../assets/images/splash.png")}

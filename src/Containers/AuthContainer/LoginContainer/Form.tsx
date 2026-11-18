@@ -129,19 +129,22 @@ export const Form = ({ onSubmit, loading }: FormProps) => {
         caretHidden={false}
         placeholder={t("form.label.phone")}
       >
-        <PhoneInput
-          ref={phoneInput}
-          onChangeText={handleChange("phone")}
-          onChangeFormattedText={onChangeFormattedText}
-          required
-          error={!!errors?.phone}
-          errorMessage={errors?.phone}
-          defaultCountryCode={code}
-          disableCountryCode={false}
-          disabled={false}
-        />
+        <View testID="login-phone-input">
+          <PhoneInput
+            ref={phoneInput}
+            onChangeText={handleChange("phone")}
+            onChangeFormattedText={onChangeFormattedText}
+            required
+            error={!!errors?.phone}
+            errorMessage={errors?.phone}
+            defaultCountryCode={code}
+            disableCountryCode={false}
+            disabled={false}
+          />
+        </View>
       </LabelInput>
       <LabelInput
+        testID="login-password-input"
         required
         secureTextEntry={secureTextVisibility}
         value={values.password}
@@ -167,6 +170,7 @@ export const Form = ({ onSubmit, loading }: FormProps) => {
       </Pressable> */}
 
       <Button
+        testID="login-submit-button"
         disabled={loading}
         loading={loading}
         title={t("sign-in.submit")}

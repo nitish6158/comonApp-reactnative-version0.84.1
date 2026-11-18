@@ -6,6 +6,8 @@ module.exports = {
     '/node_modules/',
     '/android/',
     '/ios/',
+    '<rootDir>/e2e/',
+    '\\.e2e\\.(ts|tsx|js)$',
   ],
   transformIgnorePatterns: [
     'node_modules/(?!(react-native|@react-native|@react-navigation|@react-native-async-storage|react-native-keychain|react-native-permissions)/)',
@@ -57,5 +59,6 @@ module.exports = {
     'src/hooks/useOrganization.ts',
     'src/Containers/HomeContainer/MainContainer/ProfileContainer/contacts/FilterContact.ts',
     'src/Components/input/SearchInput.tsx',
+    'src/e2e/testIDs.ts',
   ],
 };

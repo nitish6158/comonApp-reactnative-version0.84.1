@@ -8,6 +8,7 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 - SonarQube quality guide: `SONARQUBE_SETUP.md`
 - Module docs index: `src/docs/README.md`
 - Per-module docs: `src/**/docs/README.md` (update when that module changes)
+- Detox E2E (iOS + Android): `src/e2e/docs/README.md` — `npm run detox:build:ios` / `detox:test:ios` / `detox:build:android` / `detox:test:android`
 
 Realtime: use `socketConnect` only (legacy `socket` from `SocketSlice` bridges to it — never open a second `io()` client).
 Chat/room cache writes: MMKV primary (avoid dual AsyncStorage writes on hot paths).

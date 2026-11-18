@@ -13,6 +13,10 @@ Command: `npm run lint:ts` (`tsc --project tsconfig.json`)
 
 See `src/Components/icons/docs/README.md`.
 
+## Detox E2E
+
+See `src/e2e/docs/README.md`. Detox specs (`*.e2e.ts`) are excluded from unit Jest; helpers/testIDs are unit-tested under `src/e2e/__tests__`. Detox globals are typed via `e2e/tsconfig.json` (`types: ["jest", "detox"]`) — root `tsc` still uses `types: ["jest"]` only.
+
 ## Secure auth files
 
 `src/utils/session.ts`, `src/Components/AuthContext.tsx`, and `src/redux/Reducer/SocketSlice.ts` had **no** `tsc` errors in this snapshot.

@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["jest", "detox"],
+    "noEmit": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "../src/e2e/**/*.ts",
+    "../src/e2e/**/*.tsx",
+    "./**/*.js"
+  ],
+  "exclude": ["../node_modules"]
+}

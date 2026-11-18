@@ -120,6 +120,8 @@ android {
         versionCode ((findProperty('APP_VERSION_CODE') ?: System.getenv('APP_VERSION_CODE') ?: '1') as Integer)
         versionName (findProperty('APP_VERSION_NAME') ?: System.getenv('APP_VERSION_NAME') ?: "1.0")
         multiDexEnabled true
+        testBuildType System.getProperty('testBuildType', 'debug')
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         resValue "string", "build_config_package", "io.comon.app"
         manifestPlaceholders = [
             appName: "MeetUs",
@@ -186,6 +188,7 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            proguardFile "${rootProject.projectDir}/../node_modules/detox/android/detox/proguard-rules-app.pro"
         }
     }
     buildFeatures {
@@ -239,9 +242,17 @@ dependencies {
     implementation project(":react-native-branch")
     implementation project(":react-native-video")
     implementation project(":uilib-native")
-    implementation("androidx.test:core:1.4.0")
+    // Do NOT put androidx.test on the app classpath — it breaks Detox instrumentation
+    // (ClassNotFoundException: androidx.test.platform.io.FileTestStorage).
     implementation("androidx.multidex:multidex:2.0.1")
     implementation("com.google.android.exoplayer:exoplayer:2.18.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    androidTestImplementation("com.wix:detox:+")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test:rules:1.7.0")
+    androidTestImplementation("androidx.test:runner:1.7.0")
+    androidTestImplementation("androidx.test:core:1.7.0")
+    androidTestImplementation("androidx.test.services:storage:1.5.1")
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

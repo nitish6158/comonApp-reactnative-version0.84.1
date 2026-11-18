@@ -15,6 +15,7 @@ See files under `src/services/`.
 ## Important rules / edge cases
 - Keep navigation route names and socket event payloads stable.
 - Do not grow god screens further — extract hooks + presentational children (TaskManager pattern).
+- `src/services/e2e/` is Signal protocol encryption — not Detox. UI E2E lives in `src/e2e/` (see that module’s docs).
 - Update this README when behavior changes.
 
 ## Module path

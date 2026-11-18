@@ -47,7 +47,7 @@ const BottomTabScreen = () => {
   useChatRoomFormatter();
 
   return (
-    <View style={{ flex: 1 }}>
+    <View testID="bottom-tabs-root" style={{ flex: 1 }}>
       <BottomTabNavigator.Navigator
         screenOptions={{
           headerShown: false,
@@ -75,6 +75,7 @@ const BottomTabScreen = () => {
           name="TaskTabScreen"
           component={TaskTabNavigator}
           options={{
+            tabBarButtonTestID: "tab-task",
             tabBarIcon: ({ focused }) => (
               <View
                 style={{
@@ -120,6 +121,7 @@ const BottomTabScreen = () => {
           name="ChatTabScreen"
           component={ChatStackNavigator}
           options={({ route }) => ({
+            tabBarButtonTestID: "tab-chat",
             tabBarIcon: ({ focused }) => (
               <View
                 style={{
@@ -166,6 +168,7 @@ const BottomTabScreen = () => {
           name="UpdatesTabScreen"
           component={StatusFeedScreen}
           options={{
+            tabBarButtonTestID: "tab-updates",
             tabBarIcon: ({ focused }) => (
               <View
                 style={{
@@ -212,6 +215,7 @@ const BottomTabScreen = () => {
           name="CallTabScreen"
           component={CallTabNavigator}
           options={{
+            tabBarButtonTestID: "tab-call",
             tabBarIcon: ({ focused }) => (
               <View
                 style={{
@@ -256,6 +260,7 @@ const BottomTabScreen = () => {
           name="CalendarTabScreen"
           component={Calendar}
           options={{
+            tabBarButtonTestID: "tab-calendar",
             tabBarIcon: ({ focused }) => (
               <View
                 style={{

@@ -8,6 +8,7 @@
     "types": ["jest"],
     "paths": {
       "@/*": ["./src/*"],
+      "@E2E/*": ["./src/e2e/*"],
       "@Assets/*": ["./assets/*"],
       "@Images/*": ["./assets/images/*"],
       "@Fonts/*": ["./assets/fonts/*"],
@@ -29,5 +30,14 @@
       "@LocalDB/*": ["./src/local_DB/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "types/**/*.d.ts"]
+  "include": ["**/*.ts", "**/*.tsx", "types/**/*.d.ts"],
+  "exclude": [
+    "node_modules",
+    "android",
+    "ios",
+    "e2e",
+    "src/e2e/tests",
+    "src/e2e/helpers",
+    "src/e2e/matchers"
+  ]
 }

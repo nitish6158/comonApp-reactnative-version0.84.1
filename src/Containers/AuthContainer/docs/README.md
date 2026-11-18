@@ -25,5 +25,8 @@ Login, signup, OTP/confirm, forgot/reset password, and secure session persistenc
 - Non-secrets (phone code, org id, MyProfile cache) may stay in AsyncStorage/MMKV.
 - Existing login/splash/socket flow APIs (`setSession` / `getSession`) stay the same so callers keep working.
 
+## Detox
+Login / splash expose shared `testID`s from `src/e2e/testIDs.ts` (`login-root`, `login-phone-input`, …). Full Detox setup: `src/e2e/docs/README.md`.
+
 ## Module path
 `src/Containers/AuthContainer/`

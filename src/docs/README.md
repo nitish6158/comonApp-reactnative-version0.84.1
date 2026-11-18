@@ -31,6 +31,7 @@ Each feature module keeps English docs at `docs/README.md`.
 - `src/navigation/docs/README.md` — Navigation
 - `src/notification/docs/README.md` — Notification
 - `src/services/docs/README.md` — Services
+- `src/e2e/docs/README.md` — Detox E2E (iOS + Android)
 - `src/Constants/docs/README.md` — Constants
 - `src/styles/docs/README.md` — Styles
 - `src/config/docs/README.md` — Config

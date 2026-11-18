@@ -15,6 +15,7 @@ See files under `src/navigation/`.
 ## Important rules / edge cases
 - Keep navigation route names and socket event payloads stable.
 - Do not grow god screens further — extract hooks + presentational children (TaskManager pattern).
+- Bottom tabs expose Detox `testID`s (`bottom-tabs-root`, `tab-chat`, …) via `src/e2e/testIDs.ts`.
 - Update this README when behavior changes.
 
 ## Module path

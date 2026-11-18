@@ -125,6 +125,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
 
   return (
     <KeyboardAwareScrollView
+      testID="login-root"
       nestedScrollEnabled
       enableOnAndroid={true}
       keyboardShouldPersistTaps="handled"
@@ -139,7 +140,7 @@ export function LoginScreen({ route, navigation }: LoginScreenProps) {
             style={[loginScreenStyles.logo, mainStyles.offsetBottomMd]}
           />
         </View>
-        <Text h4 style={loginScreenStyles.title}>
+        <Text h4 testID="login-title" style={loginScreenStyles.title}>
           {t("sign-in.title")}
         </Text>
         <Form onSubmit={onLoginRequested} loading={loader} />
